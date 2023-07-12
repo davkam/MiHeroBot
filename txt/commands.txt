@@ -1,0 +1,13 @@
+**```arm
+MiHero !Help
+```**
+||||| **`!Help`**`   Show all available commands.`
+||||| **`!About`**`  Show game description.`
+||||| **`!New`**`    Create a new hero.`
+||||| **`!Delete`**` Delete your hero.`
+||||| **`!Fight`**`  Fight a random monster or player.`
+||||| **`!Inv`**`    Show your inventory.`
+||||| **`!Trade`**`  Trade with a player.`
+||||| **`!Shop`**`   Buy or sell shop items.`
+||||| **`!Stats`**`  Show your hero's stats.`
+||||| **`!Score`**`  Show scoreboard of all players.`

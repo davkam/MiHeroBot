@@ -1,0 +1,10 @@
+<pvp_idle link>
+<pvp_hitA link>
+<pvp_hitB link>
+<pvp_deadA link>
+<pvp_deadB link>
+<pvm_idle link>
+<pvm_hitA link>
+<pvm_hitB link>
+<pvm_deadA link>
+<pvm_deadB link>

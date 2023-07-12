@@ -1,0 +1,30 @@
+**```arm
+MiHero !About
+```**
+```
+!GENERAL
+	Create your own hero, gain experience and loot rewards as you take on monsters of different difficulties,
+	or challenge other players to combat for their loot. MiHero is a Discord RPG Bot created for entertainment and 
+	educational purposes. More information below.
+
+!STATS
+	LEVEL:    Represents the average stat of a hero, weapon or monster. Higher level means higher average in
+		      attack, defense and health. 
+		      (Max Level: 100) TBD
+	ATTACK:   Is your offensive stat and determines the outgoing strike, higher attack means higher strike damage
+			  and higher chance for critical strikes. 
+		      (Max Attack: 500) TBD
+	DEFENSE:  Is your defensive stat and determines the incoming strike, higher defense means higher damage absorption
+	          and higher chance for critical strike negation. 
+		      (Max Defense: 500) TBD
+	HEALTH:   Is your health pool and determines how much incoming strike damage one can take before losing. 
+		      (Max Health: 10000) TBD
+	XP STORE: Is your storage of experience gained that can be used on any skill of your choosing. More info in !XP.
+
+!COMBAT
+
+!LOOT
+
+!XP
+
+```
