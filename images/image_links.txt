@@ -1,10 +1,21 @@
-<pvp_idle link>
-<pvp_hitA link>
-<pvp_hitB link>
-<pvp_deadA link>
-<pvp_deadB link>
-<pvm_idle link>
-<pvm_hitA link>
-<pvm_hitB link>
-<pvm_deadA link>
-<pvm_deadB link>
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://cdn.quotesgram.com/img/93/84/1512394972-stay-positive-clouds.jpg
+https://github.com/davkam/MiHeroBot/blob/master/images/pvp/pvp_idle.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvp/pvp_hitA.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvp/pvp_hitB.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvp/pvp_deadA.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvp/pvp_deadB.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvm/pvm_idle.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvm/pvm_hitA.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvm/pvm_hitB.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvm/pvm_deadA.png?raw=true
+https://github.com/davkam/MiHeroBot/blob/master/images/pvm/pvm_deadB.png?raw=true
