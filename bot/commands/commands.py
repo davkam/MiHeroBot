@@ -1,27 +1,26 @@
 #!/usr/bin/python
 # -*- coding: ISO-8859-15 -*-
 
-from bot.interface.interface import FightView
+from bot.interface.views import FightView
 from data.database import Database
 from discord.message import Message
 from game.objects.characters import MonsterClass
 from bot.interface.embeds import FightEmbed
 from users.users import User
-#import discord
 
-# Commands(): Commands()-object containing attributes for discord.message.Message(), User() and a boolean.
-#             Also contains setup()-command and all command methods for further execution (initiated at Bot.message_respond()).
+# Commands() object containing attributes involved in executing commands. 
+# Instance instatiated at Bot.message_respond() and indirectly responds to an event "on_message()" (at main.py).
 class Commands():
     def __init__(self, msg: Message):
-        self.db: Database = Database.instance
-        self.msg: Message = msg                 # discord.message.Message()-instance.                          
-        self.user: User = None                  # User()-instance.
-        self.user_inDb: bool = False            # Boolean, true if user exists in database (db).
+        self.db: Database = Database.instance   # Database() instance for access to registered users.
+        self.msg: Message = msg                 # discord.message.Message() instance to respond to interactions.                         
+        self.user: User = None                  # User() instance representing the "owner/creator" of the instance. 
+        self.user_inDb: bool = False            # Boolean, true if user exists in database (db.users).
 
-    # setup(): Sets self.user to current user of self.msg, runs from Bot.message_respond().
+    # Sets self.user to current user of self.msg instance, runs from Bot.message_respond().
     async def set_user(self):
         if await self.db.contains_user(user_id = self.msg.author.id):
-            self.user = await self.db.get_user(user_id = self.msg.author.id)
+            self.user = await self.db.get_userbyId(user_id = self.msg.author.id)
             self.user_inDb = True
         else:
             self.user = User()
@@ -29,7 +28,8 @@ class Commands():
             self.user.username = self.msg.author.name
             self.user_inDb = False
 
-    # Command methods.
+    # Command methods for further execution in interaction chain. 
+    # NYI: Add admin commands!
     async def help(self):
         with open ('txt/commands.txt') as help:
             help = help.read()
@@ -61,8 +61,10 @@ class Commands():
             fight_view = FightView(user = self.user)
             msg = await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**\n", view = fight_view)
             
+            # Waits for view interaction to finish (by timing out or calling stop) to continue with response.
             await fight_view.wait()
 
+            # If view interaction is fulfilled, success == True.
             if fight_view.success:
                 if fight_view.select_type == "Player":
                     log = self.user.player.fight_player(fight_view.receiver_user.player)
@@ -79,6 +81,7 @@ class Commands():
             else:
                 await msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n`Interaction timed out!`", view = None)
             
+            # New FightEmbed() instance to run simulation of fight in response to interaction.
             fight_embed = FightEmbed(msg = msg, log = log)
             await fight_embed.run_embed()
 

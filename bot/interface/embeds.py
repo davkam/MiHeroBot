@@ -1,7 +1,5 @@
-#!/usr/bin/python
 # -*- coding: ISO-8859-15 -*-
 
-from game.features.features import Features
 import asyncio
 import discord
 
@@ -12,19 +10,16 @@ class FightEmbed(discord.Embed):
         self.log = log
 
     async def run_embed(self):
-            str_readyA = await Features.center_string(string = "BATTLE ABOUT TO BEGIN", max_chars = 28)
-            str_readyB = await Features.center_string(string = "DECIDING TURN...", max_chars = 28)
-
-            if self.log[4][1] != "":
+            if len(self.log[4]) > 1:
                  self.log[4][1] = f"`{self.log[4][1]}`"
             
             self.set_image(url = self.log[0])
-            self.add_field(name=f"**{self.log[1][0]}**", value=f"`LVL: {self.log[1][1]}`\n`ATT: {self.log[1][2]}`\n`DEF: {self.log[1][3]}`\n`MAX HP: {self.log[1][4]}`", inline=True)
-            self.add_field(name="`|||||||||| STATUS ||||||||||`", value=f"`{str_readyA}`\n`{str_readyB}`", inline=True)
-            self.add_field(name=f"**{self.log[2][0]}**", value=f"`LVL: {self.log[2][1]}`\n`ATT: {self.log[2][2]}`\n`DEF: {self.log[2][3]}`\n`Max HP: {self.log[2][4]}`", inline=True)
-            self.add_field(name="**IIIIIIIIIIIIIIIIIIII** `(100%)`", value=f"`{self.log[3][0]}`\n`{self.log[3][1]}`", inline=True)
+            self.add_field(name=f"**{self.log[1][0]}**", value=f"`LVL: {self.log[1][1]}`\n`ATT: {self.log[1][2]}`\n`DEF: {self.log[1][3]}`\n`HP:  {self.log[1][4]}`", inline=True)
+            self.add_field(name="`||||||| STATUS |||||||`", value=f"`-FIGHT ABOUT TO BEGIN-`\n`-   DECIDING TURN... -`", inline=True)
+            self.add_field(name=f"**{self.log[2][0]}**", value=f"`LVL: {self.log[2][1]}`\n`ATT: {self.log[2][2]}`\n`DEF: {self.log[2][3]}`\n`HP:  {self.log[2][4]}`", inline=True)
+            self.add_field(name="**IIIIIIIIIIIIIIIIIIII**\r\n`(100%)`", value=f"`{self.log[3][0]}`\n`{self.log[3][1]}`", inline=True)
             self.add_field(name="", value="", inline=True)
-            self.add_field(name="**IIIIIIIIIIIIIIIIIIII** `(100%)`", value=f"`{self.log[4][0]}`\n{self.log[4][1]}", inline=True)
+            self.add_field(name="**IIIIIIIIIIIIIIIIIIII**\r\n`(100%)`", value=f"`{self.log[4][0]}`\n{self.log[4][1]}", inline=True)
             
             await asyncio.sleep(1)
             await self.msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n", embed = self)
@@ -35,9 +30,9 @@ class FightEmbed(discord.Embed):
                 if self.log[i+3][1] <= 0: self.log[i+3][1] = 0
 
                 self.set_image(url = self.log[i])
-                self.set_field_at(index=1, name="`|||||||||| STATUS ||||||||||`", value=f"**`{self.log[i+1]}`**", inline=True)
-                self.set_field_at(index=3, name=f"**{self.log[i+2][0]}** `({self.log[i+2][1]}%)`", value=f"`{self.log[3][0]}`\n`{self.log[3][1]}`", inline=True)
-                self.set_field_at(index=5, name=f"**{self.log[i+3][0]}** `({self.log[i+3][1]}%)`", value=f"`{self.log[4][0]}`\n{self.log[4][1]}", inline=True)
+                self.set_field_at(index=1, name="`||||||| STATUS |||||||`", value=f"**`{self.log[i+1]}`**", inline=True)
+                self.set_field_at(index=3, name=f"**{self.log[i+2][0]}**\r\n`({self.log[i+2][1]}%)`", value=f"`{self.log[3][0]}`\n`{self.log[3][1]}`", inline=True)
+                self.set_field_at(index=5, name=f"**{self.log[i+3][0]}**\r\n`({self.log[i+3][1]}%)`", value=f"`{self.log[4][0]}`\n{self.log[4][1]}", inline=True)
     
                 await self.msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n", embed = self)
                 await asyncio.sleep(1)
@@ -51,8 +46,8 @@ class FightEmbed(discord.Embed):
                 await asyncio.sleep(1)
 
             self.set_image(url = self.log[i+4])
-            self.set_field_at(index=1, name=f"`|||||||||| WINNER ||||||||||`", value=f"**`{self.log[i+5][0]}`**", inline=True)
-            self.set_field_at(index=4, name=f"`|||||||||| LOSER  ||||||||||`", value=f"**`{self.log[i+5][1]}`**", inline=True)
+            self.set_field_at(index=1, name=f"`||||||| WINNER |||||||`", value=f"**`{self.log[i+5][0]}`**", inline=True)
+            self.set_field_at(index=4, name=f"`||||||| LOSER  |||||||`", value=f"**`{self.log[i+5][1]}`**", inline=True)
            
             await self.msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n", embed = self)
             await asyncio.sleep(1)

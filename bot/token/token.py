@@ -1,15 +1,15 @@
 import json
 import os.path
 
-# class Token(): Token object required for Bot() instance.
-#                Contains attributes token (discord token key) and file_path (token.json save file location)
+# Token() object required for Bot() instance, only one instance created (instatiated with Bot() instance).
+# Contains attributes for discord token key and file path to token save file location.
 class Token():
     def __init__(self):
         self.value = None
         self.file_path = "bot/token/token.json"
         self.set_token()
         
-    # set_token(): Sets token value from file_path, if exception occurs -> create_token().
+    # Sets token value from file path, if exception occurs it creates token instead.
     def set_token(self):
         try:
             if os.path.exists(self.file_path):
@@ -23,7 +23,7 @@ class Token():
             print(f'> Failed to retrieve token from "{self.file_path}"\n' + str(exception))
             self.create_token()
     
-    # create_token(): Creates new token, sets token value and saves new .json to file_path.
+    # Creates new token, sets token value and creates new .json-file to file path location.
     def create_token(self):
         try:
             key_input = input("> Enter new token value: ")
@@ -36,6 +36,6 @@ class Token():
             print(str(exception))
             exit()
 
-    # get_token(): Returns token value.
+    # Returns token value.
     def get_value(self):
         return self.value

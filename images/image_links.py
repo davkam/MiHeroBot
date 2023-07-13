@@ -1,10 +1,11 @@
 import os.path
 
+# ImageLinks()-Object class containing image links used in FightEmbed().
 class ImageLinks():
-    instance = None # Static attribute of a ImageLinks()-instance.
+    instance = None # Static attribute of an ImageLinks()-instance.
 
-    # __new__(): Instantiates through singleton pattern, only one instance allowed.
-    #            Instantiated at bot.ready_respond() and assigned to Database.instance.
+    # New instance instantiated through singleton pattern at bot.ready_respond(),
+    # assigned to static attribute "instance" for access. 
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
@@ -14,6 +15,7 @@ class ImageLinks():
         self.file_path: str = "images/image_links.txt"
         self.links: list[str] = list()
 
+    # Loads image links from .txt-file and assigns it to instanced attribute "self.links: list[str]".
     def load_images(self):
         try:
             if os.path.exists(self.file_path):

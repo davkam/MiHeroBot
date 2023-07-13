@@ -17,13 +17,13 @@ class Character():
         self.lvl: TotalLevel = TotalLevel(attack = self.attack, defense = self.defense, health = self.health)
 
 class Monster(Character):
-    def __init__ (self, name: str = None, monster_class: MonsterClass = MonsterClass.Light, attack: Attack = None, defense: Defense = None, health: Health = None):
+    def __init__ (self, name: str = None, monster_class: MonsterClass = None, attack: Attack = None, defense: Defense = None, health: Health = None):
         Character.__init__(self, name = name, attack = attack, defense = defense, health = health)
-        self.monster_class: MonsterClass = monster_class
+        self.monster_class: MonsterClass = monster_class or MonsterClass.Light
     
-    # generate_monster(): Initializes monster with randomized attributes depending on arguments monster_class and lvl.
+    # Initializes monster with randomized attributes depending on the parameters.
     async def generate_monster(self, monster_class: MonsterClass, lvl: int):
-        # Assigns a randomized self.lvl depending on monster_class option and lvl.
+        # Assigns name to monster and rng attributes based on monster class.
         if monster_class == MonsterClass.Light:
             self.name = "LIGHT MONSTER"
             low = 750; high = 1250
@@ -34,62 +34,63 @@ class Monster(Character):
             self.name = "HEAVY MONSTER"
             low = 1500; high = 2000
 
-        # Returns with default values if lvl = 1.
+        # Returns with default values if argument level is 1.
         if lvl == 1:
             return
 
+        # Sets monster class and level depending on previously defined rng attributes.
         self.monster_class = monster_class
         m_lvl = lvl * (random.randint(low, high) / 1000)
         
-        # Distributes 75% of m_lvl value evenly to m_att, m_def, m_hp.
+        # Distributes 75% of monster level value evenly to monster attack, defense, and health.
         m_att = m_lvl * 0.75
         m_def = m_lvl * 0.75
         m_hp = m_lvl * 0.75
 
-        # Distributes remaining 25% of m_lvl value randomly to m_att, m_def, m_hp
+        # Distributes remaining 25% of monster level value randomly to monster attack, defense, and health based on rng priority.
         lvl_left = (m_lvl * 0.25) * 3
         rng = random.randint(1, 3)
-        if rng == 1: # First: m_att        
+        if rng == 1:       
             rng = random.randint(0, 100) / 100
             m_att += lvl_left * rng
             lvl_left -= lvl_left * rng
             rng = random.randint(1, 2)
-            if rng == 1: # Second: m_def, Third: m_hp
+            if rng == 1:
                 rng = random.randint(0, 100) / 100
                 m_def += lvl_left * rng
                 lvl_left -= lvl_left * rng
                 m_hp += lvl_left
-            elif rng == 2: # Second: m_hp, Third: m_def
+            elif rng == 2:
                 rng = random.randint(0, 100) / 100
                 m_hp += lvl_left * rng
                 lvl_left -= lvl_left * rng
                 m_def += lvl_left
-        elif rng == 2: # First: m_def
+        elif rng == 2:
             rng = random.randint(0, 100) / 100
             m_def += lvl_left * rng
             lvl_left -= lvl_left * rng
             rng = random.randint(1, 2)
-            if rng == 1: # Second: m_att, Third: m_hp
+            if rng == 1:
                 rng = random.randint(0, 100) / 100
                 m_att += lvl_left * rng
                 lvl_left -= lvl_left * rng
                 m_hp += lvl_left
-            elif rng == 2: # Second: m_hp, Third: m_att 
+            elif rng == 2:
                 rng = random.randint(0, 100) / 100
                 m_hp += lvl_left * rng
                 lvl_left -= lvl_left * rng
                 m_att += lvl_left
-        elif rng == 3: # First: m_hp
+        elif rng == 3:
             rng = random.randint(0, 100) / 100
             m_hp += lvl_left * rng
             lvl_left -= lvl_left * rng
             rng = random.randint(1, 2)
-            if rng == 1: # Second: m_att, Third: m_def
+            if rng == 1:
                 rng = random.randint(0, 100) / 100
                 m_att += lvl_left * rng
                 lvl_left -= lvl_left * rng
                 m_def += lvl_left
-            elif rng == 2: # Second: m_def, Third: m_att
+            elif rng == 2:
                 rng = random.randint(0, 100) / 100
                 m_def += lvl_left * rng
                 lvl_left -= lvl_left * rng
@@ -102,8 +103,7 @@ class Monster(Character):
 
 class Player(Character):
     def __init__ (self, name: str, attack: Attack = None, defense: Defense = None, health: Health = None, gold: int = 0):
-        Character.__init__(self, name = name.upper(), attack = attack, defense = defense, health = health)
-        self.gold: int = gold
+        Character.__init__(self, name = name.upper(), attack = attack, defense = defense, health = health)  
         self.weapon: Weapon = Weapon()
         self.armor: Armor = Armor()
         self.gold: int = gold

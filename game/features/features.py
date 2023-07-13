@@ -37,6 +37,8 @@ class Features():
     # center_string(): Centers a string based on max chars, returns centered string.
     async def center_string(string: str, max_chars: int) -> str:
         str_length = len(string)
+        if str_length >= max_chars:
+            return string
         leftover_chars = max_chars - str_length - 2
         left_spaces = int(leftover_chars / 2)
         right_spaces = leftover_chars - left_spaces

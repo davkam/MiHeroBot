@@ -5,35 +5,35 @@ from discord.message import Message
 from images.image_links import ImageLinks
 from .token.token import Token
 
-# Bot(): Bot()-object containing attributes for discord.Intents(), discord.Client() and Token().
-#        Instantiates (single instance) as a module-level object (at bot.py).
-#        Communicates with Commands()-instance through message_respond()-method.
+# Bot() object containing attributes required to instatiate and run bot.
+# Instantiated as a single instance at module-level (main.py).
+# Communicates with Commands() object through message_respond() method.
 class Bot():
     _instance = None
 
-    # __new__(): Instantiates through singleton pattern, only one instance allowed.
+    # Instantiates through singleton pattern, only one instance created.
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    # __init__(): Initializes with new instances of discord.Intents(), discord.Client() and Token() as attributes.
+    # Initializes with new instances of discord.Intents(), discord.Client() and Token() as attributes.
     def __init__(self):
-        # New discord.Intents() instance with settings.
+        # New discord.Intents() instance with default settings.
         self.intents = discord.Intents.default()
         self.intents.message_content = True
 
         # New discord.Client() instance setup.
         self.client = discord.Client(intents = self.intents)
 
-        # New Token() instance, configurates upon initialization.
+        # New Token() instance, configurates on initialization.
         self.token = Token()
 
-    # run(): Executes discord bot client.
+    # Executes discord bot client.
     def run(self):
         self.client.run(self.token.get_value())
 
-    # ready_respond(): Called from client event "on_ready" (at main.py) and runs when client is connected and ready.
+    # Called from event "on_ready() (at main.py) and runs when client is connected and ready.
     async def ready_respond(self):
         print('> Bot has successfully logged in as: {0.user}'.format(self.client))
         print('> Bot ID: {0}'.format(self.client.application_id))
@@ -45,14 +45,14 @@ class Bot():
         img_links = ImageLinks()
         img_links.load_images()
 
-    # message_respond(): Called from client event "on_message" (at main.py) and runs when client receives a message.
-    #                    Redirects message with "user" and "msg" to Commands() for execution.
+    # Called from client event "on_message()" (at main.py) and runs when client receives a message.
+    # Redirects message with User() and Message() instances to Commands() object for execution.
     async def message_respond(self, msg: Message):
         if msg.author == self.client.user:
             return
         
         if msg.content.startswith("!"):
-            # New Commands()-instance initialized with current discord.message.Message() and current User().
+            # New Commands() instance initialized with current discord.message.Message() and current User().
             commands = Commands(msg)
             await commands.set_user()
 
@@ -68,18 +68,20 @@ class Bot():
                 await commands.delete()
             if message.startswith("!fight"):
                 await commands.fight()
-            if message.startswith("!shop"):
-                await commands.shop()
             if message.startswith("!inv"):
                 await commands.inventory()
+            if message.startswith("!trade"):
+                await commands.trade()
+            if message.startswith("!shop"):
+                await commands.shop()
             if message.startswith("!stats"):
                 await commands.stats()
             if message.startswith("!score"):
                 await commands.score()
-            if message.startswith("!load"):
-                await commands.load()
             if message.startswith("!save"):
                 await commands.save()
+            if message.startswith("!load"):
+                await commands.load()
 
             # Removing object reference for garbage collection. (NOT REQUIRED!)
             commands = None
