@@ -12,7 +12,7 @@ class GreenButton(Button): # TBD: Display player name.
     async def callback(self, interaction: discord.Interaction):
         if interaction.user.id == self.user.user_id:
             self.fight_view.clear_items()
-            message = f"**```arm\r\nMiHero !Fight\r\n```**\n**{interaction.user.name.upper()}** `accepts the challenge and prepares for battle...`"
+            message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `accepts the challenge and prepares for battle...`"
 
             await interaction.response.edit_message(content = message, view = self.fight_view)
 
@@ -31,7 +31,7 @@ class RedButton(Button): # TBD: Display player name.
     async def callback(self, interaction: discord.Interaction):
         if interaction.user.id == self.user.user_id:
             self.fight_view.clear_items()
-            message = f"**```arm\r\nMiHero !Fight\r\n```**\n**{interaction.user.name.upper()}** `declines the challenge and runs away!`"
+            message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `declines the challenge and runs away!`"
 
             await interaction.response.edit_message(content = message, view = self.fight_view)
             

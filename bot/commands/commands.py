@@ -42,19 +42,19 @@ class Commands():
 
     async def new(self):
         if self.user_inDb:
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**\n`You already have a hero` **{self.user.username.upper()}**\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.username.upper()}**.\n`To start fighting use command !Fight.`")
         else:
             await self.db.add_user(user = self.user)
             await self.user.new_player()
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**\n`Created new hero` **{self.user.username.upper()}**\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.username.upper()}**.\n`To start fighting use command !Fight.`")
 
     async def delete(self):
         if self.user_inDb:
             await self.db.rem_user(user = self.user)
             await self.user.del_player()
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**\n`Your hero was deleted` **{self.user.username.upper()}**\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero `**{self.user.username.upper()}**` was deleted`.\n`To create a new hero use command !New.`")
         else:
-            await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**\n`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
     async def fight(self):
         if self.user_inDb:
@@ -79,7 +79,7 @@ class Commands():
                 else:
                     pass
             else:
-                await msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n`Interaction timed out!`", view = None)
+                await msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**`Interaction timed out!`", view = None)
             
             # New FightEmbed() instance to run simulation of fight in response to interaction.
             fight_embed = FightEmbed(msg = msg, log = log)
@@ -89,7 +89,7 @@ class Commands():
             fight_embed = None
             fight_view = None
         else:
-            await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**\n`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
     async def inventory(self):
         if self.user_inDb:

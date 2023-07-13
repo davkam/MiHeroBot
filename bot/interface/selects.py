@@ -51,7 +51,7 @@ class PlayerSelect(Select): # TBD: Display player name.
             self.fight_view.receiver_user: User = await db.get_userbyId(user_id = id)
 
             button_view = ButtonView(fight_view = self.fight_view, user = self.fight_view.receiver_user)
-            message = f"**```arm\r\nMiHero !Fight\r\n```**\n**{str(interaction.user).upper()}** `challenges` **{self.fight_view.receiver_user.username.upper()}** `to a battle.`"
+            message = f"**```arm\r\nMiHero !Fight\r\n```** **{str(interaction.user).upper()}** `challenges` **{self.fight_view.receiver_user.username.upper()}** `to a battle.`"
 
             await interaction.response.edit_message(content = message, view = button_view)
         else:
@@ -74,19 +74,19 @@ class MonsterSelect(Select): # TBD: Display player name.
             if self.values[0] == "LM":
                 self.fight_view.select_type = "MonsterLight"
                 self.fight_view.clear_items()
-                message = f"**```arm\r\nMiHero !Fight\r\n```**\n**{interaction.user.name.upper()}** `encounters a light monster.`"
+                message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `encounters a light monster.`"
 
                 await interaction.response.edit_message(content = message, view = self.fight_view)
             if self.values[0] == "MM":
                 self.fight_view.select_type = "MonsterMedium"
                 self.fight_view.clear_items()
-                message = f"**```arm\r\nMiHero !Fight\r\n```**\n**{interaction.user.name.upper()}** `encounters a medium monster.`"
+                message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `encounters a medium monster.`"
 
                 await interaction.response.edit_message(content = message, view = self.fight_view)
             if self.values[0] == "HM":
                 self.fight_view.select_type = "MonsterHeavy"
                 self.fight_view.clear_items()
-                message = f"**```arm\r\nMiHero !Fight\r\n```**\n**{interaction.user.name.upper()}** `encounters a heavy monster.`"
+                message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `encounters a heavy monster.`"
 
                 await interaction.response.edit_message(content = message, view = self.fight_view)
 

@@ -1,7 +1,7 @@
-# Features(): Static class containing features (methods) used in other game modules.
+# Static class containing features (methods) used in game modules.
 class Features():
-    # bar(): Returns a bar in string format based on percentage value of act_value to max_value. 
-    async def get_bar(act_val, max_val):
+    # Returns a progress bar in string format based on percentage value of act_value to max_value. 
+    async def get_bar(act_val, max_val) -> str:
         bar_val = max_val / 20
         bars = round(act_val / bar_val)
         bar_GUI = ["....................", 
@@ -33,15 +33,3 @@ class Features():
         else: ret_bars = bar_GUI[20]
 
         return ret_bars
-    
-    # center_string(): Centers a string based on max chars, returns centered string.
-    async def center_string(string: str, max_chars: int) -> str:
-        str_length = len(string)
-        if str_length >= max_chars:
-            return string
-        leftover_chars = max_chars - str_length - 2
-        left_spaces = int(leftover_chars / 2)
-        right_spaces = leftover_chars - left_spaces
-        empty_space = " "
-
-        return f"-{left_spaces * empty_space}{string}{right_spaces * empty_space}-"

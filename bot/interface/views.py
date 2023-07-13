@@ -1,4 +1,3 @@
-from bot.interface.buttons import GreenButton, RedButton
 from discord.ui import View
 from users.users import User
 import discord
@@ -20,6 +19,7 @@ class FightView(View):
     
 class ButtonView(View):
     def __init__(self, fight_view: FightView, user: User):
+        from bot.interface.buttons import GreenButton, RedButton
         super().__init__()
         self.add_item(GreenButton(fight_view = fight_view, user = user))
         self.add_item(RedButton(fight_view = fight_view, user = user))

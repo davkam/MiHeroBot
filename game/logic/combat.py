@@ -1,10 +1,9 @@
-#!/usr/bin/python
 # -*- coding: ISO-8859-15 -*-
 
+from extras.string_manager import StringManager
 from game.features.features import Features
 from game.objects.characters import Character, Monster, Player
 from images.image_links import ImageLinks
-import asyncio
 import random
 
 class Combat():
@@ -36,8 +35,8 @@ class Combat():
             self.log += [pvp_idle]
             self.log.append([objA.name, objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
             self.log.append([objB.name, objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
-            self.log.append([f"WEP: {objA.weapon.weapon_class.name.upper()}\n(LVL.{objA.weapon.attack.get_lvl()})", f"ARM: {objA.armor.armor_class.name.upper()}\n(LVL.{objA.armor.defense.get_lvl()})"])
-            self.log.append([f"WEP: {objB.weapon.weapon_class.name.upper()}\n(LVL.{objB.weapon.attack.get_lvl()})", f"ARM: {objB.armor.armor_class.name.upper()}\n(LVL.{objB.armor.defense.get_lvl()})"])
+            self.log.append([f"WEP: {objA.weapon.weapon_class.name.upper()} \n   (LVL.{objA.weapon.attack.get_lvl()})", f"ARM: {objA.armor.armor_class.name.upper()} \n   (LVL.{objA.armor.defense.get_lvl()})"])
+            self.log.append([f"WEP: {objB.weapon.weapon_class.name.upper()} \n   (LVL.{objB.weapon.attack.get_lvl()})", f"`ARM: {objB.armor.armor_class.name.upper()} \n   (LVL.{objB.armor.defense.get_lvl()})`"])
         else:
             objA: Player = self.objA.character
             objB: Monster = self.objB.character
@@ -45,7 +44,7 @@ class Combat():
             self.log += [pvm_idle]
             self.log.append([objA.name, objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
             self.log.append([objB.name, objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
-            self.log.append([f"WEP: {objA.weapon.weapon_class.name.upper()}\n(LVL.{objA.weapon.attack.get_lvl()})", f"ARM: {objA.armor.armor_class.name.upper()}\n(LVL.{objA.armor.defense.get_lvl()})"])
+            self.log.append([f"WEP: {objA.weapon.weapon_class.name.upper()} \n   (LVL.{objA.weapon.attack.get_lvl()})", f"ARM: {objA.armor.armor_class.name.upper()} \n   (LVL.{objA.armor.defense.get_lvl()})"])
             self.log.append([f"MONSTER: {objB.monster_class.name.upper()}", ""])
 
     async def main_combat(self):
@@ -74,7 +73,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objB.hp -= dmg
 
-                    hit_log = await Features.center_string(string = f"CRITICAL HIT: {dmg}", max_chars = 22)
+                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 22)
                 else:
                     rng = random.randint(0, 500) / 1000
                     hit = self.objA.base_att * rng
@@ -85,7 +84,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objB.hp -= dmg
 
-                    hit_log = await Features.center_string(string = f"BLUNT HIT: {dmg}", max_chars = 22)
+                    hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 22)
 
                 hp_barA = await Features.get_bar(self.objA.hp, self.objA.max_hp)
                 hp_barB = await Features.get_bar(self.objB.hp, self.objB.max_hp)
@@ -114,7 +113,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objA.hp -= dmg
 
-                    hit_log = await Features.center_string(string = f"CRITICAL HIT: {dmg}", max_chars = 22)
+                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 22)
                 else:
                     rng = random.randint(0, 500) / 1000
                     hit = self.objB.base_att * rng
@@ -125,7 +124,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objA.hp -= dmg
 
-                    hit_log = await Features.center_string(string = f"BLUNT HIT: {dmg}", max_chars = 22)
+                    hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 22)
 
                 hp_barA = await Features.get_bar(self.objA.hp, self.objA.max_hp)
                 hp_barB = await Features.get_bar(self.objB.hp, self.objB.max_hp)
@@ -155,8 +154,8 @@ class Combat():
                 loser: Player = self.objA.character
 
                 self.log += [pvp_deadA]
-                w_name = await Features.center_string(string = winner.name, max_chars = 22)
-                l_name = await Features.center_string(string = loser.name, max_chars = 22)
+                w_name = await StringManager.center_string(string = winner.name, max_length = 22)
+                l_name = await StringManager.center_string(string = loser.name, max_length = 22)
                 self.log.append([w_name, l_name])
 
                 if loser.gold > 0:
@@ -176,8 +175,8 @@ class Combat():
                 loser: Player = self.objA.character
 
                 self.log += [pvm_deadA]
-                w_name = await Features.center_string(string = winner.name, max_chars = 22)
-                l_name = await Features.center_string(string = loser.name, max_chars = 22)
+                w_name = await StringManager.center_string(string = winner.name, max_length = 22)
+                l_name = await StringManager.center_string(string = loser.name, max_length = 22)
                 self.log.append([w_name, l_name])
                 
                 if loser.gold > 0:
@@ -194,8 +193,8 @@ class Combat():
                 loser: Player = self.objB.character
 
                 self.log += [pvp_deadB]
-                w_name = await Features.center_string(string = winner.name, max_chars = 22)
-                l_name = await Features.center_string(string = loser.name, max_chars = 22)
+                w_name = await StringManager.center_string(string = winner.name, max_length = 22)
+                l_name = await StringManager.center_string(string = loser.name, max_length = 22)
                 self.log.append([w_name, l_name])
                 
                 if loser.gold > 0:
@@ -215,8 +214,8 @@ class Combat():
                 loser: Monster = self.objB.character
 
                 self.log += [pvm_deadB]
-                w_name = await Features.center_string(string = winner.name, max_chars = 22)
-                l_name = await Features.center_string(string = loser.name, max_chars = 22)
+                w_name = await StringManager.center_string(string = winner.name, max_length = 22)
+                l_name = await StringManager.center_string(string = loser.name, max_length = 22)
                 self.log.append([w_name, l_name])
                 self.log += [f"**{winner.name}** `looks around to find something valuable...`"]
                 # if loser.monster_class == MonsterClass.Light:
