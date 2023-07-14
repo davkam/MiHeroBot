@@ -1,5 +1,5 @@
-# Static class containing features (methods) used in game modules.
-class Features():
+# Static class containing methods used in game modules.
+class Additions():
     # Returns a progress bar in string format based on percentage value of act_value to max_value. 
     async def get_bar(act_val, max_val) -> str:
         bar_val = max_val / 20
@@ -33,3 +33,15 @@ class Features():
         else: ret_bars = bar_GUI[20]
 
         return ret_bars
+    
+    # Defines a custom sorting key for item object, used in sorting inventory list.
+    def item_sortkey(item):
+        from game.objects.items import Weapon, Armor, Potion, Kit, Decorator
+
+        # Assigns a key based on type of item.
+        if isinstance(item, Weapon): return 0
+        elif isinstance(item, Armor): return 1
+        elif isinstance(item, Potion): return 2
+        elif isinstance(item, Kit): return 3
+        elif isinstance(item, Decorator): return 4
+        else: return 5

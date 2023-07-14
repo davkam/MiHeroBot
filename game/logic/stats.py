@@ -1,4 +1,4 @@
-from game.features.features import Features
+from game.features.additions import Additions
 
 class Stats():
     def __init__(self, xp: int = 100, lvl: float = 1):
@@ -29,17 +29,24 @@ class Stats():
     def update_lvl(self):
         self._lvl = round((self._xp / 100) ** (1/3), 2)
 
-    async def get_progress(self) -> str:
-        prog = self._lvl - self.get_lvl()
-        prog_bar = await Features.get_bar(act_val = prog, max_val = 100)
+    async def progress_bar(self) -> str: # TBD: REDEFINE! Not correct according to xp formula.
+        prog = (self._lvl - self.get_lvl()) * 100
+        prog_bar = await Additions.get_bar(act_val = prog, max_val = 100)
 
         return prog_bar
+    
+    async def progress_perc(self) -> int: # TBD: REDEFINE! Not correct according to xp formula.
+        prog_perc = (self._lvl - self.get_lvl()) * 100
+
+        return int(prog_perc)
 
 class Attack(Stats):
-    pass
+    def __init__(self):
+        Stats.__init__(self)
 
 class Defense(Stats):
-    pass
+    def __init__(self):
+        Stats.__init__(self)
 
 class Health(Stats):
     def __init__(self, xp: int = 100, lvl: float = 1, health: int = 100):

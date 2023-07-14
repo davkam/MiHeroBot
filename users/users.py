@@ -2,12 +2,13 @@ from game.objects.characters import Player
 
 class User():
     def __init__(self, username = None, user_id = None) -> None:
-        self.username: str = username   # Discord username (author.name).
-        self.user_id: int = user_id     # Discord userID (author.id).
-        self.player: Player = None      # Player() object.
+        self.username: str = username           # Discord username (author.name).
+        self.user_id: int = user_id             # Discord userID (author.id).
+        self.player: Player = None              # Player() object.
+        self.permit_interaction: bool = True    # Boolean, true is user is allowed interaction with bot. False if user is in e.g. fight instance. 
 
     async def new_player(self):
-        self.player = Player(self.username)
+        self.player = Player(name=self.username)
 
     async def del_player(self):
         self.player = None

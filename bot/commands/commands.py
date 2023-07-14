@@ -5,7 +5,7 @@ from bot.interface.views import FightView
 from data.database import Database
 from discord.message import Message
 from game.objects.characters import MonsterClass
-from bot.interface.embeds import FightEmbed
+from bot.interface.embeds import FightEmbed, InventoryEmbed
 from users.users import User
 
 # Commands() object containing attributes involved in executing commands. 
@@ -18,7 +18,8 @@ class Commands():
         self.user_inDb: bool = False            # Boolean, true if user exists in database (db.users).
 
     # Sets self.user to current user of self.msg instance, runs from Bot.message_respond().
-    async def set_user(self):
+    # Returns user for checking interaction permisssion.
+    async def set_user(self) -> User:
         if await self.db.contains_user(user_id = self.msg.author.id):
             self.user = await self.db.get_userbyId(user_id = self.msg.author.id)
             self.user_inDb = True
@@ -27,6 +28,8 @@ class Commands():
             self.user.user_id = self.msg.author.id
             self.user.username = self.msg.author.name
             self.user_inDb = False
+
+        return self.user
 
     # Command methods for further execution in interaction chain. 
     # NYI: Add admin commands!
@@ -52,7 +55,7 @@ class Commands():
         if self.user_inDb:
             await self.db.rem_user(user = self.user)
             await self.user.del_player()
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero `**{self.user.username.upper()}**` was deleted`.\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{self.user.username.upper()}** `was deleted`.\n`To create a new hero use command !New.`")
         else:
             await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
@@ -66,6 +69,7 @@ class Commands():
 
             # If view interaction is fulfilled, success == True.
             if fight_view.success:
+                self.user.permit_interaction = False # Sets interaction permission to false during fight simulation.
                 if fight_view.select_type == "Player":
                     log = self.user.player.fight_player(fight_view.receiver_user.player)
 
@@ -78,24 +82,24 @@ class Commands():
                         log = await self.user.player.fight_monster(monster_class = MonsterClass.Heavy)
                 else:
                     pass
+                # New FightEmbed() instance to run fight simulation in response to interaction.
+                fight_embed = FightEmbed(msg = msg, log = log)
+                await fight_embed.run_embed()
+                fight_embed = None
+                self.user.permit_interaction = True
             else:
                 await msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**`Interaction timed out!`", view = None)
-            
-            # New FightEmbed() instance to run simulation of fight in response to interaction.
-            fight_embed = FightEmbed(msg = msg, log = log)
-            await fight_embed.run_embed()
 
-            # Removing object reference for garbage collection. (NOT REQUIRED!)
-            fight_embed = None
             fight_view = None
         else:
             await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
     async def inventory(self):
         if self.user_inDb:
-            pass
+            inventory_embed = InventoryEmbed(msg=self.msg, user=self.user)
+            await inventory_embed.run_embed()
         else:
-            pass
+            await self.msg.channel.send(content="**```arm\r\nMiHero !Inventory\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
     async def trade(self):
         if self.user_inDb:

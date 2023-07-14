@@ -54,7 +54,9 @@ class Bot():
         if msg.content.startswith("!"):
             # New Commands() instance initialized with current discord.message.Message() and current User().
             commands = Commands(msg)
-            await commands.set_user()
+            user = await commands.set_user()
+
+            if user.permit_interaction == False: return
 
             message = msg.content.lower()
 
