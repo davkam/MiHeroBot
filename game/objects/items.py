@@ -1,7 +1,7 @@
 from enum import Enum
 from game.logic.stats import *
-import asyncio
 import random
+import uuid
 
 class GearType(Enum):
     BRONZE = 2
@@ -22,6 +22,7 @@ class KitType(Enum):
 
 class Item():
     def __init__(self, name: str = None, value: int = None):
+        self.uuid: uuid = uuid.uuid4()
         self.name: str = name
         self.value: int = value
 
@@ -61,8 +62,25 @@ class Item():
 
         return random_item
     
-    
+    async def use_item(self, player) -> str:
+        if isinstance(self, Weapon):
+            weapon: Weapon = self
+            log = await weapon.equip_weapon(player=player)
+        elif isinstance(self, Armor):
+            armor: Armor = self
+            log = await armor.equip_armor(player=player)
+        elif isinstance(self, Potion):
+            potion: Potion = self
+            log = await potion.use_potion(player=player)
+        elif isinstance(self, Kit):
+            kit: Kit = self
+            log = await kit.use_kit(player=player)
+        elif isinstance(self, Decorator):
+            decorator: Decorator = self
+            log = await decorator.use_decorator(player=player)
 
+        return log
+    
 class Weapon(Item): # TBD: Change attack attribute name to level and type to Stats()?
     def __init__ (self, weapon_class: GearType = None, attack: Attack = None):
         Item.__init__(self)
@@ -99,8 +117,15 @@ class Weapon(Item): # TBD: Change attack attribute name to level and type to Sta
         self.attack.set_lvl(lvl=level)
         await self.set_name()
 
-    async def upgrade_weapon(self):
-        pass
+    async def equip_weapon(self, player) -> str:
+        from game.objects.characters import Player
+        player: Player = player
+
+        await player.inventory.add_item(item=player.weapon)
+        await player.inventory.rem_item(item=self)
+
+        player.weapon = self
+        return f"**{player.get_name()}** `equipped {self.name.lower()}.`"
 
     async def value_weapon(self):
         pass
@@ -141,8 +166,15 @@ class Armor(Item): # TBD: Change defense attribute name to level and type to Sta
         self.defense.set_lvl(lvl=level)
         await self.set_name()   
 
-    async def upgrade_armor(self):
-        pass
+    async def equip_armor(self, player) -> str:
+        from game.objects.characters import Player
+        player: Player = player
+
+        await player.inventory.add_item(item=player.armor)
+        await player.inventory.rem_item(item=self)
+
+        player.armor = self
+        return f"**{player.get_name()}** `equipped {self.name.lower()}.`"
 
     async def value_armor(self):
         pass
@@ -150,6 +182,7 @@ class Armor(Item): # TBD: Change defense attribute name to level and type to Sta
 class Potion(Item):
     def __init__(self, potion_type: PotionType = None, potion_quality: int = None):
         super().__init__(self)
+        self.xp_value: int 
         self.potion_type: PotionType = potion_type
         self.potion_quality: int = potion_quality   # Represents regular, super or divine potion (1, 2 or 3 respectively).
 
@@ -181,9 +214,48 @@ class Potion(Item):
 
         await self.set_name()
 
-    async def use_potion(self, player):
+    async def use_potion(self, player) -> str:
         from game.objects.characters import Player
-        pass
+        player: Player = player
+        lvl = player.lvl.get_lvl()
+
+        if self.potion_quality == 3:
+            rng = random.randint(25000, 50000)
+            xp = int(rng + (lvl ** 2) * 50)
+        elif self.potion_quality == 2:
+            rng = random.randint(10000, 25000)
+            xp = int(rng + (lvl ** 2) * 25)
+        else:
+            rng = random.randint(5000, 10000)
+            xp = int(rng + (lvl ** 2) * 10)
+        
+        if self.potion_type == PotionType.ATTACK: 
+            player.attack.add_xp(xp)
+            att_lvl = player.attack.get_lvl()
+            att_bar = await player.attack.progress_bar()
+            att_perc = await player.attack.progress_perc()
+
+            log = f"**{player.get_name()}** `used a {self.name.lower()}.`\n"
+            log += f"`ATTACK GAIN:`**`{xp}`**`points. ATTACK LVL:`**`{att_lvl}`** **{att_bar}** **`({att_perc}%)`**"
+        elif self.potion_type == PotionType.DEFENSE: 
+            player.defense.add_xp(xp)
+            def_lvl = player.defense.get_lvl()
+            def_bar = await player.defense.progress_bar()
+            def_perc = await player.defense.progress_perc()
+
+            log = f"**{player.get_name()}** `used a {self.name.lower()}.`\n"
+            log += f"`DEFENSE GAIN:`**`{xp}`**`points. DEFENSE LVL:`**`{def_lvl}`** **{def_bar}** **`({def_perc}%)`**"
+        else: 
+            player.health.add_xp(xp)
+            hp_val = player.health.get_hp()
+            hp_bar = await player.health.progress_bar()
+            hp_perc = await player.health.progress_perc()
+
+            log = f"**{player.get_name()}** `used a {self.name.lower()}.`\n"
+            log += f"`HEALTH GAIN:`**`{xp}`**`points. HEALTH:`**`{hp_val}`** **{hp_bar}** **`({hp_perc}%)`**"
+
+        await player.inventory.rem_item(item=self)
+        return log
 
     async def value_potion(self):
         pass
@@ -221,9 +293,42 @@ class Kit(Item):
 
         await self.set_name()
 
-    async def use_kit(self, player):
+    async def use_kit(self, player) -> str:
         from game.objects.characters import Player
-        pass
+        player: Player = player
+
+        if self.kit_type == KitType.WEAPON: lvl = player.weapon.attack.get_lvl()
+        else: lvl = player.armor.defense.get_lvl()
+
+        if self.kit_quality == 3:
+            rng = random.randint(25000, 50000)
+            xp = int(rng + (lvl ** 2) * 50)
+        elif self.kit_quality == 2:
+            rng = random.randint(10000, 25000)
+            xp = int(rng + (lvl ** 2) * 25)
+        else:
+            rng = random.randint(5000, 10000)
+            xp = int(rng + (lvl ** 2) * 10)
+        
+        if self.kit_type == KitType.WEAPON: 
+            player.weapon.attack.add_xp(xp)
+            wep_lvl = player.weapon.attack.get_lvl()
+            wep_bar = await player.weapon.attack.progress_bar()
+            wep_perc = await player.weapon.attack.progress_perc()
+
+            log = f"**{player.get_name()}** `used a {self.name.lower()} on {player.weapon.name.lower()}.`\n"
+            log += f"`WEAPON GAIN:`**`{xp}`**`points. WEAPON LVL:`**`{wep_lvl}`** **{wep_bar}** **`({wep_perc}%)`**"
+        else: 
+            player.armor.defense.add_xp(xp)
+            def_lvl = player.armor.defense.get_lvl()
+            def_bar = await player.armor.defense.progress_bar()
+            def_perc = await player.armor.defense.progress_perc()
+
+            log = f"**{player.get_name()}** `used a {self.name.lower()} on {player.armor.name.lower()}.`\n"
+            log += f"`ARMOR GAIN:`**`{xp}`**`points. ARMOR LVL:`**`{def_lvl}`** **{def_bar}** **`({def_perc}%)`**"
+
+        await player.inventory.rem_item(item=self)
+        return log
 
     async def value_kit(self):
         pass
@@ -239,7 +344,7 @@ class Decorator(Item):
         self.tier: int = tier   # Represents decorator tiers (1, 2 or 3)
 
     async def set_name(self):
-        self.name = f"TIER {self.tier}. DECORATOR: {self.emoji}"
+        self.name = f"TIER {self.tier}. DECORATOR {self.emoji}"
 
     async def randomize_decorator(self, decorator_index: int):
         # if decorator_index == 3:
@@ -262,12 +367,31 @@ class Decorator(Item):
         #     last_index = len(Decorator.tier3_decorators) - 1
         #     rng = random.randint(0, last_index)
         #     self.emoji = Decorator.tier3_decorators[rng]
+        
+        #TESTCODE
+        rng = random.randint(1, 3)
+        if rng == 1: 
+            self.emoji = "\U0001F601"
+            self.tier = 1
+        elif rng == 2: 
+            self.emoji = "\U0001F602"
+            self.tier = 2
+        else: 
+            self.emoji = "\U0001F603"
+            self.tier = 3
 
         await self.set_name()
 
     async def use_decorator(self, player):
         from game.objects.characters import Player
-        pass
+        player: Player = player
+
+        if player.decorator != None:
+            await player.inventory.add_item(item=player.decorator)
+        await player.inventory.rem_item(item=self)
+
+        player.decorator = self
+        return f"**{player.get_name()}** `equipped {self.name.lower()}.`"
 
     async def value_decorator(self):
         pass

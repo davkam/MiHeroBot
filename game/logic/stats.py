@@ -23,11 +23,16 @@ class Stats():
         return int(self._lvl)
     
     def set_lvl(self, lvl: float):
+        if lvl >= 100: 
+            self._lvl = 100
+            return
         self._lvl = round(lvl, 2)
         self.update_xp()
     
     def update_lvl(self):
-        self._lvl = round((self._xp / 100) ** (1/3), 2)
+        lvl = round((self._xp / 100) ** (1/3), 2)
+        if lvl >= 100: self._lvl = 100
+        else: self._lvl = lvl
 
     async def progress_bar(self) -> str: # TBD: REDEFINE! Not correct according to xp formula.
         prog = (self._lvl - self.get_lvl()) * 100
@@ -62,6 +67,10 @@ class TotalLevel(Stats):
         self._attack: Attack = attack
         self._defense: Defense = defense
         self._health: Health = health
+
+    def get_lvl(self):
+        self.update_lvl()
+        return int(self._lvl)
 
     def update_lvl(self):        
         self._lvl = round((self._attack._lvl + self._defense._lvl + self._health._lvl) / 3, 2)

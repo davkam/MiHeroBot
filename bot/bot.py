@@ -62,28 +62,32 @@ class Bot():
 
             if message.startswith("!help"):
                 await commands.help()
-            if message.startswith("!about"):
+            elif message.startswith("!about"):
                 await commands.about()
-            if message.startswith("!new"):
+            elif message.startswith("!new"):
                 await commands.new()
-            if message.startswith("!delete"):
+            elif message.startswith("!delete"):
                 await commands.delete()
-            if message.startswith("!fight"):
+            elif message.startswith("!fight"):
                 await commands.fight()
-            if message.startswith("!inv"):
+            elif message.startswith("!inv"):
                 await commands.inventory()
-            if message.startswith("!trade"):
+            elif message.startswith("!trade"):
                 await commands.trade()
-            if message.startswith("!shop"):
+            elif message.startswith("!shop"):
                 await commands.shop()
-            if message.startswith("!stats"):
+            elif message.startswith("!stats"):
                 await commands.stats()
-            if message.startswith("!score"):
+            elif message.startswith("!score"):
                 await commands.score()
-            if message.startswith("!save"):
+            elif message.startswith("!save"):
                 await commands.save()
-            if message.startswith("!load"):
+            elif message.startswith("!load"):
                 await commands.load()
+            elif message.startswith("!test"):
+                await commands.test()
+            else:
+                pass
 
             # Removing object reference for garbage collection. (NOT REQUIRED!)
             commands = None

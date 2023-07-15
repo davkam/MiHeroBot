@@ -1,7 +1,6 @@
-#!/usr/bin/python
 # -*- coding: ISO-8859-15 -*-
 
-from bot.interface.views import FightView
+from bot.interface.views import FightView, InventoryView
 from data.database import Database
 from discord.message import Message
 from game.objects.characters import MonsterClass
@@ -81,7 +80,9 @@ class Commands():
                     elif fight_view.select_type == "MonsterHeavy":
                         log = await self.user.player.fight_monster(monster_class = MonsterClass.Heavy)
                 else:
-                    pass
+                    # TBD: More options!
+                    pass 
+
                 # New FightEmbed() instance to run fight simulation in response to interaction.
                 fight_embed = FightEmbed(msg = msg, log = log)
                 await fight_embed.run_embed()
@@ -96,8 +97,43 @@ class Commands():
 
     async def inventory(self):
         if self.user_inDb:
-            inventory_embed = InventoryEmbed(msg=self.msg, user=self.user)
+            embed_msg = await self.msg.channel.send(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**")
+
+            inventory_embed = InventoryEmbed(msg=embed_msg, user=self.user)
+            inventory_view = InventoryView(user=self.user)
+
             await inventory_embed.run_embed()
+            view_msg = await self.msg.channel.send(view=inventory_view)
+
+            # Waits for view interaction to finish (by timing out or calling stop) to continue with response.
+            await inventory_view.wait()
+            # Empty message to edit as a response.
+            response_msg = await self.msg.channel.send(content="\u200b")
+
+            run_inv = True
+            while run_inv:
+                if inventory_view.success and inventory_view.close_view == False:
+                    if inventory_view.response != None:
+                        await response_msg.edit(content=inventory_view.response)
+
+                    inventory_view = None
+                    inventory_view = InventoryView(user=self.user)
+
+                    await inventory_embed.run_embed()
+                    await view_msg.edit(view=inventory_view)
+                elif inventory_view.success and inventory_view.close_view:
+                    run_inv = False
+
+                    await response_msg.delete()
+                    await embed_msg.edit(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**", embed=None)      
+                else:
+                    run_inv = False
+
+                    await response_msg.delete()
+                    await embed_msg.edit(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**", embed=None)
+                    await view_msg.edit(content=f"`Interaction timed out, inventory closed!`", view=None)
+                
+                await inventory_view.wait()
         else:
             await self.msg.channel.send(content="**```arm\r\nMiHero !Inventory\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
@@ -127,3 +163,12 @@ class Commands():
 
     async def save(self):
         pass
+
+    async def test(self):
+        if self.user_inDb:
+            await self.user.player.inventory.add_slots(quantity=40)
+            log = await self.user.player.loot_generator(loot_index=3)
+
+            await self.msg.channel.send(content=log)
+        else:
+            pass

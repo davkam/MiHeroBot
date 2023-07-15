@@ -107,8 +107,15 @@ class Player(Character):
         Character.__init__(self, name = name.upper(), attack = attack, defense = defense, health = health)  
         self.weapon: Weapon = Weapon()
         self.armor: Armor = Armor()
+        self.decorator: Decorator = None
         self.inventory: Inventory = Inventory()
         self.gold: int = gold
+
+    def get_name(self):
+        if self.decorator != None:
+            return f"{self.decorator.emoji} {self.name.upper()}"
+        else:
+            return self.name.upper()
 
     async def fight_player(self, player) -> str:
         from game.logic.combat import Combat
@@ -137,10 +144,6 @@ class Player(Character):
         return log
     
     async def xp_gainer(self, xp_index: int) -> str:
-        # attack = self.attack.get_xp()
-        # defense = self.defense.get_xp()
-        # health = self.health.get_xp()
-
         # Sets rng variables according to xp index.
         if xp_index == 1: min = 1000; max = 2500; multiplier = 10
         elif xp_index == 2: min = 2500; max = 5000; multiplier = 25
@@ -171,7 +174,7 @@ class Player(Character):
         lvl_perc = await self.lvl.progress_perc()
 
         # Sets xp gainer log for return.
-        log = f"**```arm\r\n{self.name} !XPGainer\r\n```**"
+        log = f"**```arm\r\n{self.get_name()} !XPGainer\r\n```**"
         log += f"||||| `ATTACK GAIN:`**`{att_gain}`**`experience points. ATTACK:`**`{self.attack.get_lvl()}`** **{att_bar}** **`({att_perc}%)`**\n"
         log += f"||||| `DEFENSE GAIN:`**`{def_gain}`**`experience points. DEFENSE:`**`{self.defense.get_lvl()}`** **{def_bar}** **`({def_perc}%)`**\n"
         log += f"||||| `HEALTH GAIN:`**`{hp_gain}`**`experience points. HEALTH:`**`{self.health.get_hp()}`** **{hp_bar}** **`({hp_perc}%)`**\n"
@@ -190,11 +193,11 @@ class Player(Character):
         elif loot_index == 2:
             gold = random.randint(1000, 2000)
             loot_roll = random.randint(2, 4)
-            loot_gear = 2
+            loot_gear = random.randint(1, 2)
         elif loot_index == 3:
             gold = random.randint(2000, 4000)
             loot_roll = random.randint(3, 5)
-            loot_gear = 3
+            loot_gear = random.randint(1, 3)
 
         self.gold += gold
         attack = self.attack.get_lvl()
