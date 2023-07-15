@@ -231,6 +231,7 @@ class Potion(Item):
         
         if self.potion_type == PotionType.ATTACK: 
             player.attack.add_xp(xp)
+            player.lvl.update_lvl()
             att_lvl = player.attack.get_lvl()
             att_bar = await player.attack.progress_bar()
             att_perc = await player.attack.progress_perc()
@@ -239,6 +240,7 @@ class Potion(Item):
             log += f"`ATTACK GAIN:`**`{xp}`**`points. ATTACK LVL:`**`{att_lvl}`** **{att_bar}** **`({att_perc}%)`**"
         elif self.potion_type == PotionType.DEFENSE: 
             player.defense.add_xp(xp)
+            player.lvl.update_lvl()
             def_lvl = player.defense.get_lvl()
             def_bar = await player.defense.progress_bar()
             def_perc = await player.defense.progress_perc()
@@ -247,6 +249,7 @@ class Potion(Item):
             log += f"`DEFENSE GAIN:`**`{xp}`**`points. DEFENSE LVL:`**`{def_lvl}`** **{def_bar}** **`({def_perc}%)`**"
         else: 
             player.health.add_xp(xp)
+            player.lvl.update_lvl()
             hp_val = player.health.get_hp()
             hp_bar = await player.health.progress_bar()
             hp_perc = await player.health.progress_perc()

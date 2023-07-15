@@ -97,12 +97,12 @@ class InventoryEmbed(discord.Embed):
         if decorators == "": decorators = "`NONE`"
 
         self.clear_fields()
-        self.add_field(name="WEAPONS", value=f"{weapons}", inline=True)
-        self.add_field(name="GOLD", value=f"`{self.user.player.gold} COINS`", inline=True)
-        self.add_field(name="ARMORS", value=f"{armors}", inline=True)
-        self.add_field(name="POTIONS", value=f"{potions}", inline=True)
-        self.add_field(name="KITS", value=f"{kits}", inline=True)
-        self.add_field(name="DECORATORS", value=f"{decorators}", inline=True)
-        self.set_footer(text=f"INVENTORY: {inventory}")
+        self.add_field(name="\U00002694\uFE0F  WEAPONS", value=f"{weapons}", inline=True)
+        self.add_field(name="\U0001F4B0  GOLD", value=f"`{self.user.player.gold} COINS`", inline=True)
+        self.add_field(name="\U0001F6E1  ARMORS", value=f"{armors}", inline=True)
+        self.add_field(name="\U00002697\uFE0F  POTIONS", value=f"{potions}", inline=True)
+        self.add_field(name="\U0001F6E0  KITS", value=f"{kits}", inline=True)
+        self.add_field(name="\U0001F642  DECORATORS", value=f"{decorators}", inline=True)
+        self.set_footer(text=f"\U0001F4BC  INVENTORY: {inventory}")
 
         await self.msg.edit(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**", embed=self)

@@ -101,17 +101,17 @@ class MonsterSelect(Select): # TBD: Display player name.
 
 class InventorySelect(Select):
     def __init__(self, inventory_view: InventoryView):
-        super().__init__(placeholder="Use Item!")
+        super().__init__(placeholder="\U0001F9F0 Use Item!")
         self.inventory_view: InventoryView = inventory_view
         self.set_options()
 
     def set_options(self):
-        self.add_option(label="EQUIP WEAPON", value="EW", description="Equip a weapon from inventory.")
-        self.add_option(label="EQUIP ARMOR", value="EA", description="Equip an armor from inventory.")
-        self.add_option(label="USE POTION", value="UP", description="Use a potion from inventory.")
-        self.add_option(label="USE KIT", value="UK", description="Use a kit from inventory.")
-        self.add_option(label="USE DECORATOR", value="UD", description="Use a decorator from inventory.")
-        self.add_option(label="CLOSE INVENTORY", value="CI", description="Closes inventory.")
+        self.add_option(label="\U00002694\uFE0F EQUIP WEAPON", value="EW", description="Equip a weapon from inventory.")
+        self.add_option(label="\U0001F6E1\uFE0F EQUIP ARMOR", value="EA", description="Equip an armor from inventory.")
+        self.add_option(label="\U00002697\uFE0F USE POTION", value="UP", description="Use a potion from inventory.")
+        self.add_option(label="\U0001F6E0\uFE0F USE KIT", value="UK", description="Use a kit from inventory.")
+        self.add_option(label="\U0001F642 USE DECORATOR", value="UD", description="Use a decorator from inventory.")
+        self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Closes inventory.")
 
     async def callback(self, interaction: Interaction):
         if await self.inventory_view.interaction_check(interaction=interaction):
@@ -165,22 +165,22 @@ class InventorySelect(Select):
             await interaction.response.defer()
 class WeaponSelect(Select):
     def __init__(self, inventory_view: InventoryView):
-        super().__init__(placeholder="Equip Weapon!")
+        super().__init__(placeholder="\U00002694\uFE0F Equip Weapon!")
         self.inventory_view: InventoryView = inventory_view
 
     async def set_options(self):
         weapons: list[Weapon] = await self.inventory_view.user.player.inventory.get_weapons(string_format=False)
         
         if weapons == None:
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
             return
         else:
             for weapon in weapons:
                 self.add_option(label=weapon.name, value=str(weapon.uuid), description=f"Equip {weapon.name.lower()}.")
             
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
 
     async def callback(self, interaction: Interaction):
         if await self.inventory_view.interaction_check(interaction=interaction):
@@ -212,22 +212,22 @@ class WeaponSelect(Select):
 
 class ArmorSelect(Select):
     def __init__(self, inventory_view: InventoryView):
-        super().__init__(placeholder="Equip Armor!")
+        super().__init__(placeholder="\U0001F6E1\uFE0F Equip Armor!")
         self.inventory_view: InventoryView = inventory_view
 
     async def set_options(self):
         armors: list[Armor] = await self.inventory_view.user.player.inventory.get_armors(string_format=False)
         
         if armors == None:
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
             return
         else:
             for armor in armors:
                 self.add_option(label=armor.name, value=str(armor.uuid), description=f"Equip {armor.name.lower()}.")
 
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.") 
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.") 
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
 
     async def callback(self, interaction: Interaction):
         if await self.inventory_view.interaction_check(interaction=interaction):
@@ -259,22 +259,22 @@ class ArmorSelect(Select):
 
 class PotionSelect(Select):
     def __init__(self, inventory_view: InventoryView):
-        super().__init__(placeholder="Use Potion!")
+        super().__init__(placeholder="\U00002697\uFE0F Use Potion!")
         self.inventory_view: InventoryView = inventory_view
 
     async def set_options(self):
         potions: list[Potion] = await self.inventory_view.user.player.inventory.get_potions(string_format=False)
         
         if potions == None:
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
             return
         else:
             for potion in potions:
                 self.add_option(label=potion.name, value=str(potion.uuid), description=f"Use {potion.name.lower()}.")
 
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")  
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")  
 
     async def callback(self, interaction: Interaction):
         if await self.inventory_view.interaction_check(interaction=interaction):
@@ -306,22 +306,22 @@ class PotionSelect(Select):
 
 class KitSelect(Select):
     def __init__(self, inventory_view: InventoryView):
-        super().__init__(placeholder="Use Kit!")
+        super().__init__(placeholder="\U0001F6E0\uFE0F Use Kit!")
         self.inventory_view: InventoryView = inventory_view
 
     async def set_options(self):
         kits: list[Kit] = await self.inventory_view.user.player.inventory.get_kits(string_format=False)
 
         if kits == None:
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
             return
         else:
             for kit in kits:
                 self.add_option(label=kit.name, value=str(kit.uuid), description=f"Use {kit.name.lower()}.")
             
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")  
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")  
 
     async def callback(self, interaction: Interaction):
         if await self.inventory_view.interaction_check(interaction=interaction):
@@ -353,22 +353,22 @@ class KitSelect(Select):
 
 class DecoratorSelect(Select):
     def __init__(self, inventory_view: InventoryView):
-        super().__init__(placeholder="Use Decorator!")
+        super().__init__(placeholder="\U0001F642 Use Decorator!")
         self.inventory_view: InventoryView = inventory_view
 
     async def set_options(self):
         decorators: list[Decorator] = await self.inventory_view.user.player.inventory.get_decorators(string_format=False)
 
         if decorators == None:
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")
             return
         else:
             for decorator in decorators:
                 self.add_option(label=decorator.name, value=str(decorator.uuid), description=f"Use {decorator.name.lower()}.")
             
-            self.add_option(label="GO BACK", value="GB", description="Go back to main.")
-            self.add_option(label="CLOSE INVENTORY", value="CI", description="Close inventory.")  
+            self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
+            self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")  
 
     async def callback(self, interaction: Interaction):
         if await self.inventory_view.interaction_check(interaction=interaction):
