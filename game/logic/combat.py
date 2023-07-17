@@ -73,7 +73,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objB.hp -= dmg
 
-                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 20)
+                    hit_log = await StringManager.center_string(string = f"CRIT HIT: {dmg}", max_length = 20)
                 else:
                     rng = random.randint(0, 500) / 1000
                     hit = self.objA.base_att * rng
@@ -113,7 +113,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objA.hp -= dmg
 
-                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 20)
+                    hit_log = await StringManager.center_string(string = f"CRIT HIT: {dmg}", max_length = 20)
                 else:
                     rng = random.randint(0, 500) / 1000
                     hit = self.objB.base_att * rng
