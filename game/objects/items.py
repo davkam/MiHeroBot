@@ -36,25 +36,25 @@ class Item():
                 random_item = Weapon()
                 await random_item.randomize_weapon(weapon_index=item_index, avg_stats=avg_stats)
                 return random_item
-            else: # rng == 2:
+            else:
                 random_item = Armor()
                 await random_item.randomize_armor(armor_index=item_index, avg_stats=avg_stats)
                 return random_item
         
-        if item_index == 1 or item_index == 2:
+        if item_index == 1:
             rng = random.randint(1, 2)
             if rng == 1:
                 random_item = Potion()
                 await random_item.randomize_potion(potion_index=item_index)
-            else: # rng == 2:
+            else:
                 random_item = Kit()
                 await random_item.randomize_kit(item_index)
-        else: # item_index == 3:
+        else:
             rng = random.randint(0, 100)
-            if rng < 45:
+            if rng < 40:
                 random_item = Potion()
                 await random_item.randomize_potion(potion_index=item_index)
-            elif rng >= 45 and rng < 90:
+            elif rng >= 40 and rng < 80:
                 random_item = Kit()
                 await random_item.randomize_kit(kit_index=item_index)
             else:
@@ -347,7 +347,9 @@ class Decorator(Item):
         self.name = f"TIER {self.tier}. DECORATOR {self.emoji}"
 
     async def randomize_decorator(self, decorator_index: int):
-        if decorator_index == 3:
+        if decorator_index == 2:
+            varA = 0; varB = 10
+        elif decorator_index == 3:
             varA = 10; varB = 25
 
         rng = random.randint(0, 100)

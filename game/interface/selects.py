@@ -1,8 +1,7 @@
-from typing import Any
-from discord.interactions import Interaction
-from bot.interface.views import FightView, FightButtonView, InventoryView
 from data.database import Database
+from discord.interactions import Interaction
 from discord.ui import Select
+from game.interface.views import FightView, FightButtonView, InventoryView
 from game.objects.items import Item, Weapon, Armor, Potion, Kit, Decorator
 from users.users import User
 import discord
@@ -35,7 +34,7 @@ class FightSelect(Select):
         else:
             await interaction.response.defer()
 
-class PlayerSelect(Select): # TBD: Display player name.
+class PlayerSelect(Select):
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder = "\U0001F642 Select Player!")
         self.fight_view: FightView = fight_view
@@ -55,14 +54,14 @@ class PlayerSelect(Select): # TBD: Display player name.
             self.fight_view.receiver_user: User = await db.get_userbyId(user_id = id)
 
             button_view = FightButtonView(fight_view = self.fight_view, user = self.fight_view.receiver_user)
-            message = f"**```arm\r\nMiHero !Fight\r\n```** **{str(interaction.user).upper()}** `challenges` **{self.fight_view.receiver_user.username.upper()}** `to a battle.`"
+            message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.fight_view.sender_user.player.get_name()}** `challenges` **{self.fight_view.receiver_user.player.get_name()}** `to a battle.`"
 
             await interaction.response.edit_message(content = message, view = button_view)
         else:
             await interaction.response.defer()
 
 class MonsterSelect(Select): # TBD: Display player name.
-    from bot.interface.views import FightView
+    from game.interface.views import FightView
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder = "\U0001F47E Select Monster!")
         self.fight_view: FightView = fight_view
@@ -78,19 +77,19 @@ class MonsterSelect(Select): # TBD: Display player name.
             if self.values[0] == "LM":
                 self.fight_view.select_type = "MonsterLight"
                 self.fight_view.clear_items()
-                message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `encounters a light monster.`"
+                message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.fight_view.sender_user.player.get_name()}** `encounters a light monster.`"
 
                 await interaction.response.edit_message(content = message, view = self.fight_view)
             if self.values[0] == "MM":
                 self.fight_view.select_type = "MonsterMedium"
                 self.fight_view.clear_items()
-                message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `encounters a medium monster.`"
+                message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.fight_view.sender_user.player.get_name()}** `encounters a medium monster.`"
 
                 await interaction.response.edit_message(content = message, view = self.fight_view)
             if self.values[0] == "HM":
                 self.fight_view.select_type = "MonsterHeavy"
                 self.fight_view.clear_items()
-                message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `encounters a heavy monster.`"
+                message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.fight_view.sender_user.player.get_name()}** `encounters a heavy monster.`"
 
                 await interaction.response.edit_message(content = message, view = self.fight_view)
 

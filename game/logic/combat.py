@@ -35,7 +35,7 @@ class Combat():
             self.log += [pvm_idle]
             self.log.append([objA.get_name(), objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
             self.log.append([objB.get_name(), objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
-            self.log.append([f"\U0001F5E1\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
+            self.log.append([f"\U00002694\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
             self.log.append([f"\U0001F47E MONSTER: {objB.monster_class.name.upper()}", ""])
         else:
             objA: Player = self.objA.character
@@ -44,8 +44,8 @@ class Combat():
             self.log += [pvp_idle]
             self.log.append([objA.get_name(), objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
             self.log.append([objB.get_name(), objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
-            self.log.append([f"\U0001F5E1\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
-            self.log.append([f"\U0001F5E1 WEAPON:\nLVL.{objB.weapon.attack.get_lvl()} {objB.weapon.weapon_class.name}", f"`\U0001F6E1\uFE0F ARMOR:\nLVL.{objB.armor.defense.get_lvl()} {objB.armor.armor_class.name.upper()}`"])
+            self.log.append([f"\U00002694\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
+            self.log.append([f"\U00002694\uFE0F WEAPON:\nLVL.{objB.weapon.attack.get_lvl()} {objB.weapon.weapon_class.name}", f"`\U0001F6E1\uFE0F ARMOR:\nLVL.{objB.armor.defense.get_lvl()} {objB.armor.armor_class.name.upper()}`"])
 
     async def main_combat(self):
         pvp_hitA = self.images[1]
@@ -213,7 +213,7 @@ class Combat():
                 self.log += [f"**{winner.get_name()}** `looks around and steals` **{gold}** `gold from` **{loser.get_name()}**"]
             else:
                 # TBD: Code to add/remove weapon.
-                self.log += [f"**{winner.get_name()}** `looks around and finds no gold.`\n**{winner.name}** `takes` **{loser.get_name()}'s** `weapon instead.`"]
+                self.log += [f"**{winner.get_name()}** `looks around and finds no gold.`\n**{winner.get_name()}** `takes` **{loser.get_name()}'s** `weapon instead.`"]
             self.log += ["NONE"]
             self.log += ["NONE"]
         else: # type(winner) == Monster and type(loser) == Player.

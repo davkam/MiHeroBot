@@ -1,13 +1,11 @@
 # -*- coding: ISO-8859-15 -*-
 
-from bot.interface.views import FightView, InventoryView
 from data.database import Database
 from discord.message import Message
 from game.objects.characters import MonsterClass
-from bot.interface.embeds import FightEmbed, InventoryEmbed
+from game.interface.embeds import FightEmbed, InventoryEmbed
+from game.interface.views import FightView, InventoryView
 from users.users import User
-
-import discord
 
 # Commands() object containing attributes and methods involved in further executing the command chain. 
 # Instance instatiated at Bot.message_respond() and indirectly responds to an event "on_message()" (at main.py).
@@ -75,7 +73,7 @@ class Commands():
             if fight_view.success:
                 self.user.permit_interaction = False # Sets interaction permission to false during fight simulation.
                 if fight_view.select_type == "Player":
-                    log = self.user.player.fight_player(fight_view.receiver_user.player)
+                    log = await self.user.player.fight_player(fight_view.receiver_user.player)
 
                 elif fight_view.select_type.startswith("Monster"):
                     if fight_view.select_type == "MonsterLight":

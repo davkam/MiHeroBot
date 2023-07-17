@@ -1,9 +1,9 @@
-from bot.interface.views import FightView
 from discord.ui import Button
+from game.interface.views import FightView
 from users.users import User
 import discord
 
-class GreenButton(Button): # TBD: Display player name.
+class GreenButton(Button):
     def __init__(self, fight_view: FightView, user: User):
         super().__init__(label = "ACCEPT", style = discord.ButtonStyle.green)
         self.fight_view: FightView = fight_view
@@ -12,7 +12,7 @@ class GreenButton(Button): # TBD: Display player name.
     async def callback(self, interaction: discord.Interaction):
         if interaction.user.id == self.user.user_id:
             self.fight_view.clear_items()
-            message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `accepts the challenge and prepares for battle...`"
+            message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.user.player.get_name()}** `accepts the challenge and prepares for battle...`"
 
             await interaction.response.edit_message(content = message, view = self.fight_view)
 
@@ -22,7 +22,7 @@ class GreenButton(Button): # TBD: Display player name.
         else:
             await interaction.response.defer()
 
-class RedButton(Button): # TBD: Display player name.
+class RedButton(Button):
     def __init__(self, fight_view: FightView, user: User):
         super().__init__(label = "DECLINE", style = discord.ButtonStyle.red)
         self.fight_view: FightView = fight_view
@@ -31,7 +31,7 @@ class RedButton(Button): # TBD: Display player name.
     async def callback(self, interaction: discord.Interaction):
         if interaction.user.id == self.user.user_id:
             self.fight_view.clear_items()
-            message = f"**```arm\r\nMiHero !Fight\r\n```** **{interaction.user.name.upper()}** `declines the challenge and runs away!`"
+            message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.user.player.get_name()}** `declines the challenge and runs away!`"
 
             await interaction.response.edit_message(content = message, view = self.fight_view)
             
