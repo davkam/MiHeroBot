@@ -8,6 +8,7 @@ bot/interface/__pycache__
 bot/token/__pycache__
 data/__pycache__
 extras/__pycache__
+game/decorators/__pycache__
 game/features/__pycache__
 game/logic/__pycache__
 game/objects/__pycache__

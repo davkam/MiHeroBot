@@ -2,6 +2,7 @@ import discord
 from .commands.commands import Commands
 from data.database import Database
 from discord.message import Message
+from game.decorators.decorators import DecoratorList
 from images.image_links import ImageLinks
 from .token.token import Token
 
@@ -31,6 +32,7 @@ class Bot():
 
     # Executes discord bot client.
     def run(self):
+        print("[ESTABLISHING BOT CONNECTION...]")
         self.client.run(self.token.get_value())
 
     # Called from event "on_ready() (at main.py) and runs when client is connected and ready.
@@ -38,12 +40,21 @@ class Bot():
         print('> Bot has successfully logged in as: {0.user}'.format(self.client))
         print('> Bot ID: {0}'.format(self.client.application_id))
 
+        print("> Connected to following guilds:")
+        async for guild in self.client.fetch_guilds():
+            print(f"    - {guild.name}")
+
+        print("\n[LOADING DATA FILES...]")
         # Database() instantiation (single instance).
         db = Database()
 
-        # Database() instantiation (single instance).
+        # ImageLinks() instantiation (single instance).
         img_links = ImageLinks()
-        img_links.load_images()
+        await img_links.load_images()
+
+        # DecoratorList() instantiation (single instance).
+        dec_list = DecoratorList()
+        await dec_list.load_decorators()
 
     # Called from client event "on_message()" (at main.py) and runs when client receives a message.
     # Redirects message with User() and Message() instances to Commands() object for execution.

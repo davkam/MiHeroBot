@@ -1,6 +1,6 @@
 # -*- coding: ISO-8859-15 -*-
 
-from game.features.additions import Additions
+from extras.tools import Tools
 from extras.string_manager import StringManager
 from game.objects.characters import Character, Monster, Player, MonsterClass
 from images.image_links import ImageLinks
@@ -33,19 +33,19 @@ class Combat():
             objB: Monster = self.objB.character
 
             self.log += [pvm_idle]
-            self.log.append([objA.name, objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
-            self.log.append([objB.name, objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
-            self.log.append([f"WEP: {objA.weapon.weapon_class.name.upper()} \n     LVL.{objA.weapon.attack.get_lvl()}", f"ARM: {objA.armor.armor_class.name.upper()} \n     LVL.{objA.armor.defense.get_lvl()}"])
-            self.log.append([f"MONSTER: {objB.monster_class.name.upper()}", ""])
+            self.log.append([objA.get_name(), objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
+            self.log.append([objB.get_name(), objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
+            self.log.append([f"\U0001F5E1\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
+            self.log.append([f"\U0001F47E MONSTER: {objB.monster_class.name.upper()}", ""])
         else:
             objA: Player = self.objA.character
             objB: Player = self.objB.character
 
             self.log += [pvp_idle]
-            self.log.append([objA.name, objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
-            self.log.append([objB.name, objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
-            self.log.append([f"WEP: {objA.weapon.weapon_class.name.upper()} \n     LVL.{objA.weapon.attack.get_lvl()}", f"ARM: {objA.armor.armor_class.name.upper()} \n     LVL.{objA.armor.defense.get_lvl()}"])
-            self.log.append([f"WEP: {objB.weapon.weapon_class.name.upper()} \n     LVL.{objB.weapon.attack.get_lvl()}", f"`ARM: {objB.armor.armor_class.name.upper()} \n     LVL.{objB.armor.defense.get_lvl()}`"])
+            self.log.append([objA.get_name(), objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
+            self.log.append([objB.get_name(), objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
+            self.log.append([f"\U0001F5E1\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
+            self.log.append([f"\U0001F5E1 WEAPON:\nLVL.{objB.weapon.attack.get_lvl()} {objB.weapon.weapon_class.name}", f"`\U0001F6E1\uFE0F ARMOR:\nLVL.{objB.armor.defense.get_lvl()} {objB.armor.armor_class.name.upper()}`"])
 
     async def main_combat(self):
         pvp_hitA = self.images[1]
@@ -73,7 +73,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objB.hp -= dmg
 
-                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 22)
+                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 20)
                 else:
                     rng = random.randint(0, 500) / 1000
                     hit = self.objA.base_att * rng
@@ -84,10 +84,10 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objB.hp -= dmg
 
-                    hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 22)
+                    hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 20)
 
-                hp_barA = await Additions.get_bar(self.objA.hp, self.objA.max_hp)
-                hp_barB = await Additions.get_bar(self.objB.hp, self.objB.max_hp)
+                hp_barA = await Tools.get_bar(self.objA.hp, self.objA.max_hp)
+                hp_barB = await Tools.get_bar(self.objB.hp, self.objB.max_hp)
                 hp_percA = round((self.objA.hp / self.objA.max_hp) * 100)
                 hp_percB = round((self.objB.hp / self.objB.max_hp) * 100)
 
@@ -113,7 +113,7 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objA.hp -= dmg
 
-                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 22)
+                    hit_log = await StringManager.center_string(string = f"CRITICAL HIT: {dmg}", max_length = 20)
                 else:
                     rng = random.randint(0, 500) / 1000
                     hit = self.objB.base_att * rng
@@ -124,10 +124,10 @@ class Combat():
                     dmg = round((hit * 100) / (block + 100))
                     self.objA.hp -= dmg
 
-                    hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 22)
+                    hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 20)
 
-                hp_barA = await Additions.get_bar(self.objA.hp, self.objA.max_hp)
-                hp_barB = await Additions.get_bar(self.objB.hp, self.objB.max_hp)
+                hp_barA = await Tools.get_bar(self.objA.hp, self.objA.max_hp)
+                hp_barB = await Tools.get_bar(self.objB.hp, self.objB.max_hp)
                 hp_percA = round((self.objA.hp / self.objA.max_hp) * 100)
                 hp_percB = round((self.objB.hp / self.objB.max_hp) * 100)
 
@@ -161,8 +161,8 @@ class Combat():
             else:
                 self.log += [pvp_deadA]
 
-            w_name = await StringManager.center_string(string = winner.name, max_length = 22)
-            l_name = await StringManager.center_string(string = loser.name, max_length = 22)
+            w_name = await StringManager.center_string(string = winner.get_name(), max_length = 20)
+            l_name = await StringManager.center_string(string = loser.get_name(), max_length = 20)
             self.log.append([w_name, l_name])
         else:
             winner = self.objA.character
@@ -173,13 +173,13 @@ class Combat():
             else:
                 self.log += [pvp_deadB]
             
-            w_name = await StringManager.center_string(string = winner.name, max_length = 22)
-            l_name = await StringManager.center_string(string = loser.name, max_length = 22)
+            w_name = await StringManager.center_string(string = winner.get_name(), max_length = 20)
+            l_name = await StringManager.center_string(string = loser.get_name(), max_length = 20)
             self.log.append([w_name, l_name])
 
         # Setting outcome according to winner/loser types.
         if type(winner) == Player and type(loser) == Monster:
-            self.log += [f"**{winner.name}** `looks around to find something valuable...`"]
+            self.log += [f"**{winner.get_name()}** `looks around to find something valuable...`"]
             if loser.monster_class == MonsterClass.Light:
                 xp_log = await winner.xp_gainer(xp_index=1)
                 self.log.append(xp_log)
@@ -210,10 +210,10 @@ class Combat():
                 loser.gold -= gold
                 winner.gold += gold
 
-                self.log += [f"**{winner.name}** `looks around and steals` **{gold}** `gold from` **{loser.name}**"]
+                self.log += [f"**{winner.get_name()}** `looks around and steals` **{gold}** `gold from` **{loser.get_name()}**"]
             else:
                 # TBD: Code to add/remove weapon.
-                self.log += [f"**{winner.name}** `looks around and finds no gold.`\n**{winner.name}** `takes` **{loser.name}'s** `weapon instead.`"]
+                self.log += [f"**{winner.get_name()}** `looks around and finds no gold.`\n**{winner.name}** `takes` **{loser.get_name()}'s** `weapon instead.`"]
             self.log += ["NONE"]
             self.log += ["NONE"]
         else: # type(winner) == Monster and type(loser) == Player.
@@ -222,9 +222,9 @@ class Combat():
                 gold = round(loser.gold * rng)
                 loser.gold -= gold
 
-                self.log += [f"**{loser.name}** `stumbles away and loses` **{gold}** `gold...`"]
+                self.log += [f"**{loser.get_name()}** `stumbles away and loses` **{gold}** `gold...`"]
             else:
-                self.log += [f"**{loser.name}** `stumbles away from the battle...`"]
+                self.log += [f"**{loser.get_name()}** `stumbles away from the battle...`"]
             self.log += ["NONE"]
             self.log += ["NONE"]
 

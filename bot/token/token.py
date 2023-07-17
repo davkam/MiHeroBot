@@ -16,6 +16,7 @@ class Token():
                 with open(self.file_path, "r") as token_file:
                     get_token = json.load(token_file)
                     self.value = get_token["TOKEN"]
+                print("> Token file successfully loaded from file.")
             else:
                 print(f'> Token file "{self.file_path}" could not be found.')
                 self.create_token()

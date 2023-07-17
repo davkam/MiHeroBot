@@ -1,7 +1,11 @@
 class StringManager():
     # Checks lengths of string and caps it to max length.
     async def cap_string(string: str, max_length: int) -> str:
+        if string.endswith("\u200B"):
+            string = string[:-1]
+
         str_length = len(string)
+
         if str_length > max_length:
             length_diff = str_length - max_length
             rem_chars = length_diff + 3
@@ -13,6 +17,11 @@ class StringManager():
     async def center_string(string: str, max_length: int) -> str:
         empty_space = " "
         str_length = len(string)
+
+        if string.endswith("\u200B"):
+            string = string[:-1]
+            str_length += 1
+
         if str_length >= max_length - 2:
             str_result = await StringManager.cap_string(string = string, max_length = max_length - 2)
         else:

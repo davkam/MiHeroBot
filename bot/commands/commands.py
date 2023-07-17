@@ -7,6 +7,8 @@ from game.objects.characters import MonsterClass
 from bot.interface.embeds import FightEmbed, InventoryEmbed
 from users.users import User
 
+import discord
+
 # Commands() object containing attributes and methods involved in further executing the command chain. 
 # Instance instatiated at Bot.message_respond() and indirectly responds to an event "on_message()" (at main.py).
 class Commands():
@@ -44,19 +46,20 @@ class Commands():
 
     async def new(self):
         if self.user_inDb:
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.name}**.\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
         else:
             await self.db.add_user(user = self.user)
             await self.user.new_player()
 
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.name}**.\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
 
     async def delete(self):
         if self.user_inDb:
+            player_name = self.user.player.get_name()
             await self.db.rem_user(user = self.user)
             await self.user.del_player()
 
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{self.user.username.upper()}** `was deleted`.\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{player_name}** `was deleted`.\n`To create a new hero use command !New.`")
         else:
             await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
@@ -168,13 +171,11 @@ class Commands():
 
     async def test(self):
         if self.user_inDb:
-            # await self.user.player.inventory.add_slots(quantity=40)
-            # log = await self.user.player.loot_generator(loot_index=3)
+            await self.user.player.inventory.add_slots(quantity=40)
+            log = await self.user.player.loot_generator(loot_index=3)
 
-            # await self.msg.channel.send(content=log)
-            pass
-        else:
-            # await self.msg.channel.send(content="")
+            await self.msg.channel.send(content=log)
+        else:   
             pass
 
 

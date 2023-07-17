@@ -4,7 +4,7 @@ import os.path
 
 # Database() object containing User() objects in a dictionary.
 class Database():
-    instance = None # Static attribute of Database() instance.
+    instance = None # Class attribute of Database() instance.
 
     # Instantiated through singleton pattern, only one instance created.
     # Instantiated at bot.ready_respond() and assigned to Database.instance attribute.

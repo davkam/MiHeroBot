@@ -1,5 +1,5 @@
 # Static class containing methods used in game modules.
-class Additions():
+class Tools():
     # Returns a progress bar in string format based on percentage value of act_value to max_value. 
     async def get_bar(act_val, max_val) -> str:
         bar_val = max_val / 20

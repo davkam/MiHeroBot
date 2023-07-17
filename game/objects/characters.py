@@ -17,11 +17,17 @@ class Character():
         self.health: Health = health or Health()
         self.lvl: TotalLevel = TotalLevel(attack = self.attack, defense = self.defense, health = self.health)
 
+    def get_name(self):
+        pass
+
 class Monster(Character):
     def __init__ (self, name: str = None, monster_class: MonsterClass = None, attack: Attack = None, defense: Defense = None, health: Health = None):
         Character.__init__(self, name = name, attack = attack, defense = defense, health = health)
         self.monster_class: MonsterClass = monster_class or MonsterClass.Light
     
+    def get_name(self):
+        return self.name.upper()
+
     # Initializes monster with randomized attributes based on parameters.
     async def randomize_monster(self, monster_class: MonsterClass, lvl: int):
         # Assigns name to monster and rng attributes based on monster class.
@@ -113,7 +119,7 @@ class Player(Character):
 
     def get_name(self):
         if self.decorator != None:
-            return f"{self.decorator.emoji} {self.name.upper()}"
+            return f"{self.decorator.emoji.lower()} {self.name.upper()}\u200B"
         else:
             return self.name.upper()
 
@@ -174,7 +180,7 @@ class Player(Character):
         lvl_perc = await self.lvl.progress_perc()
 
         # Sets xp gainer log for return.
-        log = f"**```arm\r\n{self.get_name()} !XPGainer\r\n```**"
+        log = f"**```arm\r\n{self.name} !XPGainer\r\n```**"
         log += f"||||| `ATTACK GAIN:`**`{att_gain}`**`experience points. ATTACK:`**`{self.attack.get_lvl()}`** **{att_bar}** **`({att_perc}%)`**\n"
         log += f"||||| `DEFENSE GAIN:`**`{def_gain}`**`experience points. DEFENSE:`**`{self.defense.get_lvl()}`** **{def_bar}** **`({def_perc}%)`**\n"
         log += f"||||| `HEALTH GAIN:`**`{hp_gain}`**`experience points. HEALTH:`**`{self.health.get_hp()}`** **{hp_bar}** **`({hp_perc}%)`**\n"
@@ -233,6 +239,6 @@ class Player(Character):
         log += f"||||| `TOTAL GOLD:`**`{self.gold}`**`gold coins.`\n"
 
         if await self.inventory.check_inv() and inv_full == False: 
-            log += "`Inventory full, please free up space before next encounter to be able to receive rewards.`\n"
+            log += "`\nInventory full, please free up space before next encounter to be able to receive rewards.`\n"
 
         return log

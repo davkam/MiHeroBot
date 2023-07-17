@@ -1,4 +1,4 @@
-from game.features.additions import Additions
+from extras.tools import Tools
 
 class Stats():
     def __init__(self, xp: int = 100, lvl: float = 1):
@@ -36,7 +36,7 @@ class Stats():
 
     async def progress_bar(self) -> str: # TBD: REDEFINE! Not correct according to xp formula.
         prog = (self._lvl - self.get_lvl()) * 100
-        prog_bar = await Additions.get_bar(act_val = prog, max_val = 100)
+        prog_bar = await Tools.get_bar(act_val = prog, max_val = 100)
 
         return prog_bar
     

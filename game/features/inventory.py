@@ -1,4 +1,4 @@
-from game.features.additions import Additions
+from extras.tools import Tools
 from game.objects.items import Item, Weapon, Armor, Potion, Kit, Decorator
 import uuid
 
@@ -21,7 +21,7 @@ class Inventory():
         return None
 
     async def get_items(self, string_format: bool) -> list[str] or list[Item]:
-        self.items.sort(key=lambda item: (Additions.item_sortkey(item=item), item.name))
+        self.items.sort(key=lambda item: (Tools.item_sortkey(item=item), item.name))
         if string_format == True:
             items: list[str] = list()
             for item in self.items:

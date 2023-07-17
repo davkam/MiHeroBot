@@ -1,3 +1,4 @@
+from game.decorators.decorators import DecoratorList
 from enum import Enum
 from game.logic.stats import *
 import random
@@ -337,10 +338,6 @@ class Kit(Item):
         pass
 
 class Decorator(Item):
-    tier1_decorators = list[str]
-    tier2_decorators = list[str]
-    tier3_decorators = list[str]
-
     def __init__(self, emoji: str = None, tier: int = None):
         super().__init__(self)
         self.emoji: str = emoji
@@ -350,38 +347,26 @@ class Decorator(Item):
         self.name = f"TIER {self.tier}. DECORATOR {self.emoji}"
 
     async def randomize_decorator(self, decorator_index: int):
-        # if decorator_index == 3:
-        #     varA = 10; varB = 25
+        if decorator_index == 3:
+            varA = 10; varB = 25
 
-        # rng = random.randint(0, 100)
-        # if rng < varA: self.tier = 3
-        # elif rng < varB: self.tier = 2
-        # else: self.tier = 1
+        rng = random.randint(0, 100)
+        if rng < varA: self.tier = 3
+        elif rng < varB: self.tier = 2
+        else: self.tier = 1
 
-        # if self.tier == 1:
-        #     last_index = len(Decorator.tier1_decorators) - 1
-        #     rng = random.randint(0, last_index)
-        #     self.emoji = Decorator.tier1_decorators[rng]
-        # elif self.tier == 2:
-        #     last_index = len(Decorator.tier2_decorators) - 1
-        #     rng = random.randint(0, last_index)
-        #     self.emoji = Decorator.tier2_decorators[rng]
-        # else:
-        #     last_index = len(Decorator.tier3_decorators) - 1
-        #     rng = random.randint(0, last_index)
-        #     self.emoji = Decorator.tier3_decorators[rng]
-        
-        #TESTCODE
-        rng = random.randint(1, 3)
-        if rng == 1: 
-            self.emoji = "\U0001F601"
-            self.tier = 1
-        elif rng == 2: 
-            self.emoji = "\U0001F602"
-            self.tier = 2
-        else: 
-            self.emoji = "\U0001F603"
-            self.tier = 3
+        if self.tier == 1:
+            last_index = len(DecoratorList.instance.tier1) - 1
+            rng = random.randint(0, last_index)
+            self.emoji = DecoratorList.instance.tier1[rng]
+        elif self.tier == 2:
+            last_index = len(DecoratorList.instance.tier2) - 1
+            rng = random.randint(0, last_index)
+            self.emoji = DecoratorList.instance.tier2[rng]
+        else:
+            last_index = len(DecoratorList.instance.tier3) - 1
+            rng = random.randint(0, last_index)
+            self.emoji = DecoratorList.instance.tier3[rng]
 
         await self.set_name()
 

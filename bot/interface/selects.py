@@ -10,13 +10,13 @@ import uuid
 
 class FightSelect(Select):
     def __init__(self, fight_view: FightView):
-        super().__init__(placeholder = "Select Fight!")
+        super().__init__(placeholder = "\U0001F94A Select Fight!")
         self.fight_view: FightView = fight_view
         self.set_options()
 
     def set_options(self):
-        self.add_option(label="FIGHT MONSTER", value="FM", description="Fight a light, medium or heavy monster.")
-        self.add_option(label="FIGHT PLAYER", value="FP", description="Fight a player from users.")
+        self.add_option(label="\U0001F47E FIGHT MONSTER", value="FM", description="Fight a light, medium or heavy monster.")
+        self.add_option(label="\U0001F642 FIGHT PLAYER", value="FP", description="Fight a player from users.")
 
     async def callback(self, interaction: Interaction):
         if await self.fight_view.interaction_check(interaction=interaction):
@@ -37,7 +37,7 @@ class FightSelect(Select):
 
 class PlayerSelect(Select): # TBD: Display player name.
     def __init__(self, fight_view: FightView):
-        super().__init__(placeholder = "Select Player!")
+        super().__init__(placeholder = "\U0001F642 Select Player!")
         self.fight_view: FightView = fight_view
         self.set_options()
                 
@@ -46,7 +46,7 @@ class PlayerSelect(Select): # TBD: Display player name.
         for user in db.users.values():
             if user != self.fight_view.sender_user:
                 user: User = user
-                self.add_option(label = f"{user.username.upper()}", value = str(user.user_id), description = f"LVL: {user.player.lvl.get_lvl()} ATT: {user.player.attack.get_lvl()} DEF: {user.player.defense.get_lvl()}")
+                self.add_option(label = f"{user.player.get_name()}", value = str(user.user_id), description = f"LVL: {user.player.lvl.get_lvl()} ATT: {user.player.attack.get_lvl()} DEF: {user.player.defense.get_lvl()}")
 
     async def callback(self, interaction: Interaction):
         db = Database.instance
@@ -64,14 +64,14 @@ class PlayerSelect(Select): # TBD: Display player name.
 class MonsterSelect(Select): # TBD: Display player name.
     from bot.interface.views import FightView
     def __init__(self, fight_view: FightView):
-        super().__init__(placeholder = "Select Monster!")
+        super().__init__(placeholder = "\U0001F47E Select Monster!")
         self.fight_view: FightView = fight_view
         self.set_options()
 
     def set_options(self):
-        self.add_option(label = "LIGHT MONSTER", value = "LM", description = f"Fight a light monster.")
-        self.add_option(label = "MEDIUM MONSTER", value = "MM", description = f"Fight a medium monster.")
-        self.add_option(label = "HEAVY MONSTER", value = "HM", description = f"Fight a heavy monster.")
+        self.add_option(label = "\U0001F47E LIGHT MONSTER", value = "LM", description = f"Fight a light monster.")
+        self.add_option(label = "\U0001F47E MEDIUM MONSTER", value = "MM", description = f"Fight a medium monster.")
+        self.add_option(label = "\U0001F47E HEAVY MONSTER", value = "HM", description = f"Fight a heavy monster.")
 
     async def callback(self, interaction: discord.Interaction):
         if await self.fight_view.interaction_check(interaction = interaction):
