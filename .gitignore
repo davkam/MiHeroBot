@@ -1,6 +1,9 @@
 # Ignore token.json
 bot/token/token.json
 
+# Ignore data save files
+data/db_users.json
+
 # Ignore __pycaches__
 bot/__pycache__
 bot/commands/__pycache__

@@ -36,7 +36,7 @@ class Combat():
             self.log.append([objA.get_name(), objA.lvl.get_lvl(), objA.attack.get_lvl(), objA.defense.get_lvl(), objA.health.get_hp()])
             self.log.append([objB.get_name(), objB.lvl.get_lvl(), objB.attack.get_lvl(), objB.defense.get_lvl(), objB.health.get_hp()])
             self.log.append([f"\U00002694\uFE0F WEAPON:\nLVL.{objA.weapon.attack.get_lvl()} {objA.weapon.weapon_class.name}", f"\U0001F6E1\uFE0F ARMOR:\nLVL.{objA.armor.defense.get_lvl()} {objA.armor.armor_class.name.upper()}"])
-            self.log.append([f"\U0001F47E MONSTER: {objB.monster_class.name.upper()}", ""])
+            self.log.append([f"\U0001F47E MONSTER: {objB.monster_class.name}", ""])
         else:
             objA: Player = self.objA.character
             objB: Player = self.objB.character
@@ -180,7 +180,7 @@ class Combat():
         # Setting outcome according to winner/loser types.
         if type(winner) == Player and type(loser) == Monster:
             self.log += [f"**{winner.get_name()}** `looks around to find something valuable...`"]
-            if loser.monster_class == MonsterClass.Light:
+            if loser.monster_class == MonsterClass.LIGHT:
                 xp_log = await winner.xp_gainer(xp_index=1)
                 self.log.append(xp_log)
                 rng = random.randint(0, 1000)
@@ -189,7 +189,7 @@ class Combat():
                     self.log.append(loot_log)
                 else:
                     self.log += ["NONE"]
-            elif loser.monster_class == MonsterClass.Medium:
+            elif loser.monster_class == MonsterClass.MEDIUM:
                 xp_log = await winner.xp_gainer(xp_index=2)
                 self.log.append(xp_log)
                 rng = random.randint(0, 1000)

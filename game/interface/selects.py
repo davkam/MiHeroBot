@@ -60,7 +60,7 @@ class PlayerSelect(Select):
         else:
             await interaction.response.defer()
 
-class MonsterSelect(Select): # TBD: Display player name.
+class MonsterSelect(Select):
     from game.interface.views import FightView
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder = "\U0001F47E Select Monster!")

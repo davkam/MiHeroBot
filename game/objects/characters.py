@@ -5,9 +5,9 @@ from game.objects.items import *
 import random
 
 class MonsterClass(Enum):
-    Light = 2
-    Medium = 6
-    Heavy = 10
+    LIGHT = 2
+    MEDIUM = 6
+    HEAVY = 10
 
 class Character():
     def __init__ (self, name: str = None, attack: Attack = None, defense: Defense = None, health: Health = None):
@@ -23,7 +23,7 @@ class Character():
 class Monster(Character):
     def __init__ (self, name: str = None, monster_class: MonsterClass = None, attack: Attack = None, defense: Defense = None, health: Health = None):
         Character.__init__(self, name = name, attack = attack, defense = defense, health = health)
-        self.monster_class: MonsterClass = monster_class or MonsterClass.Light
+        self.monster_class: MonsterClass = monster_class or MonsterClass.LIGHT
     
     def get_name(self):
         return self.name.upper()
@@ -31,13 +31,13 @@ class Monster(Character):
     # Initializes monster with randomized attributes based on parameters.
     async def randomize_monster(self, monster_class: MonsterClass, lvl: int):
         # Assigns name to monster and rng attributes based on monster class.
-        if monster_class == MonsterClass.Light:
+        if monster_class == MonsterClass.LIGHT:
             self.name = "LIGHT MONSTER"
             low = 750; high = 1250
-        elif monster_class == MonsterClass.Medium:
+        elif monster_class == MonsterClass.MEDIUM:
             self.name = "MEDIUM MONSTER"
             low = 1000; high = 1500
-        elif monster_class == MonsterClass.Heavy:
+        elif monster_class == MonsterClass.HEAVY:
             self.name = "HEAVY MONSTER"
             low = 1500; high = 2000
 
@@ -113,8 +113,8 @@ class Player(Character):
         Character.__init__(self, name = name.upper(), attack = attack, defense = defense, health = health)  
         self.weapon: Weapon = Weapon()
         self.armor: Armor = Armor()
-        self.decorator: Decorator = None
         self.inventory: Inventory = Inventory()
+        self.decorator: Decorator = None
         self.gold: int = gold
 
     def get_name(self):
@@ -161,9 +161,9 @@ class Player(Character):
         log += f"||||| `PLAYER GOLD:`**`{self.gold}`**\n"
 
         log += "**`|||||||||  GEAR STATS  |||||||||`**\n"
-        log += f"||||| `WEAPON CLASS:`**`{self.weapon.weapon_class.name.upper()}`**\n"
+        log += f"||||| `WEAPON CLASS:`**`{self.weapon.weapon_class.name}`**\n"
         log += f"||||| `WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
-        log += f"||||| `ARMOR CLASS:`**`{self.armor.armor_class.name.upper()}`**\n"
+        log += f"||||| `ARMOR CLASS:`**`{self.armor.armor_class.name}`**\n"
         log += f"||||| `ARMOR DEFENSE:`**`{self.armor.defense.get_lvl()}`**\n\r"
 
         return log

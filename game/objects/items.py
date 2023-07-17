@@ -183,7 +183,6 @@ class Armor(Item): # TBD: Change defense attribute name to level and type to Sta
 class Potion(Item):
     def __init__(self, potion_type: PotionType = None, potion_quality: int = None):
         super().__init__(self)
-        self.xp_value: int 
         self.potion_type: PotionType = potion_type
         self.potion_quality: int = potion_quality   # Represents regular, super or divine potion (1, 2 or 3 respectively).
 
@@ -192,7 +191,7 @@ class Potion(Item):
             self.name = f"{self.potion_type.name} XP POTION"
         elif self.potion_quality == 2:
             self.name = f"SUPER {self.potion_type.name} XP POTION"
-        else: #self.potion_quality == 3:
+        else:
             self.name = f"DIVINE {self.potion_type.name} XP POTION"
 
     async def randomize_potion(self, potion_index: int):
@@ -275,7 +274,7 @@ class Kit(Item):
             self.name = f"{self.kit_type.name} KIT"
         elif self.kit_quality == 2:
             self.name = f"SUPER {self.kit_type.name} KIT"
-        else: #self.kit_quality == 3:
+        else:
             self.name = f"DIVINE {self.kit_type.name} KIT"
 
     async def randomize_kit(self, kit_index: int):

@@ -21,8 +21,8 @@ class ImageLinks():
             if os.path.exists(self.file_path):
                 with open(self.file_path, "r") as token_file:
                     self.links = token_file.readlines()
-                print("> Image links successfully loaded from file.")
+                print(f'> Image links successfully loaded from file "{self.file_path}".')
             else:
                 print(f'> Image links file "{self.file_path}" could not be found.')
         except Exception as exception:
-            print(f'> Failed to retrieve links from "{self.file_path}"\n' + str(exception))
+            print(f'> Failed to retrieve links from file "{self.file_path}".\n' + str(exception))

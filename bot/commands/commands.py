@@ -35,21 +35,21 @@ class Commands():
     async def help(self):
         with open ('txt/commands.txt') as help:
             help = help.read()
-        await self.msg.channel.send(content = help)
+        await self.msg.channel.send(content=help)
 
     async def about(self):
         with open ('txt/about.txt') as about:
             about = about.read()
-        await self.msg.channel.send(content = about)
+        await self.msg.channel.send(content=about)
 
     async def new(self):
         if self.user_inDb:
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
         else:
-            await self.db.add_user(user = self.user)
+            await self.db.add_user(user=self.user)
             await self.user.new_player()
 
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
 
     async def delete(self):
         if self.user_inDb:
@@ -77,11 +77,11 @@ class Commands():
 
                 elif fight_view.select_type.startswith("Monster"):
                     if fight_view.select_type == "MonsterLight":
-                        log = await self.user.player.fight_monster(monster_class = MonsterClass.Light)
+                        log = await self.user.player.fight_monster(monster_class = MonsterClass.LIGHT)
                     elif fight_view.select_type == "MonsterMedium":
-                        log = await self.user.player.fight_monster(monster_class = MonsterClass.Medium)
+                        log = await self.user.player.fight_monster(monster_class = MonsterClass.MEDIUM)
                     elif fight_view.select_type == "MonsterHeavy":
-                        log = await self.user.player.fight_monster(monster_class = MonsterClass.Heavy)
+                        log = await self.user.player.fight_monster(monster_class = MonsterClass.HEAVY)
                 else:
                     # TBD: More options!
                     pass 
@@ -157,16 +157,22 @@ class Commands():
             log = await self.user.player.get_stats()
             await self.msg.channel.send(content=log)
         else:
-            pass
+            await self.msg.channel.send(content="**```arm\r\nMiHero !Stats\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
     
     async def score(self):
         pass
 
     async def load(self):
-        pass
+        if self.msg.channel.guild.owner is not None and self.msg.author.top_role == self.msg.channel.guild.owner:
+            await self.db.load_users()
+        else:
+            pass
 
     async def save(self):
-        pass
+        if self.msg.channel.guild.owner is not None and self.msg.author.top_role == self.msg.channel.guild.owner:
+            await self.db.save_users()
+        else:
+            pass
 
     async def test(self):
         if self.user_inDb:

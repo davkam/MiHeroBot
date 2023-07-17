@@ -40,13 +40,10 @@ class Bot():
         print('> Bot has successfully logged in as: {0.user}'.format(self.client))
         print('> Bot ID: {0}'.format(self.client.application_id))
 
-        print("> Connected to following guilds:")
-        async for guild in self.client.fetch_guilds():
-            print(f"    - {guild.name}")
-
         print("\n[LOADING DATA FILES...]")
         # Database() instantiation (single instance).
         db = Database()
+        await db.load_users()
 
         # ImageLinks() instantiation (single instance).
         img_links = ImageLinks()
@@ -55,6 +52,10 @@ class Bot():
         # DecoratorList() instantiation (single instance).
         dec_list = DecoratorList()
         await dec_list.load_decorators()
+
+        print("\n> Connected to following guilds:")
+        async for guild in self.client.fetch_guilds():
+            print(f"    - {guild.name}")
 
     # Called from client event "on_message()" (at main.py) and runs when client receives a message.
     # Redirects message with User() and Message() instances to Commands() object for execution.

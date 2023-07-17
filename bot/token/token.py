@@ -16,12 +16,12 @@ class Token():
                 with open(self.file_path, "r") as token_file:
                     get_token = json.load(token_file)
                     self.value = get_token["TOKEN"]
-                print("> Token file successfully loaded from file.")
+                print(f'> Token file successfully loaded from file "{self.file_path}".')
             else:
                 print(f'> Token file "{self.file_path}" could not be found.')
                 self.create_token()
         except Exception as exception:
-            print(f'> Failed to retrieve token from "{self.file_path}"\n' + str(exception))
+            print(f'> Failed to retrieve token from file "{self.file_path}".\n' + str(exception))
             self.create_token()
     
     # Creates new token, sets token value and creates new .json-file to file path location.
