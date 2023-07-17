@@ -149,6 +149,25 @@ class Player(Character):
         combat = None
         return log
     
+    async def get_stats(self) -> str:
+        log = f"**```arm\r\n{self.name} !Stats\r\n```**\u200B"
+
+        log += "**`|||||||||  HERO STATS  |||||||||`**\n"
+        log += f"||||| `PLAYER NAME:`**{self.get_name()}**\n"
+        log += f"||||| `PLAYER LEVEL:`**`{self.lvl.get_lvl()}`** **{await self.lvl.progress_bar()}** **`({await self.lvl.progress_perc()}%)`**\n"
+        log += f"||||| `PLAYER ATTACK:`**`{self.attack.get_lvl()}`** **{await self.attack.progress_bar()}** **`({await self.attack.progress_perc()}%)`**\n"
+        log += f"||||| `PLAYER DEFENSE:`**`{self.defense.get_lvl()}`** **{await self.defense.progress_bar()}** **`({await self.defense.progress_perc()}%)`**\n"
+        log += f"||||| `PLAYER HEALTH:`**`{self.health.get_hp()}`** **{await self.health.progress_bar()}** **`({await self.health.progress_perc()}%)`**\n"
+        log += f"||||| `PLAYER GOLD:`**`{self.gold}`**\n"
+
+        log += "**`|||||||||  GEAR STATS  |||||||||`**\n"
+        log += f"||||| `WEAPON CLASS:`**`{self.weapon.weapon_class.name.upper()}`**\n"
+        log += f"||||| `WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
+        log += f"||||| `ARMOR CLASS:`**`{self.armor.armor_class.name.upper()}`**\n"
+        log += f"||||| `ARMOR DEFENSE:`**`{self.armor.defense.get_lvl()}`**\n\r"
+
+        return log
+    
     async def xp_gainer(self, xp_index: int) -> str:
         # Sets rng variables according to xp index.
         if xp_index == 1: min = 1000; max = 2500; multiplier = 10

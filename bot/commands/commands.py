@@ -154,7 +154,8 @@ class Commands():
 
     async def stats(self):
         if self.user_inDb:
-            pass
+            log = await self.user.player.get_stats()
+            await self.msg.channel.send(content=log)
         else:
             pass
     
@@ -175,6 +176,3 @@ class Commands():
             await self.msg.channel.send(content=log)
         else:   
             pass
-
-
-

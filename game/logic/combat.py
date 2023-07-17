@@ -235,16 +235,16 @@ class Combatant():
     async def combat_stats(self):
         if type(self.character) == Player:
             self.base_att = round((10 * self.character.attack.get_lvl() + self.character.weapon.weapon_class.value * self.character.weapon.attack.get_lvl() / 2 ), 2)
-            self.att_acc = round((1 / 100) * (5 * self.character.attack.get_lvl() + self.character.weapon.weapon_class.value * self.character.weapon.attack.get_lvl() * 2), 4)
+            self.att_acc = round((1 / 100) * (5 * self.character.attack.get_lvl() + self.character.weapon.weapon_class.value * self.character.weapon.attack.get_lvl()), 4)
             self.base_def = round((1 / 5) * (10 * self.character.defense.get_lvl() + self.character.armor.armor_class.value * self.character.armor.defense.get_lvl() / 2), 2)
-            self.def_acc = round((1 / 500) * (5 * self.character.defense.get_lvl() + self.character.armor.armor_class.value * self.character.armor.defense.get_lvl() * 2), 4)
+            self.def_acc = round((1 / 500) * (5 * self.character.defense.get_lvl() + self.character.armor.armor_class.value * self.character.armor.defense.get_lvl()), 4)
             self.max_hp = self.character.health.get_hp()
             self.hp = self.max_hp
         elif type(self.character) == Monster:
             self.base_att = round((10 * self.character.attack.get_lvl() + self.character.monster_class.value * self.character.attack.get_lvl() / 2), 2)
-            self.att_acc = round((1 / 100) * (5 * self.character.attack.get_lvl() + self.character.monster_class.value * self.character.attack.get_lvl() * 2), 4)
+            self.att_acc = round((1 / 100) * (5 * self.character.attack.get_lvl() + self.character.monster_class.value * self.character.attack.get_lvl()), 4)
             self.base_def = round((1 / 5) * (10 * self.character.defense.get_lvl() + self.character.monster_class.value * self.character.defense.get_lvl() / 2), 2)
-            self.def_acc = round((1 / 500) * (5 * self.character.defense.get_lvl() + self.character.monster_class.value * self.character.defense.get_lvl() * 2), 4)
+            self.def_acc = round((1 / 500) * (5 * self.character.defense.get_lvl() + self.character.monster_class.value * self.character.defense.get_lvl()), 4)
             self.max_hp = self.character.health.get_hp()
             self.hp = self.max_hp
 

@@ -12,8 +12,8 @@ class FightEmbed(discord.Embed):
         self.log: list[str] = log
 
     async def run_embed(self): # TBD: Add remaining health next to percentage health.
-            nameA = await StringManager.cap_string(string = self.log[1][0], max_length = 11)
-            nameB = await StringManager.cap_string(string = self.log[2][0], max_length = 11)
+            nameA = await StringManager.cap_string(string = self.log[1][0], max_length = 12)
+            nameB = await StringManager.cap_string(string = self.log[2][0], max_length = 14)
 
             self.set_image(url = self.log[0])
             self.add_field(name=f"{nameA}", value=f"`\U00002B50 LVL: {self.log[1][1]}`\n`\U00002694\uFE0F ATT: {self.log[1][2]}`\n`\U0001F6E1\uFE0F DEF: {self.log[1][3]}`\n`\U00002764\uFE0F HP:  {self.log[1][4]}`", inline=True)
