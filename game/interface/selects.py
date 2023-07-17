@@ -364,7 +364,7 @@ class DecoratorSelect(Select):
             return
         else:
             for decorator in decorators:
-                self.add_option(label=decorator.name, value=str(decorator.uuid), description=f"Use {decorator.name.lower()}.")
+                self.add_option(label=decorator.name, value=str(decorator.uuid), description=f"Use {decorator.name.lower()[:-2]}.")
             
             self.add_option(label="\U0001F448 GO BACK", value="GB", description="Go back to main.")
             self.add_option(label="\U0001F4BC CLOSE INVENTORY", value="CI", description="Close inventory.")  

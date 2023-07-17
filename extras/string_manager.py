@@ -20,7 +20,7 @@ class StringManager():
 
         if string.endswith("\u200B"):
             string = string[:-1]
-            str_length += 3
+            max_length -= 2
 
         if str_length >= max_length - 2:
             str_result = await StringManager.cap_string(string = string, max_length = max_length - 2)
