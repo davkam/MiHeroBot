@@ -20,7 +20,7 @@ class Commands():
     # Returns user for checking interaction permisssion.
     async def set_user(self) -> User:
         if await self.db.contains_user(user_id = self.msg.author.id):
-            self.user = await self.db.get_userbyId(user_id = self.msg.author.id)
+            self.user = await self.db.get_user_by_id(user_id = self.msg.author.id)
             self.user_inDb = True
         else:
             self.user = User()
@@ -47,7 +47,6 @@ class Commands():
             await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
         else:
             await self.db.add_user(user=self.user)
-            await self.user.new_player()
 
             await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
 
@@ -55,7 +54,6 @@ class Commands():
         if self.user_inDb:
             player_name = self.user.player.get_name()
             await self.db.rem_user(user = self.user)
-            await self.user.del_player()
 
             await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{player_name}** `was deleted`.\n`To create a new hero use command !New.`")
         else:
@@ -164,21 +162,22 @@ class Commands():
 
     async def load(self):
         if self.msg.channel.guild.owner is not None and self.msg.author.top_role == self.msg.channel.guild.owner:
-            await self.db.load_users()
+            await self.db.load_data()
         else:
             pass
 
     async def save(self):
         if self.msg.channel.guild.owner is not None and self.msg.author.top_role == self.msg.channel.guild.owner:
-            await self.db.save_users()
+            await self.db.save_data()
         else:
             pass
 
     async def test(self):
         if self.user_inDb:
-            await self.user.player.inventory.add_slots(quantity=40)
-            log = await self.user.player.loot_generator(loot_index=3)
+            # await self.user.player.inventory.add_slots(quantity=40)
+            # log = await self.user.player.loot_generator(loot_index=3)
 
-            await self.msg.channel.send(content=log)
+            # await self.msg.channel.send(content=log)
+            pass
         else:   
             pass

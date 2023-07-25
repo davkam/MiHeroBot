@@ -1,11 +1,12 @@
+from log.logger import Logger
 import os.path
 
-# ImageLinks()-Object class containing image links used in FightEmbed().
+# Image links object containing image links used in fight embed instance.
 class ImageLinks():
-    instance = None # Class attribute of an ImageLinks()-instance.
+    instance = None # Static class attribute for object reference.
 
-    # New instance instantiated through singleton pattern at bot.ready_respond(),
-    # assigned to static attribute "instance" for access. 
+    # New instance instantiated through singleton pattern at bot's "ready_respond" method,
+    # Assigned to static attribute "instance" for object access. 
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
@@ -14,15 +15,17 @@ class ImageLinks():
     def __init__(self):
         self.file_path: str = "images/image_links.txt"
         self.links: list[str] = list()
+        self.log: Logger = Logger.data_logger
 
-    # Loads image links from .txt-file and assigns it to instanced attribute "self.links: list[str]".
+    # Loads image links from .txt-file and assigns it to instanced attribute "links".
     async def load_images(self):
         try:
             if os.path.exists(self.file_path):
                 with open(self.file_path, "r") as token_file:
                     self.links = token_file.readlines()
-                print(f'> Image links successfully loaded from file "{self.file_path}".')
+
+                await self.log.write_log(log_data=f'Loaded image links from file "{self.file_path}".')
             else:
-                print(f'> Image links file "{self.file_path}" could not be found.')
+                await self.log.write_log(log_data=f'Failed to load image links from file "{self.file_path}". File not found.')
         except Exception as exception:
-            print(f'> Failed to retrieve links from file "{self.file_path}".\n' + str(exception))
+            await self.log.write_log(log_data=f'Failed to load image links from file "{self.file_path}".\n{str(exception)}')

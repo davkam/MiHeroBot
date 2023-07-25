@@ -1,33 +1,47 @@
-from game.objects.items import Weapon, Armor, Potion, Kit, Decorator
+from game.objects.characters import Player
+from game.objects.items import *
+from log.logger import Logger
 from users.users import User
 import json
 import os.path
 
-# Database() object containing User() objects in a dictionary.
+# Database object containing user dictionaries, file paths, and a logger.
+# Logic for user related data is composed of two types, a temporary data (used during runtime for changes in a user object) and a permanent data (stored data of all users).
 class Database():
-    instance = None # Class attribute of Database() instance.
+    instance = None # Static class attribute of database instance.
 
     # Instantiated through singleton pattern, only one instance created.
-    # Instantiated at bot.ready_respond() and assigned to Database.instance attribute.
+    # Instantiated at bot's "ready_respond" method and assigned to a static class attribute.
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
         return cls.instance
     
     def __init__(self):
-        self.users: dict[int, User] = dict() # Dictionary of User() objects; KEY: -> author.id; VALUE: -> User().
-        self.file_path: str = "data/db_users.json"
+        self.users: dict[int, User] = dict()        # Dictionary of user objects; KEY -> User ID, VALUE -> User object.
+        self.temp_data: dict[int, User] = dict()    # Temporary dictionary used in loading temporary save data.
+        self.save_file: str = "data/users_save.json"
+        self.temp_file: str = "data/temp_save.txt"
+        self.log: Logger = Logger.data_logger
 
-    # Adds new User() to dictionary.
+    # Adds new user object to dictionary.
     async def add_user(self, user: User):
         self.users[user.user_id] = user
+        await user.new_player()
 
-    # Removes existing User() from dictionary.
+        await self.log.write_log(log_data=f"Added user to database. User ID: {user.user_id}, UserName: {user.username}")
+        await self.save_temp_data(user=user)
+
+    # Removes existing user object from dictionary.
     async def rem_user(self, user: User):
         del self.users[user.user_id]
+        await user.del_player()
 
-    # Gets existing User() from dictionary by id, returns User().
-    async def get_userbyId(self, user_id: int) -> User:
+        await self.log.write_log(log_data=f"Removed user from database. User ID: {user.user_id}, UserName: {user.username}")
+        await self.save_temp_data(user=user, rem_user=True)
+
+    # Gets existing user object from dictionary by id, returns user.
+    async def get_user_by_id(self, user_id: int) -> User:
         return self.users[user_id]
 
     # Checks if dictionary contains user by id, returns bool.
@@ -37,56 +51,217 @@ class Database():
         else:
             return False
         
-    async def save_users(self):
-        if len(self.users) == 0: return
+    # Saves all users data to json save file.
+    async def save_data(self):
+        if len(self.users) == 0: 
+            with open(self.save_file, 'w') as save_data:
+                save_data.truncate(0)
         try:
-            with open(self.file_path, "w") as user_data:
-                write_data = await self.encode_data()
+            with open(self.save_file, "w") as user_data:
+                write_data = await self.encode_save_data()
                 json.dump(write_data, user_data, indent = 4, sort_keys = True)
-                print(f'> User data successfully saved to file "{self.file_path}".')
+
+            await self.log.write_log(log_data=f'Saved user data to file "{self.save_file}".')
         except Exception as exception:
-            print(f'> Failed to save user data to file "{self.file_path}".\n' + str(exception))
-        
-    async def load_users(self):
+            await self.log.write_log(log_data=f'Failed to save user data to file "{self.save_file}".\n{str(exception)}\n')
+
+    # Saves temporary user data to temporary save file. Used during runtime to save any changes to a user object. 
+    async def save_temp_data(self, user: User, rem_user: bool = False):
         try:
-            if os.path.exists(path=self.file_path):
-                with open(self.file_path, "r") as user_data:
-                    read_data = json.load(user_data)
-                    await self.decode_data(data=read_data)
-                    print(f'> User data successfully loaded from file "{self.file_path}".')
-            else:
-                print(f'> User data file "{self.file_path}" could not be found.')
+            with open(self.temp_file, "a") as user_data:
+                if rem_user:
+                    user_data.write("REMOVE USER:" + str(user.user_id) + "\n")
+                else:  
+                    write_data = await self.encode_temp_data(user=user)
+                    user_data.write(write_data + "\n")
+            
+            await self.log.write_log(log_data=f'Saved temporary user data ({user.username}) to file "{self.temp_file}".')
         except Exception as exception:
-            print(f'> Failed to retrieve user data from file "{self.file_path}".\n' + str(exception))
+            await self.log.write_log(log_data=f'Failed to save temporary user data ({user.username}) to file "{self.temp_file}".\n{str(exception)}\n')
 
-    # Encodes complex data for json dump. Used in save_data()
-    async def encode_data(self):
-        encoded_data = dict()
-        for id in self.users.keys():
-            u = self.users[id]
-            data_string = f"{u.username},{u.user_id}:"
-            data_string += f"{u.player.name},{u.player.attack.get_xp()},{u.player.defense.get_xp()},{u.player.health.get_xp()},{u.player.lvl.get_xp()},{u.player.gold}:"
-            data_string += f"{u.player.weapon.weapon_class.name},{u.player.weapon.attack.get_xp()},{u.player.armor.armor_class.name},{u.player.armor.defense.get_xp()}:"
-            data_string += f"{u.player.inventory.slots};"
+    # Loads all users from json save file.    
+    async def load_data(self):
+        try:
+            if os.path.exists(path=self.save_file):
+                with open(self.save_file, "r") as user_data:
+                    read_data = json.load(user_data)
+                    if read_data:
+                        await self.decode_save_data(saved_data=read_data)
+                        await self.log.write_log(log_data=f'Loaded user data from file "{self.save_file}".')
+                    else:
+                        await self.log.write_log(log_data=f'No user data loaded from file "{self.save_file}". No data found.')
+            else:
+                await self.log.write_log(log_data=f'Failed to load user data from file "{self.save_file}". No file found.')
+        except Exception as exception:
+            await self.log.write_log(log_data=f'Failed to load user data from file "{self.save_file}".\n{str(exception)}\n')
 
-            for item in u.player.inventory.items:
-                if isinstance(item, Weapon):
-                    data_string += f"Weapon,{item.weapon_class.name},{item.attack.get_xp()};"
-                elif isinstance(item, Armor):
-                    data_string += f"Armor,{item.armor_class.name},{item.defense.get_xp()};"
-                elif isinstance(item, Potion):
-                    data_string += f"Potion,{item.potion_type.name},{item.potion_quality};"
-                elif isinstance(item, Kit):
-                    data_string += f"Kit,{item.kit_type.name},{item.kit_quality};"
-                elif isinstance(item, Decorator):
-                    data_string += f"Decorator,{item.emoji},{item.tier};"
+    # Loads temporary user data from temporary save file.
+    async def load_temp_data(self):
+        try:
+            if os.path.exists(path=self.temp_file):
+                with open(self.temp_file, "r") as temp_data:
+                    read_data = temp_data.readlines()
+                    if read_data:
+                        await self.decode_temp_data(temp_data=read_data)
+                        await self.log.write_log(log_data=f'Loaded temporary user data from file "{self.temp_file}".')
+                        await self.merge_data()
+                    else:
+                        await self.log.write_log(log_data=f'No user data loaded from temporary file "{self.temp_file}". No data found.')
+            else:
+                await self.log.write_log(log_data=f'Failed to load temporary user data from file "{self.temp_file}". No file found.')
+        except Exception as exception:
+            await self.log.write_log(log_data=f'Failed to load temporary user data from file "{self.temp_file}".\n{str(exception)}\n')
 
-            if u.player.decorator != None:
-                data_string +=f":{u.player.decorator.emoji},{u.player.decorator.tier}:"
+    # Merges temporary user data to permanent user data, and clears temporary data.
+    async def merge_data(self):
+        # Merges temporary data to permanent data.
+        for key, value in self.temp_data.items():
+            if value == None:
+                del self.users[key]
+                continue
+            self.users[key] = value
 
-            encoded_data[id] = data_string 
+        # Clears temporary save file.
+        with open(self.temp_file, 'w') as temp_data:
+            temp_data.truncate(0)
+        
+        await self.log.write_log(log_data=f'Merged and cleared temporary user data from file "{self.temp_file}".')
+
+        # Creates new empty dictionary.
+        self.temp_data = dict()
+
+        # Saves changes to permanent store.
+        await self.save_data()
+
+    # Encodes user dictionary to a dictionary of strings to make it json writeable. Returns dictionary; KEY -> User ID, VALUE -> User data (string)
+    async def encode_save_data(self):
+        encoded_data: dict[int, str] = dict()
+
+        for key, value in self.users.items():
+            encoded_data[key] = await self.encoder(user=value)
 
         return encoded_data
+
+    # Encodes user object to a string to make it json writeable. Returns string of user data.
+    async def encode_temp_data(self, user: User) -> str:
+        return await self.encoder(user=user)
     
-    async def decode_data(self, data):
-        pass
+    # Decodes saved data (string dictionary) to user dictionary.
+    async def decode_save_data(self, saved_data: dict[str, str]):
+        for key, value in saved_data.items():
+            self.users[int(key)] = await self.decoder(data=value)
+    
+    # Decodes temporary data (string list) to temporary dictionary.
+    async def decode_temp_data(self, temp_data: list[str]):
+        for data in temp_data:
+            if data.startswith("REMOVE USER:"):
+                split_data = data.split(":")
+                self.temp_data[int(split_data[1])] = None
+                continue
+            split_data = data.split(":")
+            user_info = split_data[0].split(",")
+            self.temp_data[int(user_info[0])] = await self.decoder(data=data)
+    
+    # Encodes user object data to a string. Returns string of user data.
+    async def encoder(self, user: User) -> str:
+        encoded_string = f"{user.user_id},{user.username}:"
+        encoded_string += f"{user.player.name},{user.player.attack.get_xp()},{user.player.defense.get_xp()},{user.player.health.get_xp()},{user.player.lvl.get_xp()},{user.player.gold}:"
+        encoded_string += f"{user.player.weapon.weapon_class.name},{user.player.weapon.attack.get_xp()},{user.player.armor.armor_class.name},{user.player.armor.defense.get_xp()}:"
+        encoded_string += f"{user.player.inventory.slots};"
+
+        for item in user.player.inventory.items:
+            if isinstance(item, Weapon):
+                encoded_string += f"Weapon,{item.weapon_class.name},{item.attack.get_xp()};"
+            elif isinstance(item, Armor):
+                encoded_string += f"Armor,{item.armor_class.name},{item.defense.get_xp()};"
+            elif isinstance(item, Potion):
+                encoded_string += f"Potion,{item.potion_type.name},{item.potion_quality};"
+            elif isinstance(item, Kit):
+                encoded_string += f"Kit,{item.kit_type.name},{item.kit_quality};"
+            elif isinstance(item, Decorator):
+                encoded_string += f"Decorator,{item.emoji},{item.tier};"
+
+        if user.player.decorator != None:
+            encoded_string +=f":{user.player.decorator.emoji},{user.player.decorator.tier}:"
+
+        return encoded_string 
+    
+    # Decodes string of user data to a user object. Returns user object.
+    async def decoder(self, data: str) -> User:
+        data_split: str = data.split(":")
+        user_data: str = data_split[0].split(",")
+        player_data: str = data_split[1].split(",")
+        gear_data: str = data_split[2].split(",")
+        inv_data: str = data_split[3].split(";")
+
+        # Assigns user data.
+        user = User()
+        user.player = Player(player_data[0])
+        user.user_id = int(user_data[0])
+        user.username = user_data[1]
+
+        # Assigns player data.
+        user.player.attack.set_xp(value=int(player_data[1]))
+        user.player.defense.set_xp(value=int(player_data[2]))
+        user.player.health.set_xp(value=int(player_data[3]))
+        user.player.lvl.set_xp(value=int(player_data[4]))
+        user.player.gold = int(player_data[5])
+
+        # Assigns player gear.
+        user.player.weapon.weapon_class = GearType[gear_data[0]]
+        user.player.weapon.attack.set_xp(value=int(gear_data[1]))
+        user.player.armor.armor_class = GearType[gear_data[2]]
+        user.player.armor.defense.set_xp(value=int(gear_data[3]))
+
+        # Assigns player inventory.
+        user.player.inventory.slots = int(inv_data[0])
+
+        for i in range(1, len(inv_data), 1):
+            data = inv_data[i].split(",")
+            item: Item = None
+
+            if data[0].startswith("Weapon"):
+                item = Weapon()
+                item.weapon_class = GearType[data[1]]
+                item.attack.set_xp(int(data[2]))
+
+                await item.set_name()
+            elif data[0].startswith("Armor"):
+                item = Armor()
+                item.armor_class = GearType[data[1]]
+                item.defense.set_xp(int(data[2]))
+
+                await item.set_name()
+            elif data[0].startswith("Potion"):
+                item = Potion()
+                item.potion_type = PotionType[data[1]]
+                item.potion_quality = int(data[2])
+
+                await item.set_name()
+            elif data[0].startswith("Kit"):
+                item = Kit()
+                item.kit_type = KitType[data[1]]
+                item.kit_quality = int(data[2])
+
+                await item.set_name()
+            elif data[0].startswith("Decorator"):
+                item = Decorator()
+                item.emoji = data[1]
+                item.tier = int(data[2])
+
+                await item.set_name()
+
+            await user.player.inventory.add_item(item=item)
+            item = None
+
+        # Assigns player decorator, if decorator exists.
+        if len(data_split) > 4:
+            decorator_data = data_split[4](",")
+
+            user.player.decorator = Decorator()
+            user.player.decorator.emoji = decorator_data[0]
+            user.player.decorator.tier = int(decorator_data[1])
+
+            await user.player.decorator.set_name()
+        
+        return user

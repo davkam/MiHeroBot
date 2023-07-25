@@ -1,10 +1,11 @@
+from log.logger import Logger
 import os.path
 
 class DecoratorList():
-    instance = None # Class attribute of Database() instance.
+    instance = None # Static class attribute for object reference.
 
     # Instantiated through singleton pattern, only one instance created.
-    # Instantiated at bot.ready_respond() and assigned to Database.instance attribute.
+    # Instantiated at bot's "ready_respond" method and assigned to static attribute.
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
@@ -15,23 +16,24 @@ class DecoratorList():
         self.tier1: list[str] = list()
         self.tier2: list[str] = list()
         self.tier3: list[str] = list()
+        self.log: Logger = Logger.data_logger
 
+    # Loads decorator list from file.
     async def load_decorators(self):
         try:
             if os.path.exists(self.file_path):
                 with open(file=self.file_path, mode="r") as decorator:
                     decorator_list = decorator.readlines()
 
-                print("> Decorator list successfully loaded from file.")
+                await self.log.write_log(log_data=f'Loaded decorator list from file "{self.file_path}"')
             else:
-                print(f'> Decorator list file "{self.file_path}" could not be found.')
-                return
+                await self.log.write_log(log_data=f'Failed to load decorator list from file "{self.file_path}". File not found.')
         except Exception as exception:
-            print(f'> Failed to retrieve decorator list from "{self.file_path}"\n' + str(exception))
-            return
+            await self.log.write_log(log_data=f'Failed to load decorator list from file "{self.file_path}".\n{str(exception)}')
         
         await self.sort_decorators(dec_list=decorator_list)
         
+    # Sorts decorator list (from file) into tier lists.
     async def sort_decorators(self, dec_list: list):
         dec_list: list[str] = dec_list
         sort_list: list[str] = list()

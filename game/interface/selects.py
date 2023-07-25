@@ -51,7 +51,7 @@ class PlayerSelect(Select):
         db = Database.instance
         if await self.fight_view.interaction_check(interaction = interaction):
             id = int(self.values[0])
-            self.fight_view.receiver_user: User = await db.get_userbyId(user_id = id)
+            self.fight_view.receiver_user: User = await db.get_user_by_id(user_id = id)
 
             button_view = FightButtonView(fight_view = self.fight_view, user = self.fight_view.receiver_user)
             message = f"**```arm\r\nMiHero !Fight\r\n```** **{self.fight_view.sender_user.player.get_name()}** `challenges` **{self.fight_view.receiver_user.player.get_name()}** `to a battle.`"

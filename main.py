@@ -1,17 +1,23 @@
 from bot.bot import Bot
+from log.logger import Logger
 
 # Main module for code execution.
-# Communicates with Bot() instance (at bot.py) through event listeners.
+# Communicates with bot instance through event listeners.
 
-# Bot() instantiation (single instance).
+print("> Booting up MiHeroBot...")
+
+# Instantiates new loggers.
+Logger.new_loggers()
+
+# Bot instantiation (single instance).
 bot = Bot()
 
-# Event listener for "on_ready()", runs when client is ready and connected.
+# Event listener "on_ready", runs when client is ready and connected.
 @bot.client.event
 async def on_ready():
     await bot.ready_respond()
 
-# Event listener for "on_message()", runs when a message is created in discord channel.
+# Event listener "on_message", runs when a message is created in discord channel.
 @bot.client.event
 async def on_message(msg):
     await bot.message_respond(msg)

@@ -2,7 +2,16 @@
 bot/token/token.json
 
 # Ignore data save files
-data/db_users.json
+data/users_save.json
+data/temp_save.txt
+data/rem_user.txt
+
+# Ignore log files
+log/logs/bot_logs.txt
+log/logs/combat_logs.txt
+log/logs/data_logs.txt
+log/logs/transaction_logger.txt
+log/logs/user_logs.txt
 
 # Ignore __pycaches__
 bot/__pycache__
@@ -16,4 +25,5 @@ game/interface/__pycache__
 game/logic/__pycache__
 game/objects/__pycache__
 images/__pycache__
+log/__pycache__
 users/__pycache__
