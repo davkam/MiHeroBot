@@ -4,17 +4,17 @@ from data.database import Database
 from discord.message import Message
 from game.objects.characters import MonsterClass
 from game.interface.embeds import FightEmbed, InventoryEmbed
-from game.interface.views import FightView, InventoryView
+from game.interface.views import FightView, InventoryView, TradeView
 from users.users import User
 
 # Commands() object containing attributes and methods involved in further executing the command chain. 
 # Instance instatiated at Bot.message_respond() and indirectly responds to an event "on_message()" (at main.py).
 class Commands():
-    def __init__(self, msg: Message):
-        self.db: Database = Database.instance   # Database() instance for access to registered users.
-        self.msg: Message = msg                 # discord.message.Message() instance to respond to interactions.                         
-        self.user: User = None                  # User() instance representing the "owner/creator" of the instance. 
-        self.user_inDb: bool = False            # Boolean, true if user exists in database (db.users).
+    def __init__(self, msg: Message, db_id: int):
+        self.db: Database = Database.instances[db_id]   # Database instance for access to registered users.
+        self.msg: Message = msg                         # discord message instance to respond to interactions.                         
+        self.user: User = None                          # User instance representing the "owner/creator" of the instance. 
+        self.user_inDb: bool = False                    # Boolean, true if user exists in database.
 
     # Sets self.user to current user of self.msg instance, runs from Bot.message_respond().
     # Returns user for checking interaction permisssion.
@@ -61,7 +61,7 @@ class Commands():
 
     async def fight(self):
         if self.user_inDb:
-            fight_view = FightView(user = self.user)
+            fight_view = FightView(user=self.user, db=self.db)
             msg = await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**\n", view = fight_view)
             
             # Waits for view interaction to finish (by timing out or calling stop) to continue with response.
@@ -140,7 +140,11 @@ class Commands():
 
     async def trade(self):
         if self.user_inDb:
-            pass
+            # trade_view = TradeView(user=self.user)
+            # await self.msg.channel.send(view=trade_view)
+            from game.interface.modals import TradeModal
+            trade_modal = TradeModal()
+            await self.msg.channel.send(view=trade_modal)
         else:
             pass
 

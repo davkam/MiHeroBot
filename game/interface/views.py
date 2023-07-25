@@ -1,13 +1,15 @@
+from data.database import Database
 from discord.interactions import Interaction
 from discord.ui import View
 from users.users import User
 
 class FightView(View):
-    def __init__(self, user: User):
+    def __init__(self, user: User, db: Database):
         from game.interface.selects import FightSelect
         super().__init__(timeout=60)
         self.sender_user: User = user
         self.receiver_user: User = None
+        self.db: Database = db
         self.success: bool = False
         self.select_type: str = None
         self.add_item(item=FightSelect(self))
@@ -33,6 +35,19 @@ class InventoryView(View):
         self.success: bool = False
         self.close_view: bool = False
         self.add_item(item=InventorySelect(self))
+
+    async def interaction_check(self, interaction: Interaction):
+        if interaction.user.id == self.user.user_id:
+            return True
+        return False
+
+class TradeView(View):
+    def __init__(self, user: User):
+        from game.interface.modals import TradeModal
+        super().__init__(timeout=60)
+        self.user: User = user
+        
+        self.add_item(item=TradeModal(self))
 
     async def interaction_check(self, interaction: Interaction):
         if interaction.user.id == self.user.user_id:

@@ -34,21 +34,21 @@ class FightSelect(Select):
         else:
             await interaction.response.defer()
 
-class PlayerSelect(Select):
+class PlayerSelect(Select): # TBD: Add "GO BACK" select.
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder = "\U0001F642 Select Player!")
         self.fight_view: FightView = fight_view
         self.set_options()
                 
     def set_options(self): # TBD: Pre-set options, alphabetically!
-        db = Database.instance
+        db = self.fight_view.db
         for user in db.users.values():
             if user != self.fight_view.sender_user:
                 user: User = user
                 self.add_option(label = f"{user.player.get_name()}", value = str(user.user_id), description = f"LVL: {user.player.lvl.get_lvl()} ATT: {user.player.attack.get_lvl()} DEF: {user.player.defense.get_lvl()}")
 
     async def callback(self, interaction: Interaction):
-        db = Database.instance
+        db = self.fight_view.db
         if await self.fight_view.interaction_check(interaction = interaction):
             id = int(self.values[0])
             self.fight_view.receiver_user: User = await db.get_user_by_id(user_id = id)
@@ -60,7 +60,7 @@ class PlayerSelect(Select):
         else:
             await interaction.response.defer()
 
-class MonsterSelect(Select):
+class MonsterSelect(Select): # TBD: Add "GO BACK" select.
     from game.interface.views import FightView
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder = "\U0001F47E Select Monster!")

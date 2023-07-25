@@ -2,16 +2,11 @@
 bot/token/token.json
 
 # Ignore data save files
-data/users_save.json
-data/temp_save.txt
-data/rem_user.txt
+data/saves/*
+data/saves/temp/*
 
 # Ignore log files
-log/logs/bot_logs.txt
-log/logs/combat_logs.txt
-log/logs/data_logs.txt
-log/logs/transaction_logger.txt
-log/logs/user_logs.txt
+log/logs/*
 
 # Ignore __pycaches__
 bot/__pycache__

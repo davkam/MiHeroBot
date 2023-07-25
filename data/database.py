@@ -2,34 +2,43 @@ from game.objects.characters import Player
 from game.objects.items import *
 from log.logger import Logger
 from users.users import User
+import discord
 import json
 import os.path
 
 # Database object containing user dictionaries, file paths, and a logger.
 # Logic for user related data is composed of two types, a temporary data (used during runtime for changes in a user object) and a permanent data (stored data of all users).
 class Database():
-    instance = None # Static class attribute of database instance.
-
-    # Instantiated through singleton pattern, only one instance created.
-    # Instantiated at bot's "ready_respond" method and assigned to a static class attribute.
-    def __new__(cls, *args, **kwargs):
-        if cls.instance is None:
-            cls.instance = super().__new__(cls)
-        return cls.instance
+    instances: dict = dict()    # Satic class dictionary of all database instances as values, accessed through guild(channel) ID as key. 
     
-    def __init__(self):
-        self.users: dict[int, User] = dict()        # Dictionary of user objects; KEY -> User ID, VALUE -> User object.
-        self.temp_data: dict[int, User] = dict()    # Temporary dictionary used in loading temporary save data.
-        self.save_file: str = "data/users_save.json"
-        self.temp_file: str = "data/temp_save.txt"
+    def __init__(self, db_id: int):
+        self.db_id: int = db_id                                         # Database ID, unique for each database, represents guild(channel) ID.
+        self.users: dict[int, User] = dict()                            # Dictionary of user objects; KEY -> User ID, VALUE -> User object.
+        self.temp_data: dict[int, User] = dict()                        # Temporary dictionary used in loading temporary save data.
+        self.save_file: str = f"data/saves/save_{db_id}.json"
+        self.temp_file: str = f"data/saves/temp/tempsave_{db_id}.txt"
         self.log: Logger = Logger.data_logger
+
+    # Static class method.
+    # Creates new instances of databases according to guilds(channels) connected to client.
+    @classmethod
+    async def load_databases(cls, client: discord.Client):
+        async for guild in client.fetch_guilds():
+            cls.instances[guild.id] = Database(db_id=guild.id)
+            db: Database = cls.instances[guild.id]
+
+            # Loads data for each database.
+            await db.log.write_log(log_data=f"Loading databases for {guild.name} (ID={guild.id})")
+            await db.load_data()
+            await db.load_temp_data()
+            print()
 
     # Adds new user object to dictionary.
     async def add_user(self, user: User):
         self.users[user.user_id] = user
         await user.new_player()
 
-        await self.log.write_log(log_data=f"Added user to database. User ID: {user.user_id}, UserName: {user.username}")
+        await self.log.write_log(log_data=f"Added user to database (ID={self.db_id}). USER ID: {user.user_id} USERNAME: {user.username}")
         await self.save_temp_data(user=user)
 
     # Removes existing user object from dictionary.
@@ -37,7 +46,7 @@ class Database():
         del self.users[user.user_id]
         await user.del_player()
 
-        await self.log.write_log(log_data=f"Removed user from database. User ID: {user.user_id}, UserName: {user.username}")
+        await self.log.write_log(log_data=f"Removed user from database (ID={self.db_id}). USER ID: {user.user_id} USERNAME: {user.username}")
         await self.save_temp_data(user=user, rem_user=True)
 
     # Gets existing user object from dictionary by id, returns user.
@@ -61,23 +70,26 @@ class Database():
                 write_data = await self.encode_save_data()
                 json.dump(write_data, user_data, indent = 4, sort_keys = True)
 
-            await self.log.write_log(log_data=f'Saved user data to file "{self.save_file}".')
+            await self.log.write_log(log_data=f'Saved user data to database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to save user data to file "{self.save_file}".\n{str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to save user data to database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"\nEXCEPTION: {str(exception)}\n')
 
     # Saves temporary user data to temporary save file. Used during runtime to save any changes to a user object. 
-    async def save_temp_data(self, user: User, rem_user: bool = False):
+    async def save_temp_data(self, user: User, rem_user: bool = False): # TBD: Add automatic temp data save.
         try:
             with open(self.temp_file, "a") as user_data:
                 if rem_user:
                     user_data.write("REMOVE USER:" + str(user.user_id) + "\n")
+                    # self.temp_data[user.user_id] = None
                 else:  
                     write_data = await self.encode_temp_data(user=user)
                     user_data.write(write_data + "\n")
-            
-            await self.log.write_log(log_data=f'Saved temporary user data ({user.username}) to file "{self.temp_file}".')
+                    # self.temp_data[user.user_id] = user
+            await self.log.write_log(log_data=f'Saved temporary user data (USER={user.username}) to database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to save temporary user data ({user.username}) to file "{self.temp_file}".\n{str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to save temporary user data (USER={user.username}) to database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"\nEXCEPTION: {str(exception)}\n')
+
+        # if len(self.temp_data) > 500: await self.merge_data()
 
     # Loads all users from json save file.    
     async def load_data(self):
@@ -87,13 +99,13 @@ class Database():
                     read_data = json.load(user_data)
                     if read_data:
                         await self.decode_save_data(saved_data=read_data)
-                        await self.log.write_log(log_data=f'Loaded user data from file "{self.save_file}".')
+                        await self.log.write_log(log_data=f'Loaded user data from database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
                     else:
-                        await self.log.write_log(log_data=f'No user data loaded from file "{self.save_file}". No data found.')
+                        await self.log.write_log(log_data=f'No user data loaded from database, no data found. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
             else:
-                await self.log.write_log(log_data=f'Failed to load user data from file "{self.save_file}". No file found.')
+                await self.log.write_log(log_data=f'Failed to load user data from database, no file found. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to load user data from file "{self.save_file}".\n{str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to load user data from database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"\nEXCEPTION: {str(exception)}\n')
 
     # Loads temporary user data from temporary save file.
     async def load_temp_data(self):
@@ -103,14 +115,14 @@ class Database():
                     read_data = temp_data.readlines()
                     if read_data:
                         await self.decode_temp_data(temp_data=read_data)
-                        await self.log.write_log(log_data=f'Loaded temporary user data from file "{self.temp_file}".')
+                        await self.log.write_log(log_data=f'Loaded temporary user data from database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
                         await self.merge_data()
                     else:
-                        await self.log.write_log(log_data=f'No user data loaded from temporary file "{self.temp_file}". No data found.')
+                        await self.log.write_log(log_data=f'No temporary user data loaded from database, no data found. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
             else:
-                await self.log.write_log(log_data=f'Failed to load temporary user data from file "{self.temp_file}". No file found.')
+                await self.log.write_log(log_data=f'Failed to load temporary user data from database, no file found. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to load temporary user data from file "{self.temp_file}".\n{str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to load temporary user data from database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"\nEXCEPTION: {str(exception)}\n')
 
     # Merges temporary user data to permanent user data, and clears temporary data.
     async def merge_data(self):
@@ -125,7 +137,7 @@ class Database():
         with open(self.temp_file, 'w') as temp_data:
             temp_data.truncate(0)
         
-        await self.log.write_log(log_data=f'Merged and cleared temporary user data from file "{self.temp_file}".')
+        await self.log.write_log(log_data=f'Merged temporary user data to database, temporary data cleared. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
 
         # Creates new empty dictionary.
         self.temp_data = dict()

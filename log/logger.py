@@ -4,7 +4,7 @@ class Logger():
     # Static class attributes for object access.
     bot_logger = None           # Contains bot connect related logs.
     data_logger = None          # Contains database related logs.
-    user_logger = None          # Contains player related logs.
+    player_logger = None        # Contains player related logs.
     combat_logger = None        # Contains combat related logs.
     transaction_logger = None   # Contains transaction related logs.
 
@@ -17,7 +17,7 @@ class Logger():
     def new_loggers(cls):
         cls.bot_logger = Logger(file="log/logs/bot_logs.txt")
         cls.data_logger = Logger(file="log/logs/data_logs.txt")
-        cls.user_logger = Logger(file="log/logs/user_logs.txt")
+        cls.player_logger = Logger(file="log/logs/user_logs.txt")
         cls.combat_logger = Logger(file="log/logs/combat_logs.txt")
         cls.transaction_logger = Logger(file="log/logs/transaction_logger.txt")
 

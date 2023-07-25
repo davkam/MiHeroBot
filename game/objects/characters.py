@@ -129,7 +129,7 @@ class Player(Character):
         combat = Combat(objA = self, objB = player)
         await combat.set_stats()
         await combat.run_combat()
-        log = combat.log
+        log = combat.notes
 
         combat = None
         return log
@@ -143,7 +143,7 @@ class Player(Character):
         combat = Combat(objA = self, objB = monster)
         await combat.set_stats()
         await combat.run_combat()
-        log = combat.log
+        log = combat.notes
 
         monster = None
         combat = None

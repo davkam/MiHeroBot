@@ -1,4 +1,3 @@
-import discord
 from .commands.commands import Commands
 from data.database import Database
 from discord.message import Message
@@ -6,6 +5,7 @@ from game.decorators.decorators import DecoratorList
 from images.image_links import ImageLinks
 from log.logger import Logger
 from .token.token import Token
+import discord
 
 # Bot object containing attributes required to instatiate and run bot.
 # Instantiated as a single instance module-level object (at main.py).
@@ -44,10 +44,8 @@ class Bot():
         await self.log.write_log(log_data='Bot ID: {0}'.format(self.client.application_id))
 
         print("\n[LOADING DATA FILES...]")
-        # Database instantiation (single instance).
-        db = Database()
-        await db.load_data()
-        await db.load_temp_data()
+        # Instantiates new databases (guild unique) and loads their respective data.
+        await Database.load_databases(client=self.client)
 
         # Image links instantiation (single instance).
         img_links = ImageLinks()
@@ -71,7 +69,7 @@ class Bot():
         
         if msg.content.startswith("!"):
             # New commands instance initialized with current message and current user.
-            commands = Commands(msg)
+            commands = Commands(msg=msg, db_id=msg.guild.id)
             user = await commands.set_user()
 
             # Checks user permission and returns if false.
