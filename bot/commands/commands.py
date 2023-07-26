@@ -96,6 +96,9 @@ class Commands():
         else:
             await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
+    async def roulette(self):
+        pass
+
     async def inventory(self):
         if self.user_inDb:
             embed_msg = await self.msg.channel.send(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**")
@@ -140,11 +143,7 @@ class Commands():
 
     async def trade(self):
         if self.user_inDb:
-            # trade_view = TradeView(user=self.user)
-            # await self.msg.channel.send(view=trade_view)
-            from game.interface.modals import TradeModal
-            trade_modal = TradeModal()
-            await self.msg.channel.send(view=trade_modal)
+            pass
         else:
             pass
 
@@ -178,10 +177,6 @@ class Commands():
 
     async def test(self):
         if self.user_inDb:
-            # await self.user.player.inventory.add_slots(quantity=40)
-            # log = await self.user.player.loot_generator(loot_index=3)
-
-            # await self.msg.channel.send(content=log)
             pass
         else:   
             pass

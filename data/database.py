@@ -38,7 +38,7 @@ class Database():
         self.users[user.user_id] = user
         await user.new_player()
 
-        await self.log.write_log(log_data=f"Added user to database (ID={self.db_id}). USER ID: {user.user_id} USERNAME: {user.username}")
+        await self.log.write_log(log_data=f"Added user to database (ID={self.db_id}). USER ID: {user.user_id}, USERNAME: {user.username}")
         await self.save_temp_data(user=user)
 
     # Removes existing user object from dictionary.
@@ -46,7 +46,7 @@ class Database():
         del self.users[user.user_id]
         await user.del_player()
 
-        await self.log.write_log(log_data=f"Removed user from database (ID={self.db_id}). USER ID: {user.user_id} USERNAME: {user.username}")
+        await self.log.write_log(log_data=f"Removed user from database (ID={self.db_id}). USER ID: {user.user_id}, USERNAME: {user.username}")
         await self.save_temp_data(user=user, rem_user=True)
 
     # Gets existing user object from dictionary by id, returns user.
@@ -70,9 +70,9 @@ class Database():
                 write_data = await self.encode_save_data()
                 json.dump(write_data, user_data, indent = 4, sort_keys = True)
 
-            await self.log.write_log(log_data=f'Saved user data to database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
+            await self.log.write_log(log_data=f'Saved user data to database. DATABASE ID: {self.db_id}, FILE: "{self.save_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to save user data to database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"\nEXCEPTION: {str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to save user data to database. DATABASE ID: {self.db_id}, FILE: "{self.save_file}"\nEXCEPTION: {str(exception)}\n')
 
     # Saves temporary user data to temporary save file. Used during runtime to save any changes to a user object. 
     async def save_temp_data(self, user: User, rem_user: bool = False): # TBD: Add automatic temp data save.
@@ -80,14 +80,12 @@ class Database():
             with open(self.temp_file, "a") as user_data:
                 if rem_user:
                     user_data.write("REMOVE USER:" + str(user.user_id) + "\n")
-                    # self.temp_data[user.user_id] = None
                 else:  
                     write_data = await self.encode_temp_data(user=user)
                     user_data.write(write_data + "\n")
-                    # self.temp_data[user.user_id] = user
-            await self.log.write_log(log_data=f'Saved temporary user data (USER={user.username}) to database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
+            await self.log.write_log(log_data=f'Saved temporary user data (USER={user.username}) to database. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to save temporary user data (USER={user.username}) to database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"\nEXCEPTION: {str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to save temporary user data (USER={user.username}) to database. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"\nEXCEPTION: {str(exception)}\n')
 
         # if len(self.temp_data) > 500: await self.merge_data()
 
@@ -99,13 +97,13 @@ class Database():
                     read_data = json.load(user_data)
                     if read_data:
                         await self.decode_save_data(saved_data=read_data)
-                        await self.log.write_log(log_data=f'Loaded user data from database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
+                        await self.log.write_log(log_data=f'Loaded user data from database. DATABASE ID: {self.db_id}, FILE: "{self.save_file}"')
                     else:
-                        await self.log.write_log(log_data=f'No user data loaded from database, no data found. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
+                        await self.log.write_log(log_data=f'No user data loaded from database, no data found. DATABASE ID: {self.db_id}, FILE: "{self.save_file}"')
             else:
-                await self.log.write_log(log_data=f'Failed to load user data from database, no file found. DATABASE ID: {self.db_id} FILE: "{self.save_file}"')
+                await self.log.write_log(log_data=f'Failed to load user data from database, no file found. DATABASE ID: {self.db_id}, FILE: "{self.save_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to load user data from database. DATABASE ID: {self.db_id} FILE: "{self.save_file}"\nEXCEPTION: {str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to load user data from database. DATABASE ID: {self.db_id}, FILE: "{self.save_file}"\nEXCEPTION: {str(exception)}\n')
 
     # Loads temporary user data from temporary save file.
     async def load_temp_data(self):
@@ -115,14 +113,14 @@ class Database():
                     read_data = temp_data.readlines()
                     if read_data:
                         await self.decode_temp_data(temp_data=read_data)
-                        await self.log.write_log(log_data=f'Loaded temporary user data from database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
+                        await self.log.write_log(log_data=f'Loaded temporary user data from database. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"')
                         await self.merge_data()
                     else:
-                        await self.log.write_log(log_data=f'No temporary user data loaded from database, no data found. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
+                        await self.log.write_log(log_data=f'No temporary user data loaded from database, no data found. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"')
             else:
-                await self.log.write_log(log_data=f'Failed to load temporary user data from database, no file found. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
+                await self.log.write_log(log_data=f'Failed to load temporary user data from database, no file found. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to load temporary user data from database. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"\nEXCEPTION: {str(exception)}\n')
+            await self.log.write_log(log_data=f'Failed to load temporary user data from database. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"\nEXCEPTION: {str(exception)}\n')
 
     # Merges temporary user data to permanent user data, and clears temporary data.
     async def merge_data(self):
@@ -137,7 +135,7 @@ class Database():
         with open(self.temp_file, 'w') as temp_data:
             temp_data.truncate(0)
         
-        await self.log.write_log(log_data=f'Merged temporary user data to database, temporary data cleared. DATABASE ID: {self.db_id} FILE: "{self.temp_file}"')
+        await self.log.write_log(log_data=f'Merged temporary user data to database, temporary data cleared. DATABASE ID: {self.db_id}, FILE: "{self.temp_file}"')
 
         # Creates new empty dictionary.
         self.temp_data = dict()
@@ -179,32 +177,33 @@ class Database():
         encoded_string = f"{user.user_id},{user.username}:"
         encoded_string += f"{user.player.name},{user.player.attack.get_xp()},{user.player.defense.get_xp()},{user.player.health.get_xp()},{user.player.lvl.get_xp()},{user.player.gold}:"
         encoded_string += f"{user.player.weapon.weapon_class.name},{user.player.weapon.attack.get_xp()},{user.player.armor.armor_class.name},{user.player.armor.defense.get_xp()}:"
-        encoded_string += f"{user.player.inventory.slots};"
+        encoded_string += f"{user.player.inventory.slots}"
 
         for item in user.player.inventory.items:
             if isinstance(item, Weapon):
-                encoded_string += f"Weapon,{item.weapon_class.name},{item.attack.get_xp()};"
+                encoded_string += f";Weapon,{item.weapon_class.name},{item.attack.get_xp()}"
             elif isinstance(item, Armor):
-                encoded_string += f"Armor,{item.armor_class.name},{item.defense.get_xp()};"
+                encoded_string += f";Armor,{item.armor_class.name},{item.defense.get_xp()}"
             elif isinstance(item, Potion):
-                encoded_string += f"Potion,{item.potion_type.name},{item.potion_quality};"
+                encoded_string += f";Potion,{item.potion_type.name},{item.potion_quality}"
             elif isinstance(item, Kit):
-                encoded_string += f"Kit,{item.kit_type.name},{item.kit_quality};"
+                encoded_string += f";Kit,{item.kit_type.name},{item.kit_quality}"
             elif isinstance(item, Decorator):
-                encoded_string += f"Decorator,{item.emoji},{item.tier};"
+                encoded_string += f";Decorator,{item.emoji},{item.tier}"
 
         if user.player.decorator != None:
-            encoded_string +=f":{user.player.decorator.emoji},{user.player.decorator.tier}:"
+            encoded_string +=f":{user.player.decorator.emoji},{user.player.decorator.tier}"
 
         return encoded_string 
     
     # Decodes string of user data to a user object. Returns user object.
     async def decoder(self, data: str) -> User:
-        data_split: str = data.split(":")
-        user_data: str = data_split[0].split(",")
-        player_data: str = data_split[1].split(",")
-        gear_data: str = data_split[2].split(",")
-        inv_data: str = data_split[3].split(";")
+        data = data.strip()
+        data_split: list[str] = data.split(":")
+        user_data: list[str] = data_split[0].split(",")
+        player_data: list[str] = data_split[1].split(",")
+        gear_data: list[str] = data_split[2].split(",")
+        inv_data: list[str] = data_split[3].split(";")
 
         # Assigns user data.
         user = User()
@@ -263,7 +262,8 @@ class Database():
 
                 await item.set_name()
 
-            await user.player.inventory.add_item(item=item)
+            if item != None:
+                await user.player.inventory.add_item(item=item)
             item = None
 
         # Assigns player decorator, if decorator exists.

@@ -1,4 +1,3 @@
-from data.database import Database
 from discord.interactions import Interaction
 from discord.ui import Select
 from game.interface.views import FightView, FightButtonView, InventoryView

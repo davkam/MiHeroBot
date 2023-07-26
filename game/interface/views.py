@@ -43,11 +43,10 @@ class InventoryView(View):
 
 class TradeView(View):
     def __init__(self, user: User):
-        from game.interface.modals import TradeModal
         super().__init__(timeout=60)
         self.user: User = user
         
-        self.add_item(item=TradeModal(self))
+        self.add_item()
 
     async def interaction_check(self, interaction: Interaction):
         if interaction.user.id == self.user.user_id:

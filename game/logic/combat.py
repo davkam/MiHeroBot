@@ -253,4 +253,4 @@ class Combatant():
     async def comparative_stats(self, combatant):
         combatant: Combatant = combatant
         self.acc = round((self.att_acc / combatant.def_acc) * 100)
-        self.inacc = round((combatant.def_acc / self.att_acc) * 100)
+        self.inacc = round((combatant.def_acc / self.att_acc) * 100) # Not needed!
