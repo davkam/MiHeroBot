@@ -21,12 +21,12 @@ class Token():
                     get_token = json.load(token_file)
                     self.value = get_token["TOKEN"]
 
-                asyncio.run(self.log.write_log(log_data=f'Loaded token from file "{self.file_path}".'))
+                asyncio.run(self.log.write_log(log_data=f'Loaded token from file. FILE: "{self.file_path}"'))
             else:
-                asyncio.run(self.log.write_log(log_data=f'Failed to load token from file "{self.file_path}". File not found.'))
+                asyncio.run(self.log.write_log(log_data=f'Failed to load token from file, file not found. FILE: "{self.file_path}"'))
                 self.create_token()
         except Exception as exception:
-            asyncio.run(self.log.write_log(log_data=f'Failed to load token from file "{self.file_path}".\n{str(exception)}'))
+            asyncio.run(self.log.write_log(log_data=f'Failed to load token from file. FILE: "{self.file_path}"\nEXCEPTION: {str(exception)}'))
             self.create_token()
     
     # Creates new token, sets token value and creates new .json-file to file path location.

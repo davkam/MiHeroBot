@@ -1,7 +1,7 @@
 from .commands.commands import Commands
 from data.database import Database
 from discord.message import Message
-from game.decorators.decorators import DecoratorList
+from emoticons.emoticons import Emoticons
 from images.image_links import ImageLinks
 from log.logger import Logger
 from .token.token import Token
@@ -51,9 +51,9 @@ class Bot():
         img_links = ImageLinks()
         await img_links.load_images()
 
-        # Decorator list instantiation (single instance).
-        dec_list = DecoratorList()
-        await dec_list.load_decorators()
+        # Emoticon instantiation (single instance).
+        emoticons = Emoticons()
+        await emoticons.load_emoticons()
 
         print("\n> Connected to following guilds:")
         async for guild in self.client.fetch_guilds():

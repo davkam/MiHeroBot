@@ -1,11 +1,11 @@
 # -*- coding: ISO-8859-15 -*-
-from discord.message import Message
-from extras.string_manager import StringManager
-from users.users import User
-import asyncio
-import discord
 
-class FightEmbed(discord.Embed):
+from discord.embeds import Embed
+from discord.message import Message
+from tools.tools import StringManager
+import asyncio
+
+class FightEmbed(Embed):
     def __init__(self, msg: Message, log: list[str]):
         super().__init__()
         self.msg: Message = msg
@@ -55,7 +55,6 @@ class FightEmbed(discord.Embed):
             await self.msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n", embed = self)
             await asyncio.sleep(delay=0.5)
 
-            # TBD: Possible to edit message instead of new message?
             await end_msg.edit(content = self.log[i+6])
             await asyncio.sleep(delay=1)
             if self.log[i+7] != "NONE":
@@ -65,44 +64,3 @@ class FightEmbed(discord.Embed):
                     await end_msg.edit(content = sum_log)
                 else:
                     await end_msg.edit(content = sum_log)
-
-class InventoryEmbed(discord.Embed):
-    def __init__(self, msg: Message, user: User):
-        super().__init__()
-        self.msg: Message = msg
-        self.user: User = user
-
-    async def run_embed(self):
-        items = await self.user.player.inventory.get_items(string_format=True)
-        weapons = ""; armors = ""; potions = ""; kits = ""; decorators = ""
-        inventory = f"{len(self.user.player.inventory.items)}/{self.user.player.inventory.slots}"
-
-        if items != None:
-            for item in items:
-                if item.endswith("WEAPON"):
-                    weapons += f"`{item}`\n"
-                elif item.endswith("ARMOR"):
-                    armors += f"`{item}`\n"
-                elif item.endswith("POTION"):
-                    potions += f"`{item}`\n"
-                elif item.endswith("KIT"):
-                    kits += f"`{item}`\n"
-                elif item.startswith("TIER"):
-                    decorators += f"`{item}`\n"
-        
-        if weapons == "": weapons = "`NONE`"
-        if armors == "": armors = "`NONE`"
-        if potions == "": potions = "`NONE`"
-        if kits == "": kits = "`NONE`"
-        if decorators == "": decorators = "`NONE`"
-
-        self.clear_fields()
-        self.add_field(name="\U00002694\uFE0F  WEAPONS", value=f"{weapons}", inline=True)
-        self.add_field(name="\U0001F4B0  GOLD", value=f"`{self.user.player.gold} COINS`", inline=True)
-        self.add_field(name="\U0001F6E1  ARMORS", value=f"{armors}", inline=True)
-        self.add_field(name="\U00002697\uFE0F  POTIONS", value=f"{potions}", inline=True)
-        self.add_field(name="\U0001F6E0  KITS", value=f"{kits}", inline=True)
-        self.add_field(name="\U0001F642  DECORATORS", value=f"{decorators}", inline=True)
-        self.set_footer(text=f"\U0001F4BC  INVENTORY: {inventory}")
-
-        await self.msg.edit(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**", embed=self)

@@ -9,16 +9,5 @@ data/saves/temp/*.txt
 log/logs/*.txt
 
 # Ignore __pycaches__
-bot/__pycache__
-bot/commands/__pycache__
-bot/token/__pycache__
-data/__pycache__
-extras/__pycache__
-game/decorators/__pycache__
-game/features/__pycache__
-game/interface/__pycache__
-game/logic/__pycache__
-game/objects/__pycache__
-images/__pycache__
-log/__pycache__
-users/__pycache__
+*/__pycache__
+*/*/__pycache__

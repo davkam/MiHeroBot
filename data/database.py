@@ -39,7 +39,6 @@ class Database():
         await user.new_player()
 
         await self.log.write_log(log_data=f"Added user to database (ID={self.db_id}). USER ID: {user.user_id}, USERNAME: {user.username}")
-        await self.save_temp_data(user=user)
 
     # Removes existing user object from dictionary.
     async def rem_user(self, user: User):
@@ -47,7 +46,6 @@ class Database():
         await user.del_player()
 
         await self.log.write_log(log_data=f"Removed user from database (ID={self.db_id}). USER ID: {user.user_id}, USERNAME: {user.username}")
-        await self.save_temp_data(user=user, rem_user=True)
 
     # Gets existing user object from dictionary by id, returns user.
     async def get_user_by_id(self, user_id: int) -> User:

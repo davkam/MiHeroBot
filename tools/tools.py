@@ -1,6 +1,46 @@
-# Static class containing methods used in game modules.
-class Tools():
-    # Returns a progress bar in string format based on percentage value of act_value to max_value. 
+# Static class containing methods involved in string management.
+class StringManager():
+    # Checks lengths of string and caps it to max length.
+    async def cap_string(string: str, max_length: int) -> str:
+        if string.endswith("\u200B"):
+            string = string[:-1]
+
+        str_length = len(string)
+
+        if str_length > max_length:
+            length_diff = str_length - max_length
+            rem_chars = length_diff + 3
+            return f"{string[:-rem_chars]}..."
+        else:
+            return string
+
+    # Centers string based on max length, returns a centered string.
+    async def center_string(string: str, max_length: int) -> str:
+        empty_space = " "
+        str_length = len(string)
+
+        if string.endswith("\u200B"):
+            string = string[:-1]
+            max_length -= 2
+
+        if str_length >= max_length - 2:
+            str_result = await StringManager.cap_string(string = string, max_length = max_length - 2)
+        else:
+            str_result = string
+
+        str_length = len(str_result)
+        length_diff = max_length - str_length - 2
+        if length_diff > 0:
+            left_spaces = int(length_diff / 2)
+            right_spaces = length_diff - left_spaces
+        else:
+            left_spaces = 0; right_spaces = 0
+
+        return f"-{left_spaces * empty_space}{str_result}{right_spaces * empty_space}-"
+
+# Static class containing a progress bar method.
+class Bar():
+    # Returns a progress bar in string format based on percentage value of actual value to max value. 
     async def get_bar(act_val, max_val) -> str:
         bar_val = max_val / 20
         bars = round(act_val / bar_val)
@@ -33,15 +73,3 @@ class Tools():
         else: ret_bars = bar_GUI[20]
 
         return ret_bars
-    
-    # Defines a custom sorting key for item object, used in sorting inventory list.
-    def item_sortkey(item):
-        from game.objects.items import Weapon, Armor, Potion, Kit, Decorator
-
-        # Assigns a key based on type of item.
-        if isinstance(item, Weapon): return 0
-        elif isinstance(item, Armor): return 1
-        elif isinstance(item, Potion): return 2
-        elif isinstance(item, Kit): return 3
-        elif isinstance(item, Decorator): return 4
-        else: return 5

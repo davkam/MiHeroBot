@@ -24,8 +24,8 @@ class ImageLinks():
                 with open(self.file_path, "r") as token_file:
                     self.links = token_file.readlines()
 
-                await self.log.write_log(log_data=f'Loaded image links from file "{self.file_path}".')
+                await self.log.write_log(log_data=f'Loaded image links from file. FILE: "{self.file_path}"')
             else:
-                await self.log.write_log(log_data=f'Failed to load image links from file "{self.file_path}". File not found.')
+                await self.log.write_log(log_data=f'Failed to load image links from file, file not found. FILE: "{self.file_path}"')
         except Exception as exception:
-            await self.log.write_log(log_data=f'Failed to load image links from file "{self.file_path}".\n{str(exception)}')
+            await self.log.write_log(log_data=f'Failed to load image links from file. FILE: "{self.file_path}"\nEXCEPTION: {str(exception)}')

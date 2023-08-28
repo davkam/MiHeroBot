@@ -3,8 +3,11 @@
 from data.database import Database
 from discord.message import Message
 from game.objects.characters import MonsterClass
-from game.interface.embeds import FightEmbed, InventoryEmbed
-from game.interface.views import FightView, InventoryView, TradeView
+from interface.embeds.fight_embed import FightEmbed
+from interface.embeds.inventory_embed import InventoryEmbed
+from interface.views.fight_view import FightView
+from interface.views.inventory_view import InventoryView
+from interface.views.trade_view import TradeView
 from users.users import User
 
 # Commands() object containing attributes and methods involved in further executing the command chain. 
@@ -47,6 +50,7 @@ class Commands():
             await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
         else:
             await self.db.add_user(user=self.user)
+            await self.db.save_temp_data(user=self.user)
 
             await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
 
@@ -54,6 +58,7 @@ class Commands():
         if self.user_inDb:
             player_name = self.user.player.get_name()
             await self.db.rem_user(user = self.user)
+            await self.db.save_temp_data(user=self.user, rem_user=True)
 
             await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{player_name}** `was deleted`.\n`To create a new hero use command !New.`")
         else:
@@ -80,8 +85,7 @@ class Commands():
                         log = await self.user.player.fight_monster(monster_class = MonsterClass.MEDIUM)
                     elif fight_view.select_type == "MonsterHeavy":
                         log = await self.user.player.fight_monster(monster_class = MonsterClass.HEAVY)
-                else:
-                    # TBD: More options!
+                else: # TBD: More options!
                     pass 
 
                 # New FightEmbed() instance to run fight simulation in response to interaction.
@@ -92,6 +96,7 @@ class Commands():
             else:
                 await msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**`Interaction timed out!`", view = None)
 
+            await self.db.save_temp_data(user=self.user)
             fight_view = None
         else:
             await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
@@ -111,6 +116,7 @@ class Commands():
 
             # Waits for view interaction to finish (by timing out or calling stop) to continue with response.
             await inventory_view.wait()
+
             # Empty message to edit as a response to interaction.
             response_msg = await self.msg.channel.send(content="\u200b")
 
@@ -138,12 +144,16 @@ class Commands():
                     await view_msg.edit(content=f"`Interaction timed out, inventory closed!`", view=None)
                 
                 await inventory_view.wait()
+            
+            await self.db.save_temp_data(user=self.user)
         else:
             await self.msg.channel.send(content="**```arm\r\nMiHero !Inventory\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
     async def trade(self):
         if self.user_inDb:
-            pass
+            trade_view = TradeView(user=self.user, db=self.db)
+
+            await self.msg.channel.send(content=f"**```arm\r\n{self.user.player.name} !Trade\r\n```**", view=trade_view)
         else:
             pass
 

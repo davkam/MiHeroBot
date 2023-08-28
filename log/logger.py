@@ -17,7 +17,7 @@ class Logger():
     def new_loggers(cls):
         cls.bot_logger = Logger(file="log/logs/bot_logs.txt")
         cls.data_logger = Logger(file="log/logs/data_logs.txt")
-        cls.player_logger = Logger(file="log/logs/user_logs.txt")
+        cls.player_logger = Logger(file="log/logs/player_logs.txt")
         cls.combat_logger = Logger(file="log/logs/combat_logs.txt")
         cls.transaction_logger = Logger(file="log/logs/transaction_logger.txt")
 

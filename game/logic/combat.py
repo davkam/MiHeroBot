@@ -1,7 +1,6 @@
 # -*- coding: ISO-8859-15 -*-
 
-from extras.tools import Tools
-from extras.string_manager import StringManager
+from tools.tools import Bar, StringManager
 from game.objects.characters import Character, Monster, Player, MonsterClass
 from images.image_links import ImageLinks
 from log.logger import Logger
@@ -13,7 +12,7 @@ class Combat():
         self.objB: Combatant = Combatant(objB)
         self.notes: list[str] = list()
         self.images: list[str] = ImageLinks.instance.links
-        self.log: Logger = Logger.combat_logger             #TBD!
+        self.log: Logger = Logger.combat_logger
 
     async def set_stats(self):
         await self.objA.combat_stats()
@@ -88,8 +87,8 @@ class Combat():
 
                     hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 20)
 
-                hp_barA = await Tools.get_bar(self.objA.hp, self.objA.max_hp)
-                hp_barB = await Tools.get_bar(self.objB.hp, self.objB.max_hp)
+                hp_barA = await Bar.get_bar(self.objA.hp, self.objA.max_hp)
+                hp_barB = await Bar.get_bar(self.objB.hp, self.objB.max_hp)
                 hp_percA = round((self.objA.hp / self.objA.max_hp) * 100)
                 hp_percB = round((self.objB.hp / self.objB.max_hp) * 100)
 
@@ -128,8 +127,8 @@ class Combat():
 
                     hit_log = await StringManager.center_string(string = f"BLUNT HIT: {dmg}", max_length = 20)
 
-                hp_barA = await Tools.get_bar(self.objA.hp, self.objA.max_hp)
-                hp_barB = await Tools.get_bar(self.objB.hp, self.objB.max_hp)
+                hp_barA = await Bar.get_bar(self.objA.hp, self.objA.max_hp)
+                hp_barB = await Bar.get_bar(self.objB.hp, self.objB.max_hp)
                 hp_percA = round((self.objA.hp / self.objA.max_hp) * 100)
                 hp_percB = round((self.objB.hp / self.objB.max_hp) * 100)
 
@@ -178,6 +177,8 @@ class Combat():
             w_name = await StringManager.center_string(string = winner.get_name(), max_length = 20)
             l_name = await StringManager.center_string(string = loser.get_name(), max_length = 20)
             self.notes.append([w_name, l_name])
+
+        await self.log.write_log(log_data=f"{self.objA.character.name} initiated combat with {self.objB.character.name}. WINNER: {winner.name}, LOSER: {loser.name}")
 
         # Setting outcome according to winner/loser types.
         if type(winner) == Player and type(loser) == Monster:

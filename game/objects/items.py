@@ -1,4 +1,4 @@
-from game.decorators.decorators import DecoratorList
+from emoticons.emoticons import Emoticons
 from enum import Enum
 from game.logic.stats import *
 import random
@@ -81,6 +81,20 @@ class Item():
             log = await decorator.use_decorator(player=player)
 
         return log
+    
+    # Static class method used in sorting item objects.
+    # Defines a custom sorting key for item object.
+    @staticmethod
+    def item_sortkey(item) -> int:
+        from game.objects.items import Weapon, Armor, Potion, Kit, Decorator
+
+        # Assigns a sorting key based on type of item.
+        if isinstance(item, Weapon): return 0
+        elif isinstance(item, Armor): return 1
+        elif isinstance(item, Potion): return 2
+        elif isinstance(item, Kit): return 3
+        elif isinstance(item, Decorator): return 4
+        else: return None
     
 class Weapon(Item): # TBD: Change attack attribute name to level and type to Stats()?
     def __init__ (self, weapon_class: GearType = None, attack: Attack = None):
@@ -357,17 +371,17 @@ class Decorator(Item):
         else: self.tier = 1
 
         if self.tier == 1:
-            last_index = len(DecoratorList.instance.tier1) - 1
+            last_index = len(Emoticons.instance.tier1) - 1
             rng = random.randint(0, last_index)
-            self.emoji = DecoratorList.instance.tier1[rng]
+            self.emoji = Emoticons.instance.tier1[rng]
         elif self.tier == 2:
-            last_index = len(DecoratorList.instance.tier2) - 1
+            last_index = len(Emoticons.instance.tier2) - 1
             rng = random.randint(0, last_index)
-            self.emoji = DecoratorList.instance.tier2[rng]
+            self.emoji = Emoticons.instance.tier2[rng]
         else:
-            last_index = len(DecoratorList.instance.tier3) - 1
+            last_index = len(Emoticons.instance.tier3) - 1
             rng = random.randint(0, last_index)
-            self.emoji = DecoratorList.instance.tier3[rng]
+            self.emoji = Emoticons.instance.tier3[rng]
 
         await self.set_name()
 

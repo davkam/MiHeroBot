@@ -2,6 +2,7 @@ from enum import Enum
 from game.features.inventory import Inventory
 from game.logic.stats import *
 from game.objects.items import *
+from log.logger import Logger
 import random
 
 class MonsterClass(Enum):
@@ -116,6 +117,7 @@ class Player(Character):
         self.inventory: Inventory = Inventory()
         self.decorator: Decorator = None
         self.gold: int = gold
+        self.log: Logger = Logger.player_logger
 
     def get_name(self):
         if self.decorator != None:
@@ -153,18 +155,18 @@ class Player(Character):
         log = f"**```arm\r\n{self.name} !Stats\r\n```**\u200B"
 
         log += "**`|||||||||  HERO STATS  |||||||||`**\n"
-        log += f"||||| `PLAYER NAME:`**{self.get_name()}**\n"
-        log += f"||||| `PLAYER LEVEL:`**`{self.lvl.get_lvl()}`** **{await self.lvl.progress_bar()}** **`({await self.lvl.progress_perc()}%)`**\n"
-        log += f"||||| `PLAYER ATTACK:`**`{self.attack.get_lvl()}`** **{await self.attack.progress_bar()}** **`({await self.attack.progress_perc()}%)`**\n"
-        log += f"||||| `PLAYER DEFENSE:`**`{self.defense.get_lvl()}`** **{await self.defense.progress_bar()}** **`({await self.defense.progress_perc()}%)`**\n"
-        log += f"||||| `PLAYER HEALTH:`**`{self.health.get_hp()}`** **{await self.health.progress_bar()}** **`({await self.health.progress_perc()}%)`**\n"
-        log += f"||||| `PLAYER GOLD:`**`{self.gold}`**\n"
+        log += f"||||| `💠 PLAYER NAME:`**{self.get_name()}**\n"
+        log += f"||||| `\U00002B50 PLAYER LEVEL:`**`{self.lvl.get_lvl()}`** **{await self.lvl.progress_bar()}** **`({await self.lvl.progress_perc()}%)`**\n"
+        log += f"||||| `\U00002694\uFE0F PLAYER ATTACK:`**`{self.attack.get_lvl()}`** **{await self.attack.progress_bar()}** **`({await self.attack.progress_perc()}%)`**\n"
+        log += f"||||| `\U0001F6E1\uFE0F PLAYER DEFENSE:`**`{self.defense.get_lvl()}`** **{await self.defense.progress_bar()}** **`({await self.defense.progress_perc()}%)`**\n"
+        log += f"||||| `\U00002764\uFE0F PLAYER HEALTH:`**`{self.health.get_hp()}`** **{await self.health.progress_bar()}** **`({await self.health.progress_perc()}%)`**\n"
+        log += f"||||| `\U0001F4B0 PLAYER GOLD:`**`{self.gold}`**\n"
 
         log += "**`|||||||||  GEAR STATS  |||||||||`**\n"
-        log += f"||||| `WEAPON CLASS:`**`{self.weapon.weapon_class.name}`**\n"
-        log += f"||||| `WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
-        log += f"||||| `ARMOR CLASS:`**`{self.armor.armor_class.name}`**\n"
-        log += f"||||| `ARMOR DEFENSE:`**`{self.armor.defense.get_lvl()}`**\n\r"
+        log += f"||||| `\U00002694\uFE0F WEAPON CLASS:`**`{self.weapon.weapon_class.name}`**\n"
+        log += f"||||| `🌟 WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
+        log += f"||||| `\U0001F6E1\uFE0F ARMOR CLASS:`**`{self.armor.armor_class.name}`**\n"
+        log += f"||||| `🌟 ARMOR LEVEL:`**`{self.armor.defense.get_lvl()}`**\n\r"
 
         return log
     
@@ -204,6 +206,8 @@ class Player(Character):
         log += f"||||| `DEFENSE GAIN:`**`{def_gain}`**`experience points. DEFENSE:`**`{self.defense.get_lvl()}`** **{def_bar}** **`({def_perc}%)`**\n"
         log += f"||||| `HEALTH GAIN:`**`{hp_gain}`**`experience points. HEALTH:`**`{self.health.get_hp()}`** **{hp_bar}** **`({hp_perc}%)`**\n"
         log += f"||||| `AVERAGE LEVEL:`**`{self.lvl.get_lvl()}`** **{lvl_bar}** **`({lvl_perc}%)`**\r\n"
+
+        await self.log.write_log(log_data=f"{self.name} gained experience. ATT: {att_gain}, DEF: {def_gain}, HP: {hp_gain}")
 
         return log
 
@@ -246,18 +250,24 @@ class Player(Character):
             loot_items.append(random_item)
             loot_roll -= 1
 
-        log = f"**```arm\r\n{self.name} !LootGenerator\r\n```**"
+        loot_notes = ""
+        notes = f"**```arm\r\n{self.name} !LootGenerator\r\n```**"
         if inv_full == False:
             for item in loot_items:
-                log += f"||||| `LOOT ITEM:`**`{item.name}`**\n"
+                notes += f"||||| `LOOT ITEM:`**`{item.name}`**\n"
+                loot_notes += f"{item.name}, "
                 await self.inventory.add_item(item=item)
-        else: log += "`Inventory full, no loot rewarded!`\n`Please free up space or buy more inventory space.`\n"
+        else: 
+            notes += "`Inventory full, no loot rewarded!`\n`Please free up space or buy more inventory space.`\n"
+            loot_notes = "No loot, inventory full.  "
         
-        log += f"**----------------------------------------**\n"
-        log += f"||||| `GOLD LOOT:`**`{gold}`**`gold coins.`\n"
-        log += f"||||| `TOTAL GOLD:`**`{self.gold}`**`gold coins.`\n"
+        notes += f"**----------------------------------------**\n"
+        notes += f"||||| `GOLD LOOT:`**`{gold}`**`gold coins.`\n"
+        notes += f"||||| `TOTAL GOLD:`**`{self.gold}`**`gold coins.`\n"
 
         if await self.inventory.check_inv() and inv_full == False: 
-            log += "`\nInventory full, please free up space before next encounter to be able to receive rewards.`\n"
+            notes += "`\nInventory full, please free up space before next encounter to be able to receive rewards.`\n"
 
-        return log
+        await self.log.write_log(log_data=f"{self.name} gained loot. GOLD: {gold}, LOOT: {loot_notes[:-2]}")
+
+        return notes
