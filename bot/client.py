@@ -1,5 +1,6 @@
 from .commands.commands import Commands
 from data.database import Database
+from discord.ext import commands
 from discord.message import Message
 from emoticons.emoticons import Emoticons
 from images.image_links import ImageLinks
@@ -7,75 +8,69 @@ from log.logger import Logger
 from .token.token import Token
 import discord
 
-# Bot object containing attributes required to instatiate and run bot.
+# Client object containing attributes in bot instantiation, and methods for bot execution and operation.
 # Instantiated as a single instance module-level object (at main.py).
-# Communicates with commands object through "message_respond" method.
-class Bot():
+# Communicates with commands object through "on_message" method.
+class Client(discord.Client):
     _instance = None
 
-    # Instantiates through singleton pattern, only one instance created.
-    def __new__(cls, *args, **kwargs):
+    # Instantiation through singleton pattern.
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    # Initializes with new instances of discord intents, discord client, token, and logger objects.
+    # Initialization with new instances of discord intents (default settings), token and logger.
     def __init__(self):
-        # New discord intents instance with default settings.
-        self.intents = discord.Intents.default()
+        super().__init__(intents=discord.Intents.default())
         self.intents.message_content = True
 
-        # New discord client instance setup.
-        self.client = discord.Client(intents = self.intents)
-
-        # New token instance, configurates on initialization.
+        # Assigns a token object, initialized in constructor.
         self.token = Token()
-
         self.log: Logger = Logger.bot_logger
 
-    # Executes discord bot client.
     def run(self):
         print("\n[ESTABLISHING BOT CONNECTION...]")
-        self.client.run(self.token.get_value())
+        return super().run(self.token.get_value())
 
-    # Called from "on_ready" event (at main.py) and runs when client is connected and ready.
-    async def ready_respond(self):
-        await self.log.write_log(log_data='Bot has successfully logged in as: {0.user}'.format(self.client))
-        await self.log.write_log(log_data='Bot ID: {0}'.format(self.client.application_id))
+    # On ready method, called when bot client is connected and ready.
+    async def on_ready(self):
+        await self.log.write_log(log_data='Bot has successfully logged in as: {0.user}'.format(self))
+        await self.log.write_log(log_data='Bot ID: {0}'.format(self.application_id))
 
         print("\n[LOADING DATA FILES...]")
-        # Instantiates new databases (guild unique) and loads their respective data.
-        await Database.load_databases(client=self.client)
+        # Instantiates new databases (guild unique) and loads their respective data through method.
+        await Database.load_databases(client=self)
 
-        # Image links instantiation (single instance).
+        # Instantiates image links (single instance) and loads images for use in combat simulation.
         img_links = ImageLinks()
         await img_links.load_images()
 
-        # Emoticon instantiation (single instance).
+        # Instantiates emoticons (single instance) and loads unicodes for use as decorators.
         emoticons = Emoticons()
         await emoticons.load_emoticons()
 
         print("\n> Connected to following guilds:")
-        async for guild in self.client.fetch_guilds():
+        async for guild in self.fetch_guilds():
             print(f"    - {guild.name}")
         
         print()
 
-    # Called from "on_message" event (at main.py) and runs when client receives a message.
-    # Redirects message with user and message objects to commands object for execution.
-    async def message_respond(self, msg: Message):
-        if msg.author == self.client.user:
+    # On message method, called when client receives a message.
+    # Redirects message with user to commands object for execution.
+    async def on_message(self, message: Message):
+        if message.author == self.user:
             return
         
-        if msg.content.startswith("!"):
+        if message.content.startswith("!"):
             # New commands instance initialized with current message and current user.
-            commands = Commands(msg=msg, db_id=msg.guild.id)
+            commands = Commands(msg=message, db_id=message.guild.id)
             user = await commands.set_user()
 
             # Checks user permission and returns if false.
             if user.permit_interaction == False: return
 
-            message = msg.content.lower()
+            message = message.content.lower()
 
             if message.startswith("!help"):
                 await commands.help()
