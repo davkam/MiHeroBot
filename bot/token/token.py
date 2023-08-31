@@ -1,49 +1,36 @@
-from log.logger import Logger
-import asyncio
-import json
-import os.path
+import dotenv
+import logging
+import os
 
-# Token object required for bot instance, only one instance created (instatiated with bot instance).
-# Contains attributes for discord token key, file path to token save file location, and a logger.
+from logger.logger import Logger
+
 class Token():
     def __init__(self):
-        self.value = None
-        self.file_path = "bot/token/token.json"
-        self.log: Logger = Logger.bot_logger
+        self.key: str = None
+        self.file_path: str = "bot/token/.env"
+        self.logger: logging.Logger = Logger.bot
 
         self.set_token()
         
-    # Sets token value from file path. If exception or file not found occurs, it creates a new token instead.
     def set_token(self):
-        try:
-            if os.path.exists(self.file_path):
-                with open(self.file_path, "r") as token_file:
-                    get_token = json.load(token_file)
-                    self.value = get_token["TOKEN"]
+        if os.path.exists(self.file_path):
+            dotenv.load_dotenv()
+            self.key = os.getenv("API_TOKEN")
 
-                asyncio.run(self.log.write_log(log_data=f'Loaded token from file. FILE: "{self.file_path}"'))
-            else:
-                asyncio.run(self.log.write_log(log_data=f'Failed to load token from file, file not found. FILE: "{self.file_path}"'))
-                self.create_token()
-        except Exception as exception:
-            asyncio.run(self.log.write_log(log_data=f'Failed to load token from file. FILE: "{self.file_path}"\nEXCEPTION: {str(exception)}'))
+            self.logger.info(msg=f"Retrieved token key from '.env'-file. FILE: '{self.file_path}'")
+        else:
+            self.logger.warning(msg=f"Failed to retrieve token key from '.env'-file. No file found. FILE: '{self.file_path}'")
             self.create_token()
-    
-    # Creates new token, sets token value and creates new .json-file to file path location.
+
     def create_token(self):
         try:
-            key_input = input("> Enter new token value: ")
-            self.value = key_input
-            new_token = {"TOKEN": key_input}
-            
-            with open(self.file_path, "w+") as token_file:
-                json.dump(new_token, token_file, indent = 4)
+            key_input = input("> Enter new token key: ")
+            self.key = key_input
 
-            asyncio.run(self.log.write_log(log_data=f'Created and saved new token to file "{self.file_path}".'))
+            with open(self.file_path, "w") as api_key:
+                api_key.write(f"API_TOKEN='{self.key}'")
+
+            self.logger.info(msg=f"Saved new token key to '.env'-file. FILE: '{self.file_path}'")
         except Exception as exception:
-            asyncio.run(self.log.write_log(log_data=f'Failed to create new token.\n{str(exception)}'))
+            self.logger.error(msg=f"Failed to create new token to '.env'-file. EXCEPTION: {str(exception)}")
             exit()
-
-    # Returns token value.
-    def get_value(self):
-        return self.value

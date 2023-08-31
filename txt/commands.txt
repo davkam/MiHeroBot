@@ -10,4 +10,4 @@ MiHero !Help
 ||||| **`!Trade`**`  Trade with a player.`
 ||||| **`!Shop`**`   Buy or sell shop items.`
 ||||| **`!Stats`**`  Show your hero's stats.`
-||||| **`!Score`**`  Show scoreboard of all players.`
+||||| **`!Board`**`  Show leaderboard of all players.`

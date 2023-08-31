@@ -2,7 +2,7 @@
 
 from tools.tools import Bar, StringManager
 from game.objects.characters import Character, Monster, Player, MonsterClass
-from images.image_links import ImageLinks
+from images.img_links.image_links import ImageLinks
 from log.logger import Logger
 import random
 

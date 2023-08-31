@@ -3,9 +3,10 @@ MiHero !About
 ```**
 ```
 !GENERAL
-	Create your own hero, gain experience and loot rewards as you take on monsters of different difficulties,
-	or challenge other players to combat for their loot. MiHero is a Discord RPG Bot created for entertainment and 
-	educational purposes. More information below.
+	MiHeroBot is a Discord RPG bot created for entertainment and educational purposes.
+	Create your own hero and battle players, monsters or bosses for experience and rewards. 
+	Progress your hero to acquire better gear, higher levels and a higher rank in the leaderboard.
+	For more information, read description below.
 
 !STATS
 	LEVEL:    Represents the average stat of a hero, weapon or monster. Higher level means higher average in

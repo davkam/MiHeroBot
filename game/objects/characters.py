@@ -1,9 +1,11 @@
+import logging
+import random
+
 from enum import Enum
 from game.features.inventory import Inventory
 from game.logic.stats import *
 from game.objects.items import *
-from log.logger import Logger
-import random
+from logger.logger import Logger
 
 class MonsterClass(Enum):
     LIGHT = 2
@@ -117,7 +119,7 @@ class Player(Character):
         self.inventory: Inventory = Inventory()
         self.decorator: Decorator = None
         self.gold: int = gold
-        self.log: Logger = Logger.player_logger
+        self.logger: logging.Logger = Logger.game
 
     def get_name(self):
         if self.decorator != None:
@@ -207,8 +209,7 @@ class Player(Character):
         log += f"||||| `HEALTH GAIN:`**`{hp_gain}`**`experience points. HEALTH:`**`{self.health.get_hp()}`** **{hp_bar}** **`({hp_perc}%)`**\n"
         log += f"||||| `AVERAGE LEVEL:`**`{self.lvl.get_lvl()}`** **{lvl_bar}** **`({lvl_perc}%)`**\r\n"
 
-        await self.log.write_log(log_data=f"{self.name} gained experience. ATT: {att_gain}, DEF: {def_gain}, HP: {hp_gain}")
-
+        await self.logger.info(msg=f"{self.name} gained experience. ATT: {att_gain}, DEF: {def_gain}, HP: {hp_gain}")
         return log
 
     async def loot_generator(self, loot_index: int) -> str:
@@ -268,6 +269,5 @@ class Player(Character):
         if await self.inventory.check_inv() and inv_full == False: 
             notes += "`\nInventory full, please free up space before next encounter to be able to receive rewards.`\n"
 
-        await self.log.write_log(log_data=f"{self.name} gained loot. GOLD: {gold}, LOOT: {loot_notes[:-2]}")
-
+        await self.logger.info(msg=f"{self.name} gained loot. GOLD: {gold}, LOOT: {loot_notes[:-2]}")
         return notes

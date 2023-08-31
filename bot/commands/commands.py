@@ -10,17 +10,13 @@ from interface.views.inventory_view import InventoryView
 from interface.views.trade_view import TradeView
 from users.users import User
 
-# Commands() object containing attributes and methods involved in further executing the command chain. 
-# Instance instatiated at Bot.message_respond() and indirectly responds to an event "on_message()" (at main.py).
 class Commands():
     def __init__(self, msg: Message, db_id: int):
-        self.db: Database = Database.instances[db_id]   # Database instance for access to registered users.
-        self.msg: Message = msg                         # discord message instance to respond to interactions.                         
-        self.user: User = None                          # User instance representing the "owner/creator" of the instance. 
-        self.user_inDb: bool = False                    # Boolean, true if user exists in database.
+        self.db: Database = Database.instances[db_id]
+        self.msg: Message = msg                       
+        self.user: User = None 
+        self.user_inDb: bool = False
 
-    # Sets self.user to current user of self.msg instance, runs from Bot.message_respond().
-    # Returns user for checking interaction permisssion.
     async def set_user(self) -> User:
         if await self.db.contains_user(user_id = self.msg.author.id):
             self.user = await self.db.get_user_by_id(user_id = self.msg.author.id)
@@ -33,7 +29,6 @@ class Commands():
 
         return self.user
 
-    # Command methods for further execution in interaction chain. 
     # NYI: Add admin commands!
     async def help(self):
         with open ('txt/commands.txt') as help:
@@ -69,12 +64,12 @@ class Commands():
             fight_view = FightView(user=self.user, db=self.db)
             msg = await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**\n", view = fight_view)
             
-            # Waits for view interaction to finish (by timing out or calling stop) to continue with response.
+            # Wait for view interaction to finish (by timing out or calling stop) to continue with response.
             await fight_view.wait()
 
-            # If view interaction is fulfilled, success == True.
+            # If view interaction is successful.
             if fight_view.success:
-                self.user.permit_interaction = False # Sets interaction permission to false during fight simulation.
+                self.user.permit_interaction = False # Set interaction permission to false during fight simulation.
                 if fight_view.select_type == "Player":
                     log = await self.user.player.fight_player(fight_view.receiver_user.player)
 
@@ -88,7 +83,7 @@ class Commands():
                 else: # TBD: More options!
                     pass 
 
-                # New FightEmbed() instance to run fight simulation in response to interaction.
+                # New fight embed to run fight simulation in response to interaction.
                 fight_embed = FightEmbed(msg = msg, log = log)
                 await fight_embed.run_embed()
                 fight_embed = None
@@ -114,7 +109,7 @@ class Commands():
             await inventory_embed.run_embed()
             view_msg = await self.msg.channel.send(view=inventory_view)
 
-            # Waits for view interaction to finish (by timing out or calling stop) to continue with response.
+            # Wait for view interaction to finish (by timing out or calling stop) to continue with response.
             await inventory_view.wait()
 
             # Empty message to edit as a response to interaction.
@@ -170,7 +165,7 @@ class Commands():
         else:
             await self.msg.channel.send(content="**```arm\r\nMiHero !Stats\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
     
-    async def score(self):
+    async def board(self):
         pass
 
     async def load(self):
