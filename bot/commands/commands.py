@@ -2,6 +2,7 @@
 
 from data.database import Database
 from discord.message import Message
+from game.logic.trade import Trade
 from game.objects.characters import MonsterClass
 from interface.embeds.fight_embed import FightEmbed
 from interface.embeds.inventory_embed import InventoryEmbed
@@ -33,12 +34,12 @@ class Commands():
     async def help(self):
         with open ('txt/commands.txt') as help:
             help = help.read()
-        await self.msg.channel.send(content=help)
+        await self.msg.channel.send(content=help, silent=True)
 
     async def about(self):
         with open ('txt/about.txt') as about:
             about = about.read()
-        await self.msg.channel.send(content=about)
+        await self.msg.channel.send(content=about, silent=True)
 
     async def new(self):
         if self.user_inDb:
@@ -96,7 +97,7 @@ class Commands():
         else:
             await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
 
-    async def roulette(self):
+    async def stake(self):
         pass
 
     async def inventory(self):
@@ -146,9 +147,10 @@ class Commands():
 
     async def trade(self):
         if self.user_inDb:
-            trade_view = TradeView(user=self.user, db=self.db)
+            await self.msg.channel.send(content=f"**```arm\r\nMiHero !Trade\r\n```**", silent=True)
 
-            await self.msg.channel.send(content=f"**```arm\r\n{self.user.player.name} !Trade\r\n```**", view=trade_view)
+            trade = Trade(msg=self.msg, db=self.db, sender_trader=self.user)
+            await trade.run_trade()
         else:
             pass
 
@@ -182,6 +184,24 @@ class Commands():
 
     async def test(self):
         if self.user_inDb:
-            pass
+            await self.user.player.inventory.add_slots(quantity=40)
+
+            log = await self.user.player.loot_generator(loot_index=1)
+            await self.msg.channel.send(content=log, silent=True)
+
+            log = await self.user.player.xp_gainer(xp_index=1)
+            await self.msg.channel.send(content=log, silent=True)
+
+            log = await self.user.player.loot_generator(loot_index=2)
+            await self.msg.channel.send(content=log, silent=True)
+
+            log = await self.user.player.xp_gainer(xp_index=2)
+            await self.msg.channel.send(content=log, silent=True)
+
+            log = await self.user.player.loot_generator(loot_index=3)
+            await self.msg.channel.send(content=log, silent=True)
+
+            log = await self.user.player.xp_gainer(xp_index=3)
+            await self.msg.channel.send(content=log, silent=True)
         else:   
             pass

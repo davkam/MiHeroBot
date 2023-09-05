@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 import discord
 import json
 import logging
@@ -59,7 +61,7 @@ class Database():
     async def save_data(self):
         # If no users remain in dictionay, remove data content of save file.
         if len(self.users) == 0: 
-            with open(self.save_file, 'w') as save_data:
+            with open(self.save_file, 'w', encoding="utf-8") as save_data:
                 save_data.truncate(0)
 
         try:
@@ -75,7 +77,7 @@ class Database():
     # Used during runtime to save any changes to a user object. 
     async def save_temp_data(self, user: User, rem_user: bool = False): # TBD: Add automatic temp data save.
         try:
-            with open(self.temp_file, "a") as user_data:
+            with open(self.temp_file, "a", encoding="utf-8") as user_data:
                 if rem_user:
                     user_data.write("REMOVE USER:" + str(user.user_id) + "\n")
                 else:  
@@ -90,7 +92,7 @@ class Database():
     async def load_data(self):
         try:
             if os.path.exists(path=self.save_file):
-                with open(self.save_file, "r") as user_data:
+                with open(self.save_file, "r", encoding="utf-8") as user_data:
                     read_data = json.load(user_data)
 
                     if read_data:
@@ -107,13 +109,14 @@ class Database():
     async def load_temp_data(self):
         try:
             if os.path.exists(path=self.temp_file):
-                with open(self.temp_file, "r") as temp_data:
+                with open(self.temp_file, "r", encoding="utf-8") as temp_data:
                     read_data = temp_data.readlines()
 
                     if read_data:
                         await self.decode_temp_data(temp_data=read_data)
-                        await self.merge_data()
                         self.logger.info(msg=f"Loaded temporary user data from database (DATABASE ID={self.db_id}). FILE: '{self.temp_file}'")
+                        
+                        await self.merge_data()
                     else:
                         self.logger.warning(msg=f"No temporary user data loaded from database (DATABASE ID={self.db_id}). No data found. FILE: '{self.temp_file}'")
             else:

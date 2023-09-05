@@ -42,6 +42,7 @@ class Client(discord.Client):
         await img_links.load_images()
         emoticons = Emoticons()
         await emoticons.load_emoticons()
+        print()
 
     # On message event listener, run when client receives a message.
     # Redirect message with user to commands object for execution.
@@ -68,6 +69,8 @@ class Client(discord.Client):
                 await commands.delete()
             elif msg.startswith("!fight"):
                 await commands.fight()
+            elif msg.startswith("!stake"):
+                await commands.stake()
             elif msg.startswith("!inv"):
                 await commands.inventory()
             elif msg.startswith("!trade"):

@@ -24,6 +24,6 @@ class FightButtonView(View):
     def __init__(self, fight_view: FightView, user: User):
         super().__init__()
 
-        from interface.buttons.fight_buttons import GreenButton, RedButton
-        self.add_item(GreenButton(fight_view=fight_view, user=user))
-        self.add_item(RedButton(fight_view=fight_view, user=user))
+        from interface.buttons.fight_buttons import GreenFightButton, RedFightButton
+        self.add_item(GreenFightButton(fight_view=fight_view, user=user))
+        self.add_item(RedFightButton(fight_view=fight_view, user=user))

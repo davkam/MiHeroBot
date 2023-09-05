@@ -7,4 +7,4 @@ For more information about the game, read the docs in the txt folder, or use !he
 
 ## SETUP
 To get the bot running a valid token key (DISCORD API KEY) is needed and will be requested on startup (if no key is registered).
-To acquire a token key, create a bot application on the discord developer portal (https://discord.com/developers/applications).
+To acquire a token key, create a bot application (with admin rights) in the discord developer portal (https://discord.com/developers/applications).

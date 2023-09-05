@@ -1,13 +1,14 @@
 **```arm
 MiHero !Help
 ```**
-||||| **`!Help`**`   Show all available commands.`
-||||| **`!About`**`  Show game description.`
-||||| **`!New`**`    Create a new hero.`
-||||| **`!Delete`**` Delete your hero.`
-||||| **`!Fight`**`  Fight a random monster or player.`
-||||| **`!Inv`**`    Show your inventory.`
-||||| **`!Trade`**`  Trade with a player.`
-||||| **`!Shop`**`   Buy or sell shop items.`
-||||| **`!Stats`**`  Show your hero's stats.`
-||||| **`!Board`**`  Show leaderboard of all players.`
+||||| **`!Help`**`      Show all available commands.`
+||||| **`!About`**`     Show game description.`
+||||| **`!New`**`       Create a new hero.`
+||||| **`!Delete`**`    Delete your hero.`
+||||| **`!Fight`**`     Fight a random monster or player.`
+||||| **`!Stake`**`     Start a staking roulette against players.`
+||||| **`!Inv`**`       Show your inventory.`
+||||| **`!Trade`**`     Trade with a player.`
+||||| **`!Shop`**`      Buy or sell shop items.`
+||||| **`!Stats`**`     Show your hero's stats.`
+||||| **`!Board`**`     Show leaderboard of all players.`

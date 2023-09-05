@@ -4,6 +4,10 @@ import os.path
 from logger.logger import Logger
 
 # Image links object containing image links used in fight embed instance.
+# TBD: Use local image files! E.g;
+#      file = discord.File("path/to/image.png", filename="image.png")
+#      embed.set_image(url="attachment://image.png")
+#      await channel.send(file=file, embed=embed)
 class ImageLinks():
     instance = None # Static class attribute for object reference.
 

@@ -1,10 +1,11 @@
 # -*- coding: ISO-8859-15 -*-
+import logging
+import random
 
 from tools.tools import Bar, StringManager
 from game.objects.characters import Character, Monster, Player, MonsterClass
 from images.img_links.image_links import ImageLinks
-from log.logger import Logger
-import random
+from logger.logger import Logger
 
 class Combat():
     def __init__ (self, objA: Player, objB: Character):
@@ -12,7 +13,7 @@ class Combat():
         self.objB: Combatant = Combatant(objB)
         self.notes: list[str] = list()
         self.images: list[str] = ImageLinks.instance.links
-        self.log: Logger = Logger.combat_logger
+        self.logger: logging.Logger = Logger.game
 
     async def set_stats(self):
         await self.objA.combat_stats()
@@ -178,7 +179,7 @@ class Combat():
             l_name = await StringManager.center_string(string = loser.get_name(), max_length = 20)
             self.notes.append([w_name, l_name])
 
-        await self.log.write_log(log_data=f"{self.objA.character.name} initiated combat with {self.objB.character.name}. WINNER: {winner.name}, LOSER: {loser.name}")
+        self.logger.info(msg=f"{self.objA.character.name} initiated combat with {self.objB.character.name}. WINNER: {winner.name}, LOSER: {loser.name}")
 
         # Setting outcome according to winner/loser types.
         if type(winner) == Player and type(loser) == Monster:

@@ -9,15 +9,13 @@ class Logger():
         logger = logging.getLogger(name=name)
 
         stream_handler = logging.StreamHandler()
-        file_handler = logging.FileHandler(filename=file_path)
+        file_handler = logging.FileHandler(filename=file_path, encoding="utf-8")
 
         stream_formatter = logging.Formatter("%(levelname)-10s - %(name)-15s : %(message)s")
         file_formatter = logging.Formatter("%(levelname)-10s - %(asctime)s - %(module)-15s : %(message)s")
 
         stream_handler.setFormatter(stream_formatter)
         file_handler.setFormatter(file_formatter)
-        # stream_handler.setLevel(level=level)
-        # file_handler.setLevel(level=level)
    
         logger.addHandler(stream_handler)
         logger.addHandler(file_handler)

@@ -154,17 +154,17 @@ class Player(Character):
         return log
     
     async def get_stats(self) -> str:
-        log = f"**```arm\r\n{self.name} !Stats\r\n```**\u200B"
+        log = f"**```arm\r\n{self.name} !Stats\r\n```** "
 
-        log += "**`|||||||||  HERO STATS  |||||||||`**\n"
-        log += f"||||| `💠 PLAYER NAME:`**{self.get_name()}**\n"
+        log += "**```|||||||||  HERO STATS  |||||||||```**"
+        log += f"||||| `💠 PLAYER NAME:` **{self.get_name()}**\n"
         log += f"||||| `\U00002B50 PLAYER LEVEL:`**`{self.lvl.get_lvl()}`** **{await self.lvl.progress_bar()}** **`({await self.lvl.progress_perc()}%)`**\n"
         log += f"||||| `\U00002694\uFE0F PLAYER ATTACK:`**`{self.attack.get_lvl()}`** **{await self.attack.progress_bar()}** **`({await self.attack.progress_perc()}%)`**\n"
         log += f"||||| `\U0001F6E1\uFE0F PLAYER DEFENSE:`**`{self.defense.get_lvl()}`** **{await self.defense.progress_bar()}** **`({await self.defense.progress_perc()}%)`**\n"
         log += f"||||| `\U00002764\uFE0F PLAYER HEALTH:`**`{self.health.get_hp()}`** **{await self.health.progress_bar()}** **`({await self.health.progress_perc()}%)`**\n"
         log += f"||||| `\U0001F4B0 PLAYER GOLD:`**`{self.gold}`**\n"
 
-        log += "**`|||||||||  GEAR STATS  |||||||||`**\n"
+        log += "**```|||||||||  GEAR STATS  |||||||||```**"
         log += f"||||| `\U00002694\uFE0F WEAPON CLASS:`**`{self.weapon.weapon_class.name}`**\n"
         log += f"||||| `🌟 WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
         log += f"||||| `\U0001F6E1\uFE0F ARMOR CLASS:`**`{self.armor.armor_class.name}`**\n"
@@ -209,7 +209,8 @@ class Player(Character):
         log += f"||||| `HEALTH GAIN:`**`{hp_gain}`**`experience points. HEALTH:`**`{self.health.get_hp()}`** **{hp_bar}** **`({hp_perc}%)`**\n"
         log += f"||||| `AVERAGE LEVEL:`**`{self.lvl.get_lvl()}`** **{lvl_bar}** **`({lvl_perc}%)`**\r\n"
 
-        await self.logger.info(msg=f"{self.name} gained experience. ATT: {att_gain}, DEF: {def_gain}, HP: {hp_gain}")
+        self.logger.info(msg=f"{self.name} gained experience. ATT: {att_gain}, DEF: {def_gain}, HP: {hp_gain}")
+
         return log
 
     async def loot_generator(self, loot_index: int) -> str:
@@ -251,23 +252,24 @@ class Player(Character):
             loot_items.append(random_item)
             loot_roll -= 1
 
-        loot_notes = ""
-        notes = f"**```arm\r\n{self.name} !LootGenerator\r\n```**"
+        loot_log = ""
+        log = f"**```arm\r\n{self.name} !LootGenerator\r\n```**"
         if inv_full == False:
             for item in loot_items:
-                notes += f"||||| `LOOT ITEM:`**`{item.name}`**\n"
-                loot_notes += f"{item.name}, "
+                log += f"||||| `LOOT ITEM:`**`{item.name}`**\n"
+                loot_log += f"{item.name}, "
                 await self.inventory.add_item(item=item)
         else: 
-            notes += "`Inventory full, no loot rewarded!`\n`Please free up space or buy more inventory space.`\n"
-            loot_notes = "No loot, inventory full.  "
+            log += "`Inventory full, no loot rewarded!`\n`Please free up space or buy more inventory space.`\n"
+            loot_log = "No loot, inventory full.  "
         
-        notes += f"**----------------------------------------**\n"
-        notes += f"||||| `GOLD LOOT:`**`{gold}`**`gold coins.`\n"
-        notes += f"||||| `TOTAL GOLD:`**`{self.gold}`**`gold coins.`\n"
+        log += f"**----------------------------------------**\n"
+        log += f"||||| `GOLD LOOT:`**`{gold}`**`gold coins.`\n"
+        log += f"||||| `TOTAL GOLD:`**`{self.gold}`**`gold coins.`\n"
 
         if await self.inventory.check_inv() and inv_full == False: 
-            notes += "`\nInventory full, please free up space before next encounter to be able to receive rewards.`\n"
+            log += "`\nInventory full, please free up space before next encounter to be able to receive rewards.`\n"
 
-        await self.logger.info(msg=f"{self.name} gained loot. GOLD: {gold}, LOOT: {loot_notes[:-2]}")
-        return notes
+        self.logger.info(msg=f"{self.name} gained loot. GOLD: {gold}, LOOT: ({loot_log[:-2]})")
+
+        return log
