@@ -31,6 +31,9 @@ class Logger():
 
     @classmethod
     def set_loggers(cls):
+        if not os.path.exists(path="logger/logs"):
+            os.mkdir(path="logger/logs")
+
         if not os.path.exists(path=bot_log_file):
             with open(bot_log_file, 'w') as file:
                 file.write('')
