@@ -13,3 +13,6 @@ data/saves/temp/*.txt
 
 # LOG FILES
 *.log
+
+# IMAGE LINKS
+images/img_links/image_links.txt

@@ -43,12 +43,12 @@ class Commands():
 
     async def new(self):
         if self.user_inDb:
-            await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`", silent=True)
         else:
             await self.db.add_user(user=self.user)
             await self.db.save_temp_data(user=self.user)
 
-            await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`")
+            await self.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`Created new hero` **{self.user.player.get_name()}**.\n`To start fighting use command !Fight.`", silent=True)
 
     async def delete(self):
         if self.user_inDb:
@@ -56,14 +56,14 @@ class Commands():
             await self.db.rem_user(user = self.user)
             await self.db.save_temp_data(user=self.user, rem_user=True)
 
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{player_name}** `was deleted`.\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{player_name}** `was deleted`.\n`To create a new hero use command !New.`", silent=True)
         else:
-            await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
 
     async def fight(self):
         if self.user_inDb:
             fight_view = FightView(user=self.user, db=self.db)
-            msg = await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**\n", view = fight_view)
+            msg = await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**\n", view = fight_view, silent=True)
             
             # Wait for view interaction to finish (by timing out or calling stop) to continue with response.
             await fight_view.wait()
@@ -95,26 +95,26 @@ class Commands():
             await self.db.save_temp_data(user=self.user)
             fight_view = None
         else:
-            await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content = "**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
 
     async def stake(self):
         pass
 
     async def inventory(self):
         if self.user_inDb:
-            embed_msg = await self.msg.channel.send(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**")
+            embed_msg = await self.msg.channel.send(content=f"**```arm\r\n{self.user.player.name} !Inventory\r\n```**", silent=True)
 
             inventory_embed = InventoryEmbed(msg=embed_msg, user=self.user)
             inventory_view = InventoryView(user=self.user)
 
             await inventory_embed.run_embed()
-            view_msg = await self.msg.channel.send(view=inventory_view)
+            view_msg = await self.msg.channel.send(view=inventory_view, silent=True)
 
             # Wait for view interaction to finish (by timing out or calling stop) to continue with response.
             await inventory_view.wait()
 
             # Empty message to edit as a response to interaction.
-            response_msg = await self.msg.channel.send(content="\u200b")
+            response_msg = await self.msg.channel.send(content="\u200b", silent=True)
 
             run_inv = True
             while run_inv:
@@ -143,7 +143,7 @@ class Commands():
             
             await self.db.save_temp_data(user=self.user)
         else:
-            await self.msg.channel.send(content="**```arm\r\nMiHero !Inventory\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content="**```arm\r\nMiHero !Inventory\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
 
     async def trade(self):
         if self.user_inDb:
@@ -152,20 +152,22 @@ class Commands():
             trade = Trade(msg=self.msg, db=self.db, sender_trader=self.user)
             await trade.run_trade()
         else:
-            pass
+            await self.msg.channel.send(content="**```arm\r\nMiHero !Trade\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
 
     async def shop(self):
         if self.user_inDb:
-            pass
+            await self.msg.channel.send(content=f"**```arm\r\nMiHero !Shop\r\n```**", silent=True)
+
+            await self.msg.channel.send(content="`This feature isn't available yet.`")
         else:
-            pass
+            await self.msg.channel.send(content="**```arm\r\nMiHero !Trade\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
 
     async def stats(self):
         if self.user_inDb:
             log = await self.user.player.get_stats()
-            await self.msg.channel.send(content=log)
+            await self.msg.channel.send(content=log, silent=True)
         else:
-            await self.msg.channel.send(content="**```arm\r\nMiHero !Stats\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`")
+            await self.msg.channel.send(content="**```arm\r\nMiHero !Stats\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
     
     async def board(self):
         pass

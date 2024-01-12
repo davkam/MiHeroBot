@@ -157,18 +157,17 @@ class Player(Character):
         log = f"**```arm\r\n{self.name} !Stats\r\n```** "
 
         log += "**```|||||||||  HERO STATS  |||||||||```**"
-        log += f"||||| `💠 PLAYER NAME:` **{self.get_name()}**\n"
-        log += f"||||| `\U00002B50 PLAYER LEVEL:`**`{self.lvl.get_lvl()}`** **{await self.lvl.progress_bar()}** **`({await self.lvl.progress_perc()}%)`**\n"
-        log += f"||||| `\U00002694\uFE0F PLAYER ATTACK:`**`{self.attack.get_lvl()}`** **{await self.attack.progress_bar()}** **`({await self.attack.progress_perc()}%)`**\n"
-        log += f"||||| `\U0001F6E1\uFE0F PLAYER DEFENSE:`**`{self.defense.get_lvl()}`** **{await self.defense.progress_bar()}** **`({await self.defense.progress_perc()}%)`**\n"
-        log += f"||||| `\U00002764\uFE0F PLAYER HEALTH:`**`{self.health.get_hp()}`** **{await self.health.progress_bar()}** **`({await self.health.progress_perc()}%)`**\n"
-        log += f"||||| `\U0001F4B0 PLAYER GOLD:`**`{self.gold}`**\n"
+        log += f"||||| `- PLAYER LEVEL:`**`{self.lvl.get_lvl()}`** **{await self.lvl.progress_bar()}** **`({await self.lvl.progress_perc()}%)`**\n"
+        log += f"||||| `- PLAYER ATTACK:`**`{self.attack.get_lvl()}`** **{await self.attack.progress_bar()}** **`({await self.attack.progress_perc()}%)`**\n"
+        log += f"||||| `- PLAYER DEFENSE:`**`{self.defense.get_lvl()}`** **{await self.defense.progress_bar()}** **`({await self.defense.progress_perc()}%)`**\n"
+        log += f"||||| `- PLAYER HEALTH:`**`{self.health.get_hp()}`** **{await self.health.progress_bar()}** **`({await self.health.progress_perc()}%)`**\n"
+        log += f"||||| `- PLAYER GOLD:`**`{self.gold}`**\n"
 
         log += "**```|||||||||  GEAR STATS  |||||||||```**"
-        log += f"||||| `\U00002694\uFE0F WEAPON CLASS:`**`{self.weapon.weapon_class.name}`**\n"
-        log += f"||||| `🌟 WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
-        log += f"||||| `\U0001F6E1\uFE0F ARMOR CLASS:`**`{self.armor.armor_class.name}`**\n"
-        log += f"||||| `🌟 ARMOR LEVEL:`**`{self.armor.defense.get_lvl()}`**\n\r"
+        log += f"||||| `- WEAPON CLASS:`**`{self.weapon.weapon_class.name}`**\n"
+        log += f"||||| `- WEAPON LEVEL:`**`{self.weapon.attack.get_lvl()}`**\n"
+        log += f"||||| `- ARMOR CLASS:`**`{self.armor.armor_class.name}`**\n"
+        log += f"||||| `- ARMOR LEVEL:`**`{self.armor.defense.get_lvl()}`**\n\r"
 
         return log
     

@@ -25,7 +25,7 @@ class FightEmbed(Embed):
             
             await asyncio.sleep(delay=2)
             await self.msg.edit(content = "**```arm\r\nMiHero !Fight\r\n```**\n", embed = self)
-            end_msg = await self.msg.channel.send(content = "\u200b")
+            end_msg = await self.msg.channel.send(content = "\u200b", silent=True)
             await asyncio.sleep(delay=2)
             
             for i in range(5, len(self.log), 4):
