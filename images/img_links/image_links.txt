@@ -1,0 +1,10 @@
+https://davkam.zapto.org/miherobot/images/pvp/pvp_idle.png
+https://davkam.zapto.org/miherobot/images/pvp/pvp_hitA.png
+https://davkam.zapto.org/miherobot/images/pvp/pvp_hitB.png
+https://davkam.zapto.org/miherobot/images/pvp/pvp_deadA.png
+https://davkam.zapto.org/miherobot/images/pvp/pvp_deadB.png
+https://davkam.zapto.org/miherobot/images/pvm/pvm_idle.png
+https://davkam.zapto.org/miherobot/images/pvm/pvm_hitA.png
+https://davkam.zapto.org/miherobot/images/pvm/pvm_hitB.png
+https://davkam.zapto.org/miherobot/images/pvm/pvm_deadA.png
+https://davkam.zapto.org/miherobot/images/pvm/pvm_deadB.png

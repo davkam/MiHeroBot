@@ -15,4 +15,4 @@ data/saves/temp/*.txt
 *.log
 
 # IMAGE LINKS
-images/img_links/image_links.txt
+# images/img_links/image_links.txt
