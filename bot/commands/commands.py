@@ -1,5 +1,6 @@
 # -*- coding: ISO-8859-15 -*-
 
+import asyncio
 from data.database import Database
 from discord.message import Message
 from game.logic.trade import Trade
@@ -10,6 +11,8 @@ from interface.views.fight_view import FightView
 from interface.views.inventory_view import InventoryView
 from interface.views.trade_view import TradeView
 from users.users import User
+
+import discord
 
 class Commands():
     def __init__(self, msg: Message, db_id: int):
@@ -186,24 +189,112 @@ class Commands():
 
     async def test(self):
         if self.user_inDb:
-            await self.user.player.inventory.add_slots(quantity=40)
+            from bot.client import uploaded_image_urls
+            ### EMBED - URL IMAGES TEST ###
+            # image_links = [
+            #     "https://cdn.iconscout.com/icon/free/png-256/free-notion-2296040-1911999.png?f=webp",
+            #     "https://icons.iconarchive.com/icons/paomedia/small-n-flat/256/sign-check-icon.png",
+            #     "https://static-00.iconduck.com/assets.00/website-icon-256x256-80g4o143.png",
+            #     "https://i.pinimg.com/474x/a8/ff/45/a8ff459c578816b95ac2ea8b576da4ef.jpg",
+            #     "https://ps.w.org/new-social-media-widget/assets/icon-256x256.png?rev=2142539",
+            #     "https://www.iconsdb.com/icons/preview/red/warning-xxl.png"
+            # ]
 
-            log = await self.user.player.loot_generator(loot_index=1)
-            await self.msg.channel.send(content=log, silent=True)
+            # embed = discord.Embed(title="[INSERT TITLE]")
 
-            log = await self.user.player.xp_gainer(xp_index=1)
-            await self.msg.channel.send(content=log, silent=True)
+            # msg = await self.msg.channel.send(embed=embed)
 
-            log = await self.user.player.loot_generator(loot_index=2)
-            await self.msg.channel.send(content=log, silent=True)
+            # for image in image_links:
+            #     embed.set_image(url=image)
+            #     await msg.edit(embed=embed)
+            #     await asyncio.sleep(0.1)
 
-            log = await self.user.player.xp_gainer(xp_index=2)
-            await self.msg.channel.send(content=log, silent=True)
+            # embed = discord.Embed(title="[INSERT TITLE]")
+            # await msg.edit(embed=embed)
+            
+            # for image in image_links:
+            #     embed.set_image(url=image)
+            #     await msg.edit(embed=embed)
+            #     await asyncio.sleep(1)
 
-            log = await self.user.player.loot_generator(loot_index=3)
-            await self.msg.channel.send(content=log, silent=True)
 
-            log = await self.user.player.xp_gainer(xp_index=3)
-            await self.msg.channel.send(content=log, silent=True)
+
+            ### EMBED - LOCAL IMAGES TEST ###
+            image_files = [
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_hitA.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_hitB.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_hitA.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_hitB.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_hitA.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_hitB.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_deadA.png",
+                "images/pvm/pvm_idle.png",
+                "images/pvm/pvm_deadB.png",
+                "images/pvm/pvm_idle.png",
+            ]
+
+            uploaded_image_urls = []
+
+            
+
+            for file in image_files:
+                with open(file, 'rb') as f:
+                    uploaded_image = await self.client.get_channel(1044019028009689158).send(file=discord.File(f))
+                    uploaded_image_urls.append(uploaded_image.attachments[0].url)
+
+            # images = [discord.File(fp=file, filename=file.split('/')[-1]) for file in image_files]
+
+            embed = discord.Embed()
+            embed.add_field(name=f"PLAYER A", value=f"`LVL: 10`\n`ATT: 10`\n`\U0001F6E1\uFE0F DEF: 10`\n`HP: 100`", inline=True)
+            embed.add_field(name="`|||||| STATUS ||||||`", value=f"`- PREPARING FIGHT  -`\n`- DECIDING TURN... -`", inline=True)
+            embed.add_field(name=f"PLAYER B", value=f"`LVL: 10`\n`ATT: 10`\n`\U0001F6E1\uFE0F DEF: 10`\n`HP: 100`", inline=True)
+            embed.add_field(name="IIIIIIIIIIIIIIIIIIII`100%`", value=f"`00`\n`00`", inline=True)
+            embed.add_field(name="", value="", inline=True)
+            embed.add_field(name="IIIIIIIIIIIIIIIIIIII`100%`", value=f"`00`\n`00`", inline=True)
+            embed.set_image(url=uploaded_image_urls[0])
+
+            # embed.set_image(url=f"attachment://{images[0].filename}")
+            # msg = await self.msg.channel.send(embed=embed, file=images[0])
+
+            embed_msg = await self.msg.channel.send(embed=embed, silent=True)
+            # file_msg = await self.msg.channel.send(file=images[0], silent=True)
+
+            # for image in images[1:]:
+            #     await file_msg.edit(attachments=[image])
+            #     await asyncio.sleep(1)
+
+            for image in uploaded_image_urls[1:]:
+                embed.set_image(url=image)
+                await embed_msg.edit(embed=embed)
+                await asyncio.sleep(1)
+
+
+            ### STAT BOOSTER TEST ###
+            # await self.user.player.inventory.add_slots(quantity=40)
+
+            # log = await self.user.player.loot_generator(loot_index=1)
+            # await self.msg.channel.send(content=log, silent=True)
+
+            # log = await self.user.player.xp_gainer(xp_index=1)
+            # await self.msg.channel.send(content=log, silent=True)
+
+            # log = await self.user.player.loot_generator(loot_index=2)
+            # await self.msg.channel.send(content=log, silent=True)
+
+            # log = await self.user.player.xp_gainer(xp_index=2)
+            # await self.msg.channel.send(content=log, silent=True)
+
+            # log = await self.user.player.loot_generator(loot_index=3)
+            # await self.msg.channel.send(content=log, silent=True)
+
+            # log = await self.user.player.xp_gainer(xp_index=3)
+            # await self.msg.channel.send(content=log, silent=True)
         else:   
             pass

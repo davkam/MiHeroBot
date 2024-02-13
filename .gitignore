@@ -7,12 +7,12 @@
 # PYCACHES
 __pycache__
 
+# LOG FILES
+*.log
+
 # DATA SAVE FILES
 data/saves/*.json
 data/saves/temp/*.txt
-
-# LOG FILES
-*.log
 
 # IMAGE LINKS
 # images/img_links/image_links.txt

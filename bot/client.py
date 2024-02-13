@@ -9,6 +9,8 @@ from images.img_links.image_links import ImageLinks
 from logger.logger import Logger
 from .token.token import Token
 
+uploaded_image_urls = []
+
 class Client(discord.Client):
     _instance = None
 
