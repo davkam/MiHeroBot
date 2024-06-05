@@ -1,0 +1,2 @@
+# MiHeroBot
+Discord RPG Bot
