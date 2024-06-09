@@ -1,0 +1,26 @@
+#FIRST MULTILINE STRING COLUMN#
+!Help
+!About
+!New
+!Del
+!Fight
+!Roul
+!Inv
+!Trade
+!Shop
+!Stats
+!Board
+!Bug
+#SECOND MULTILINE STRING COLUMN#
+Show available commands.
+Show game description.
+Create new hero.
+Delete existing hero.
+Fight monster, boss or players.
+Roulette against players.
+Show inventory.
+Trade players.
+Buy or sell items.
+Show hero stats.
+Show leaderboard.
+Submit bug report.

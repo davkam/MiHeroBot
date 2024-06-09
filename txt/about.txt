@@ -1,0 +1,33 @@
+#GENERAL#
+MiHeroBot is a Discord RPG bot created for entertainment
+and educational purposes. Create your own hero and take
+on players, monsters or bosses for experience and item 
+rewards. Progress your hero to acquire better equipment, 
+higher levels, and higher ranks to take on more difficult 
+challenges. For more information about the game mechanics, 
+see the specific categories.
+
+#STATS#
+LEVEL: represents the average of a player's or enemy's
+attack, defense and health. (Max Level: 100)
+
+ATTACK: represents the offensive stat and determines the
+outgoing damage, i.e. base damage, critical damage,
+and critical chance. (Max Attack Level: 100)
+
+DEFENSE: represents the defensive stat and determines the 
+incoming damage negation, i.e. base damage, critical damage, 
+and critical chance negation. (Max Defense Level: 100)
+
+HEALTH: represents the health pool of a player or enemy and 
+determines the longevity in fights.
+(Max Health Level: 100, Max Health: 10000)
+
+#COMBAT#
+INFORMATION MISSING!
+
+#LOOT#
+INFORMATION MISSING!
+
+#XP#
+INFORMATION MISSING!
