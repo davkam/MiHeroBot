@@ -28,7 +28,7 @@ class Commands():
 
         return self.user
 
-    # NYI: Add admin commands and bug report command!
+    # NYI: Add admin commands!
     async def help(self):
         info_manager = InfoManager(cmd=self)
         await info_manager.help()
@@ -42,13 +42,8 @@ class Commands():
         await character_manager.new_player_manager()
             
     async def delete(self):
-        if self.existing_user:
-            await self.user.del_player()
-            await self.db.rem_user(user=self.user)
-
-            await self.msg.channel.send(content = f"**```arm\r\nMiHero !Delete\r\n```**`Your hero` **{self.user.name.upper()}** `was deleted`.\n`To create a new hero use command !New.`", silent=True)
-        else:
-            await self.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
+        character_manager = CharacterManager(cmd=self)
+        await character_manager.del_player_manager()
 
     async def fight(self):
         await self.msg.channel.send(content = f"**```arm\r\nMiHero !Fight\r\n```**`This function is not yet implemented!`", silent=True)
