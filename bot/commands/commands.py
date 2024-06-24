@@ -1,8 +1,9 @@
 # -*- coding: ISO-8859-15 -*-
 
 from discord.message import Message
-from managers.info_manager import InfoManager
-from managers.character_manager import CharacterManager
+from interaction.character_interaction import CharacterInteraction
+from interaction.fight_interaction import FightInteraction
+from interaction.info_interaction import InfoInteraction
 from users.userdata.userdata import UserData
 from users.users import User
 
@@ -30,23 +31,24 @@ class Commands():
 
     # NYI: Add admin commands!
     async def help(self):
-        info_manager = InfoManager(cmd=self)
-        await info_manager.help()
+        info_interaction = InfoInteraction(cmd=self)
+        await info_interaction.help_interaction()
 
     async def about(self):
-        info_manager = InfoManager(cmd=self)
-        await info_manager.about()
+        info_interaction = InfoInteraction(cmd=self)
+        await info_interaction.about_interaction()
 
     async def new(self):
-        character_manager = CharacterManager(cmd=self)
-        await character_manager.new_player_manager()
+        character_interaction = CharacterInteraction(cmd=self)
+        await character_interaction.new_player_interaction()
             
     async def delete(self):
-        character_manager = CharacterManager(cmd=self)
-        await character_manager.del_player_manager()
+        character_interaction = CharacterInteraction(cmd=self)
+        await character_interaction.del_player_interaction()
 
     async def fight(self):
-        await self.msg.channel.send(content = f"**```arm\r\nMiHero !Fight\r\n```**`This function is not yet implemented!`", silent=True)
+        fight_interaction = FightInteraction(cmd=self)
+        await fight_interaction.run_interaction()
 
     async def roulette(self):
         await self.msg.channel.send(content = f"**```arm\r\nMiHero !Roulette\r\n```**`This function is not yet implemented!`", silent=True)
@@ -68,3 +70,10 @@ class Commands():
 
     async def bug(self):
         await self.msg.channel.send(content = f"**```arm\r\nMiHero !Bug\r\n```**`This function is not yet implemented!`", silent=True)
+
+        from game.objects.items.equipables import Sword, Shield, HeadArmor, BodyArmor, Amulet, EquipmentTier
+        self.user.player.equipment.sword = Sword(tier=EquipmentTier.DRAGON)
+        self.user.player.equipment.shield = Shield(tier=EquipmentTier.DRAGON)
+        self.user.player.equipment.head = HeadArmor(tier=EquipmentTier.DRAGON)
+        self.user.player.equipment.body = BodyArmor(tier=EquipmentTier.DRAGON)
+        self.user.player.equipment.amulet = Amulet(tier=EquipmentTier.DRAGON)

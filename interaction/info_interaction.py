@@ -3,18 +3,18 @@ import discord
 from interface.views.about_view import AboutView
 from interface.renderers.info_renderer import InfoRenderer
 
-class InfoManager():
+class InfoInteraction():
     def __init__(self, cmd):
         from bot.commands.commands import Commands
         self.cmd: Commands = cmd
 
-    async def help(self):
+    async def help_interaction(self):
         help_file = discord.File(fp=InfoRenderer.HELP_PATH)
 
         await self.cmd.msg.channel.send(content=f"**```arm\r\nMiHero !Help\r\n```** ", silent=True)
         await self.cmd.msg.channel.send(file=help_file)
 
-    async def about(self):
+    async def about_interaction(self):
         about_file = discord.File(fp=InfoRenderer.ABOUT_PATH % 1)
         about_view = AboutView()
 

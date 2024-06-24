@@ -1,4 +1,4 @@
-
+### TBD: LVL as an INT?
 
 class Stat():
     def __init__(self, xp: int = 100, lvl: float = 1):
@@ -31,8 +31,10 @@ class Stat():
     
     def set_lvl(self):
         lvl = round((self._xp / 100) ** (1 / 3), 2)
-        if lvl >= 100: self._lvl = 100
-        else: self._lvl = lvl
+        if lvl >= 100: 
+            self._lvl = 100
+        else: 
+            self._lvl = lvl
 
     async def get_progress(self) -> int:
         """
@@ -59,7 +61,23 @@ class Defense(Stat):
 class Health(Stat):
     def __init__(self, xp: int = 100, lvl: float = 1, health: int = 100):
         super().__init__(xp=xp, lvl=lvl)
-        self.health = health
+        self._health = health
+
+    def get_health(self) -> int:
+        self.set_health()
+        return self._health
+    
+    def set_health(self) -> None:
+        self._health = self.get_lvl() * 100
+    
+    def set_lvl(self) -> None:
+        lvl = int((self._xp / 100) ** (1 / 3), 2)
+        if lvl >= 100: 
+            self._lvl = 100
+        else: 
+            self._lvl = lvl
+        
+        self.set_health()
 
 class Level(Stat):
     def __init__(self, attack: Attack, defense: Defense, health: Health):
