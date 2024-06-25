@@ -13,51 +13,47 @@ class FightRenderer(Renderer):
         self.fight_images: dict[int, Image.Image] = dict()
         self.stats_image: Image.Image = None
 
-    async def get_fight_images(self, image: int, image_info: str, image_variant: bool = None) -> list[str]:
-        if image < 0 or image >= len(self.fight_images):
-            return False
+    async def get_fight_image(self, image_index: int = 0, image_type: str = None, image_info: str = None, image_variant: bool = None) -> str:
+        if image_index < 0 or image_index >= len(self.fight_images):
+            image_index = 0
         
-        image_path: list[str] = list()
+        image_path = str()
         
-        if image_info == "countdown":
-            for i in range(5):
-                fight_image = self.fight_images[image].copy()
-                image_draw = ImageDraw.Draw(im=fight_image)
-                image_font = ImageFont.truetype(font=Renderer.FONT_PATH, size=128)
-                image_text = None
+        if image_type == "idle":
+            image_path = await self.save_image(image=self.fight_images[image_index])
 
-                if i == 4:
-                    image_font = ImageFont.truetype(font=Renderer.FONT_PATH, size=96)
-                    image_text = "FIGHT"
-                else:
-                    image_text = str(3 - i)
+        elif image_type == "countdown":
+            fight_image = self.fight_images[image_index].copy()
+            image_draw = ImageDraw.Draw(im=fight_image)
+            image_font = ImageFont.truetype(font=Renderer.FONT_PATH, size=128)
 
-                text_length = int(image_font.getlength(text=image_text))
-                x_pos = int((fight_image.width - text_length) / 2)
+            if image_info == "0":
+                image_font = ImageFont.truetype(font=Renderer.FONT_PATH, size=96)
+                image_info = "FIGHT"
 
-                image_draw.text(xy=(x_pos, 48), text=image_text, fill=(255, 255, 255), font=image_font, stroke_width=4, stroke_fill=(0, 0, 0))
+            text_length = int(image_font.getlength(text=image_info))
+            x_pos = int((fight_image.width - text_length) / 2)
 
-                image_path.append(await self.save_image(image=fight_image))
+            image_draw.text(xy=(x_pos, 48), text=image_info, fill=(255, 255, 255), font=image_font, stroke_width=4, stroke_fill=(0, 0, 0))
 
-        elif image_info == "idle":
-            image_path.append(await self.save_image(image=self.fight_images[image]))
+            image_path = await self.save_image(image=fight_image)
 
-        elif image_info.startswith("winner"):
-            fight_image = self.fight_images[image].copy()
+        elif image_type == "winner":
+            fight_image = self.fight_images[image_index].copy()
             image_draw = ImageDraw.Draw(im=fight_image)
             image_font = ImageFont.truetype(font=Renderer.FONT_PATH, size=64)
 
-            if image_info.endswith("left"):
+            if image_info == "left":
                 image_draw.text(xy=(56, 48), text="WINNER", fill=(0, 255, 0), font=image_font, stroke_width=2, stroke_fill=(0, 0, 0))
                 image_draw.text(xy=(444, 48), text="LOSER", fill=(255, 0, 0), font=image_font, stroke_width=2, stroke_fill=(0, 0, 0))
             else:
-                image_draw.text(xy=(424, 48), text="WINNER", fill=(0, 255, 0), font=image_font, stroke_width=2, stroke_fill=(0, 0, 0))
-                image_draw.text(xy=(68, 48), text="LOSER", fill=(255, 0, 0), font=image_font, stroke_width=2, stroke_fill=(0, 0, 0)) 
+                image_draw.text(xy=(428, 48), text="WINNER", fill=(0, 255, 0), font=image_font, stroke_width=2, stroke_fill=(0, 0, 0))
+                image_draw.text(xy=(72, 48), text="LOSER", fill=(255, 0, 0), font=image_font, stroke_width=2, stroke_fill=(0, 0, 0)) 
             
-            image_path.append(await self.save_image(image=fight_image))
+            image_path = await self.save_image(image=fight_image)
 
         else:
-            fight_image = self.fight_images[image].copy()
+            fight_image = self.fight_images[image_index].copy()
             font_size = 64
             text_color = (0, 255, 0)
 
@@ -73,23 +69,23 @@ class FightRenderer(Renderer):
 
             image_draw.text(xy=(x_pos, 48), text=image_info, fill=text_color, font=image_font, stroke_width=2, stroke_fill=(0, 0, 0))
 
-            image_path.append(await self.save_image(image=fight_image))
+            image_path = await self.save_image(image=fight_image)
 
         return image_path
 
-    async def get_stats_image(self, remaining_left_health: int = None, remaining_right_heath: int = None) -> str:
-        if remaining_left_health == None or remaining_right_heath == None:
+    async def get_stats_image(self, health_left_a: int = None, health_left_b: int = None) -> str:
+        if health_left_a == None or health_left_b == None:
             left_health = self.fighter_one.health.get_health()
             right_health = self.fighter_two.health.get_health()
         else:
-            left_health = remaining_left_health
-            right_health = remaining_right_heath
+            left_health = health_left_a
+            right_health = health_left_b
 
         left_bar = await Bar.get_longbar(act_val=left_health, max_val=self.fighter_one.health.get_health())
         right_bar = await Bar.get_longbar(act_val=right_health, max_val=self.fighter_two.health.get_health())
 
-        left_percentage = int((left_health / self.fighter_one.health.get_health()) * 100)
-        right_percentage = int((right_health / self.fighter_two.health.get_health()) * 100)
+        left_percentage = max(int((left_health / self.fighter_one.health.get_health()) * 100), 0)
+        right_percentage = max(int((right_health / self.fighter_two.health.get_health()) * 100), 0)
 
         stats_image = self.stats_image.copy()
         stats_draw = ImageDraw.Draw(im=stats_image)
@@ -105,11 +101,6 @@ class FightRenderer(Renderer):
             x_pos = 18
         elif right_percentage < 10:
             x_pos = 36
-
-        if left_percentage < 0:
-            left_percentage = 0
-        if right_percentage < 0:
-            right_percentage = 0
 
         stats_draw.text(xy=(196, 16), text=f"({left_percentage}%)", fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
         stats_draw.text(xy=(320 + x_pos, 16), text=f"({right_percentage}%)", fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
@@ -127,49 +118,36 @@ class FightRenderer(Renderer):
             fighter_right = await self.render_monster()
             fighter_right_name = await self.render_name(name=self.fighter_two.get_name())
 
-        idle = Image.open(fp=Renderer.BG2_PATH)
-        fighter_left_att_miss = Image.open(fp=Renderer.BG2_PATH)
-        fighter_left_att_hit = Image.open(fp=Renderer.BG2_PATH)
-        fighter_right_att_miss = Image.open(fp=Renderer.BG2_PATH)
-        fighter_right_att_hit = Image.open(fp=Renderer.BG2_PATH)
-        fighter_left_dead = Image.open(fp=Renderer.BG2_PATH)
-        fighter_right_dead = Image.open(fp=Renderer.BG2_PATH)
+        for i in range(7):
+            self.fight_images[i] = Image.open(fp=Renderer.BG2_PATH)
 
-        idle.paste(im=fighter_left[0], box=(8, 64), mask=fighter_left[0])
-        idle.paste(im=fighter_right[0], box=(248, 64), mask=fighter_right[0])
+        self.fight_images[0].paste(im=fighter_left[0], box=(8, 64), mask=fighter_left[0])
+        self.fight_images[0].paste(im=fighter_right[0], box=(248, 64), mask=fighter_right[0])
 
-        fighter_left_att_hit.paste(im=fighter_right[3], box=(248, 64), mask=fighter_right[3])
-        fighter_left_att_hit.paste(im=fighter_left[1], box=(136, 64), mask=fighter_left[1])
+        self.fight_images[1].paste(im=fighter_right[3], box=(248, 64), mask=fighter_right[3])
+        self.fight_images[1].paste(im=fighter_left[1], box=(136, 64), mask=fighter_left[1])
 
-        fighter_left_att_miss.paste(im=fighter_right[2], box=(248, 64), mask=fighter_right[2])
-        fighter_left_att_miss.paste(im=fighter_left[1], box=(136, 64), mask=fighter_left[1])
+        self.fight_images[2].paste(im=fighter_right[2], box=(248, 64), mask=fighter_right[2])
+        self.fight_images[2].paste(im=fighter_left[1], box=(136, 64), mask=fighter_left[1])
 
-        fighter_right_att_hit.paste(im=fighter_left[3], box=(8, 64), mask=fighter_left[3])
-        fighter_right_att_hit.paste(im=fighter_right[1], box=(120, 64), mask=fighter_right[1])
+        self.fight_images[3].paste(im=fighter_left[3], box=(8, 64), mask=fighter_left[3])
+        self.fight_images[3].paste(im=fighter_right[1], box=(120, 64), mask=fighter_right[1])
 
-        fighter_right_att_miss.paste(im=fighter_left[2], box=(8, 64), mask=fighter_left[2])
-        fighter_right_att_miss.paste(im=fighter_right[1], box=(120, 64), mask=fighter_right[1])
+        self.fight_images[4].paste(im=fighter_left[2], box=(8, 64), mask=fighter_left[2])
+        self.fight_images[4].paste(im=fighter_right[1], box=(120, 64), mask=fighter_right[1])
 
-        fighter_left_dead.paste(im=fighter_left[4], box=(8, 96), mask=fighter_left[4])
-        fighter_left_dead.paste(im=fighter_right[0], box=(248, 64), mask=fighter_right[0])
+        self.fight_images[5].paste(im=fighter_left[0], box=(8, 64), mask=fighter_left[0])
+        self.fight_images[5].paste(im=fighter_right[4], box=(248, 96), mask=fighter_right[4])
 
-        fighter_right_dead.paste(im=fighter_left[0], box=(8, 64), mask=fighter_left[0])
-        fighter_right_dead.paste(im=fighter_right[4], box=(248, 96), mask=fighter_right[4])
-
-        self.fight_images[0] = idle
-        self.fight_images[1] = fighter_left_att_hit
-        self.fight_images[2] = fighter_left_att_miss
-        self.fight_images[3] = fighter_right_att_hit
-        self.fight_images[4] = fighter_right_att_miss
-        self.fight_images[5] = fighter_right_dead
-        self.fight_images[6] = fighter_left_dead
+        self.fight_images[6].paste(im=fighter_left[4], box=(8, 96), mask=fighter_left[4])
+        self.fight_images[6].paste(im=fighter_right[0], box=(248, 64), mask=fighter_right[0])
 
         # Paste rendered names to images
         for image in self.fight_images.values():
             image.paste(im=fighter_left_name, box=(8, 0), mask=fighter_left_name)
             image.paste(im=fighter_right_name, box=(376, 0), mask=fighter_right_name)
     
-    async def render_stats(self) -> Image.Image:
+    async def render_stats(self) -> None:
         stats_image = Image.open(fp=Renderer.BG3_PATH)
         stats_draw = ImageDraw.Draw(im=stats_image)
         stats_font = ImageFont.truetype(font=Renderer.FONT_PATH, size=48)

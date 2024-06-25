@@ -14,12 +14,12 @@ class Fight():
         self.logger: logging.Logger = Loggers.game
 
     async def set_stats(self) -> None:
-        await self.fighter_a.fight_stats()
-        await self.fighter_b.fight_stats()
-        await self.fighter_a.relative_stats(opponent=self.fighter_b)
-        await self.fighter_b.relative_stats(opponent=self.fighter_a)
+        await self.fighter_a.set_fighter_stats()
+        await self.fighter_b.set_fighter_stats()
+        await self.fighter_a.set_fighter_hit_chance(opponent_fighter=self.fighter_b)
+        await self.fighter_b.set_fighter_hit_chance(opponent_fighter=self.fighter_a)
 
-    async def set_turn(self):
+    async def set_turn(self) -> None:
         if isinstance(self.fighter_b.character, Monster):
             self.turn = True
         else:
@@ -29,7 +29,7 @@ class Fight():
             else:
                 self.turn = False
 
-    async def fight_turn(self) -> tuple[bool, int]:
+    async def roll_fight(self) -> tuple[bool, int]:
         if self.turn:
             att_fighter = self.fighter_a
             def_fighter = self.fighter_b
@@ -41,73 +41,82 @@ class Fight():
 
             self.turn = True
      
-        return await att_fighter.attack_opponent(opponent=def_fighter) 
+        return await att_fighter.attack_fighter(fighter=def_fighter) 
 
 class Fighter():
     def __init__(self, character: Character) -> None:
         self.character: Character = character
 
-    async def fight_stats(self) -> None:
+    async def set_fighter_stats(self) -> None:
         if isinstance(self.character, Player):
-            offensive_bonus = 0
+            offensive_bonus = 0 # min: 1 -> max: 800
             if self.character.equipment.sword:
-                offensive_bonus += round(0.8 * (self.character.equipment.sword.tier.value * self.character.equipment.sword.level.get_lvl()), 2)
+                offensive_bonus += max(1, round(0.6 * (self.character.equipment.sword.tier.value * (self.character.equipment.sword.level.get_lvl() / 2)), 2))
             if self.character.equipment.amulet:
-                offensive_bonus += round(0.2 * (self.character.equipment.amulet.tier.value * self.character.equipment.amulet.level.get_lvl()), 2)
+                offensive_bonus += max(1, round(0.2 * (self.character.equipment.amulet.tier.value * (self.character.equipment.amulet.level.get_lvl() / 2)), 2))
+            if self.character.equipment.ring:
+                offensive_bonus += max(1, round(0.2 * (self.character.equipment.ring.tier.value * (self.character.equipment.ring.level.get_lvl() / 2)), 2))
 
-            defensive_bonus = 0
+            defensive_bonus = 0 # min: 1 -> max: 800
             if self.character.equipment.shield:
-                defensive_bonus += round(0.6 * (self.character.equipment.shield.tier.value * self.character.equipment.shield.level.get_lvl()), 2)
+                defensive_bonus += max(1, round(0.6 * (self.character.equipment.shield.tier.value * (self.character.equipment.shield.level.get_lvl() / 2)), 2))
             if self.character.equipment.head:
-                defensive_bonus += round(0.2 * (self.character.equipment.head.tier.value * self.character.equipment.head.level.get_lvl()), 2)
+                defensive_bonus += max(1, round(0.2 * (self.character.equipment.head.tier.value * (self.character.equipment.head.level.get_lvl() / 2)), 2))
             if self.character.equipment.body:
-                defensive_bonus += round(0.2 * (self.character.equipment.body.tier.value * self.character.equipment.body.level.get_lvl()), 2)
-            
-            self.base_att = round((10 * self.character.attack.get_lvl() + offensive_bonus / 2 ), 2)
-            self.att_acc = round((1 / 100) * (5 * self.character.attack.get_lvl() + offensive_bonus), 4)
-            self.base_def = round((1 / 5) * (10 * self.character.defense.get_lvl() + defensive_bonus / 2), 2)
-            self.def_acc = round((1 / 500) * (5 * self.character.defense.get_lvl() + defensive_bonus), 4)
-            self.max_hp = self.character.health.get_health()
+                defensive_bonus += max(1, round(0.2 * (self.character.equipment.body.tier.value * (self.character.equipment.body.level.get_lvl() / 2)), 2))
+
+            self.base_hit = round(((2 * self.character.attack.get_lvl()) * ((offensive_bonus + 1200) / 2)) / 100) # min: 12 -> max: 2,000
+            self.att_roll = round(self.character.attack.get_lvl() * ((offensive_bonus + 1200) / 2)) # min: 600 -> max: 100,000
+            self.def_roll = round(self.character.defense.get_lvl() * ((defensive_bonus +1200) / 2)) # min: 600 -> max: 100,000
+            self.max_hp = self.character.health.get_health() # min: 100 -> max: 10,000
             self.hp = self.max_hp
+
+            self.base_hit += offensive_bonus * 2
+            self.att_roll += round(offensive_bonus * 100)
+            self.def_roll += round(defensive_bonus * 100)
 
         elif isinstance(self.character, Monster):
-            self.base_att = round((10 * self.character.attack.get_lvl() + self.character.rank.value * self.character.attack.get_lvl() / 2), 2)
-            self.att_acc = round((1 / 100) * (5 * self.character.attack.get_lvl() + self.character.rank.value * self.character.attack.get_lvl()), 4)
-            self.base_def = round((1 / 5) * (10 * self.character.defense.get_lvl() + self.character.rank.value * self.character.defense.get_lvl() / 4), 2)
-            self.def_acc = round((1 / 500) * (5 * self.character.defense.get_lvl() + self.character.rank.value * self.character.defense.get_lvl() / 2), 4)
-            self.max_hp = self.character.health.get_health()
+            offensive_bonus = max(1, round(self.character.rank.value * (self.character.attack.get_lvl() / 2), 2))
+            defensive_bonus = max(1, round(self.character.rank.value * (self.character.defense.get_lvl() / 2), 2))
+
+            self.base_hit = round(((2 * self.character.attack.get_lvl()) * ((offensive_bonus + 1200) / 2)) / 100) # min: 12 -> max: 2,000
+            self.att_roll = round(self.character.attack.get_lvl() * ((offensive_bonus + 1200) / 2)) # min: 600 -> max: 100,000
+            self.def_roll = round(self.character.defense.get_lvl() * ((offensive_bonus + 1200) / 2)) # min: 600 -> max: 100,000
+            self.max_hp = self.character.health.get_health() # min: 100 -> max: 10,000
             self.hp = self.max_hp
 
-    async def relative_stats(self, opponent) -> None:
-        opponent: Fighter = opponent
-        self.acc = round((self.att_acc / opponent.def_acc) * 100)
-        self.inacc = round((opponent.def_acc / self.att_acc) * 100) # Not needed!
+            self.base_hit += offensive_bonus * 2
+            self.att_roll += round(offensive_bonus * 100)
+            self.def_roll += round(defensive_bonus * 100)
 
-    async def attack_opponent(self, opponent) -> tuple[bool, int]:
-        opponent: Fighter = opponent
-        att_dmg: int = 0
-        hit: bool = None
+    async def set_fighter_hit_chance(self, opponent_fighter) -> None:
+        opponent_fighter: Fighter = opponent_fighter
 
-        rng = random.randint(0, 1000)
-        if rng <= self.acc:
-            rng = random.randint(500, 1500) / 1000
-            hit = self.base_att + (self.base_att * self.att_acc * rng)
-
-            rng = random.randint(500, 1500) / 1000
-            block = opponent.base_def + (opponent.base_def * opponent.def_acc * rng)
-
-            att_dmg = round((hit * 100) / (block + 100))
-            opponent.hp -= att_dmg
-            hit = True
+        if self.att_roll > opponent_fighter.def_roll:
+            self.hit_chance = round(1 - (opponent_fighter.def_roll + 2) / (2 * self.att_roll + 1), 2)
         else:
-            rng = random.randint(0, 500) / 1000
-            hit = self.base_att * rng
+            self.hit_chance = round(self.att_roll / (2 * opponent_fighter.def_roll + 1), 2)
 
-            rng = random.randint(0, 500) / 1000
-            block = opponent.base_def * rng
+        print(f"{self.character.get_name()}: HIT_CHANCE: {self.hit_chance}")
 
-            att_dmg = round((hit * 100) / (block + 100))
-            opponent.hp -= att_dmg
-            hit = False
+    async def attack_fighter(self, fighter) -> tuple[bool, int]:
+        fighter: Fighter = fighter
+        is_hit: bool = None # Hit or miss
+        actual_hit: int = 0
+
+        if random.random() < self.hit_chance:
+            min_hit = int(self.base_hit * 0.75)
+            max_hit = int(self.base_hit * 1.25)
+            actual_hit = random.randint(min_hit, max_hit)
+
+            fighter.hp -= actual_hit
+            is_hit = True
+        else:
+            min_hit = int(self.base_hit * 0)
+            max_hit = int(self.base_hit * 0.25)
+            actual_hit = random.randint(min_hit, max_hit)
+
+            fighter.hp -= actual_hit
+            is_hit = False
         
-        return hit, att_dmg
+        return is_hit, actual_hit

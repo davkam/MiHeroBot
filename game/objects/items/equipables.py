@@ -59,3 +59,11 @@ class Amulet(Equipable): # TBD: SPECIAL EFFECT AMULETS/DECORATOR
 
     def set_name(self):
         super().set_name(type="AMULET")
+
+class Ring(Equipable): # TBD: SPECIAL EFFECT RINGS/DECORATOR
+    def __init__ (self, id: int = None, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
+        super().__init__(id=id, name=name, value=value, tier=tier, level=level)
+        self.set_name()
+
+    def set_name(self):
+        super().set_name(type="RING")
