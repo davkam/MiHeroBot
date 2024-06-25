@@ -17,6 +17,8 @@ class CharacterInteraction():
         if self.cmd.existing_user:
             await self.cmd.msg.channel.send(content=f"**```arm\r\nMiHero !New\r\n```**`You already have a hero` **{self.cmd.user.player.get_name()}**.\n`To start fighting use command !Fight.`", silent=True)
             return
+        
+        self.cmd.user.permit = False # Set sender user interaction permission to false during fight
 
         new_player_file = discord.File(fp=CharacterInteraction.NEW_PLAYER_PATH % "1")
         new_player_view = NewPlayerView(user=self.cmd.user)
@@ -55,10 +57,14 @@ class CharacterInteraction():
             await edit_msg.delete()
             await self.cmd.msg.channel.send(content="`Create new hero timed out!`\n`To create a new hero use command !New.`", silent=True)
 
+        self.cmd.user.permit = True
+
     async def del_player_interaction(self):
         if not self.cmd.existing_user:
             await self.cmd.msg.channel.send(content = "**```arm\r\nMiHero !Delete\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
             return
+        
+        self.cmd.user.permit = False # Set sender user interaction permission to false during fight
         
         renderer = StatsRenderer(user=self.cmd.user)
         await renderer.render_stats()
@@ -85,3 +91,5 @@ class CharacterInteraction():
         else:
             await edit_msg.delete()
             await self.cmd.msg.channel.send(content="`Delete hero timed out!`\n`To delete hero use command !Del.`", silent=True)
+
+        self.cmd.user.permit = True

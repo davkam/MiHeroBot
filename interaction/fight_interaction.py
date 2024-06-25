@@ -21,6 +21,8 @@ class FightInteraction():
             await self.cmd.msg.channel.send(content="**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
             return
         
+        self.cmd.user.permit = False # Set sender user interaction permission to false during fight
+
         fight_view = FightView(user=self.cmd.user, db=self.cmd.db)
         await self.cmd.msg.channel.send(content="**```arm\r\nMiHero !Fight\r\n```**\n", silent=True)
         edit_msg = await self.cmd.msg.channel.send(view=fight_view, silent=True)
@@ -29,8 +31,6 @@ class FightInteraction():
         interaction_timeout = await fight_view.wait()
 
         if not interaction_timeout:
-            self.cmd.user.permit = False # Set sender user interaction permission to false during fight
-
             if fight_view.select_type == "Player":
                 fight_view.receiver_user.permit = False # Set receiver user interaction permission to false during fight
 
@@ -66,10 +66,10 @@ class FightInteraction():
 
             else: # TBD: Boss option!
                 pass 
-
-            self.cmd.user.permit = True
         else:
             await edit_msg.edit(content="`Fight interaction timed out!`", view=None)
+
+        self.cmd.user.permit = True
 
         # NYI: Save users!
 
