@@ -3,10 +3,12 @@ import discord
 
 from discord.message import Message
 from game.logic.fight import Fight
+from game.logic.rewards import Rewards
 from game.objects.characters.characters import Character
 from game.objects.characters.enemies import Monster, EnemyRank
 from game.objects.characters.players import Player
 from interface.renderers.fight_renderer import FightRenderer
+from interface.renderers.reward_renderer import RewardRenderer
 from interface.views.fight_view import FightView
 
 class FightInteraction():
@@ -77,8 +79,12 @@ class FightInteraction():
 
         top_msg, bot_msg = await self.pre_fight(fight=fight, fight_renderer=fight_renderer)
         await self.main_fight(fight=fight, fight_renderer=fight_renderer, top_msg=top_msg, bot_msg=bot_msg)
+        await self.post_fight(fight=fight)
 
         await fight_renderer.del_images()
+
+        fight = None
+        fight_renderer = None
 
     async def pre_fight(self, fight: Fight, fight_renderer: FightRenderer) -> tuple[Message, Message]:
         await fight.set_stats()
@@ -153,3 +159,23 @@ class FightInteraction():
         fight_file = discord.File(fp=fight_image)
 
         await top_msg.edit(attachments=[fight_file])
+        await bot_msg.delete()
+
+    async def post_fight(self, fight: Fight):
+        winner: Character = None
+        loser: Character = None
+
+        if fight.fighter_a.hp > 0:
+            winner = fight.fighter_a.character
+            loser = fight.fighter_b.character
+        else:
+            winner = fight.fighter_b.character
+            loser = fight.fighter_a.character
+
+        rewards = Rewards(winner=winner, loser=loser)
+        reward_renderer = RewardRenderer(winner=winner, loser=loser)
+
+        if isinstance(fight.fighter_b.character, Monster):
+            await rewards.pvm_rewards()
+        else:
+            await rewards.pvp_rewards()

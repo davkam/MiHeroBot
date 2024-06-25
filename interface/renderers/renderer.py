@@ -18,6 +18,7 @@ class Renderer():
     HEAD_PATH = "game/assets/equipments/head_armors/head_%s.png"
     BODY_PATH = "game/assets/equipments/body_armors/body_%s.png"
     AMULET_PATH = "game/assets/equipments/amulets/amulet_%s.png"
+    RING_PATH = "game/assets/equipments/rings/ring_%s.png"
 
     def __init__(self):
         self.logger: logging.Logger = Loggers.renderer

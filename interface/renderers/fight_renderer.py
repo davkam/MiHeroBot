@@ -162,19 +162,19 @@ class FightRenderer(Renderer):
 
             level = fighter.level.get_lvl()
             stats_draw.text(xy=(32 + x_pos, 64), text="LEVEL", fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
-            stats_draw.text(xy=(176 + x_pos, 64), text=str(level), fill=(0, 255, 0), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
+            stats_draw.text(xy=(176 + x_pos, 64), text=str(level), fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
 
             attack = fighter.attack.get_lvl()               
             stats_draw.text(xy=(32 + x_pos, 112), text="ATTACK", fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
-            stats_draw.text(xy=(176 + x_pos, 112), text=str(attack), fill=(0, 255, 0), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
+            stats_draw.text(xy=(176 + x_pos, 112), text=str(attack), fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
 
             defense = fighter.defense.get_lvl()
             stats_draw.text(xy=(32 + x_pos, 160), text="DEFENSE", fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
-            stats_draw.text(xy=(176 + x_pos, 160), text=str(defense), fill=(0, 255, 0), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
+            stats_draw.text(xy=(176 + x_pos, 160), text=str(defense), fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
 
             health = fighter.health.get_lvl()
             stats_draw.text(xy=(32 + x_pos, 208), text="HEALTH", fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
-            stats_draw.text(xy=(176 + x_pos, 208), text=str(health), fill=(0, 255, 0), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
+            stats_draw.text(xy=(176 + x_pos, 208), text=str(health), fill=(255, 255, 255), font=stats_font, stroke_width=1, stroke_fill=(0, 0, 0))
 
             x_pos += 384
 

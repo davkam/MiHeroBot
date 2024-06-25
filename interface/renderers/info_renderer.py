@@ -18,7 +18,7 @@ class InfoRenderer(Renderer):
     async def render_help(self):
         image = Image.open(fp=InfoRenderer.BG1_PATH)
 
-        await self.__render_title(image=image, title="COMMANDS")
+        await self.render_title(image=image, title="COMMANDS")
 
         with open(file=InfoRenderer.HELP_TXT) as file:
             string = file.read()
@@ -26,8 +26,8 @@ class InfoRenderer(Renderer):
         text = string.split("#")
         
         try:
-            image = await self.__render_text(image=image, text=text[2].strip(), font_size=32, x=48, y=76)
-            image = await self.__render_text(image=image, text=text[4].strip(), font_size=32, x=192, y=76)
+            image = await self.render_text(image=image, text=text[2].strip(), font_size=32, x=48, y=76)
+            image = await self.render_text(image=image, text=text[4].strip(), font_size=32, x=192, y=76)
 
             await self.save_image(image=image, path=InfoRenderer.HELP_PATH)
 
@@ -50,21 +50,21 @@ class InfoRenderer(Renderer):
                     if index == 1:
                         text_y += 182
                         image = Image.open(fp=InfoRenderer.ABOUT_TMPL)
-                        image = await self.__render_title(image=image, title=text.strip(), y=196)
+                        image = await self.render_title(image=image, title=text.strip(), y=196)
                     else:
                         text_y = 72
                         image = Image.open(fp=InfoRenderer.BG1_PATH)
-                        image = await self.__render_title(image=image, title=text.strip())
+                        image = await self.render_title(image=image, title=text.strip())
                 elif index % 2 == 0 and index != 0:
-                    image = await self.__render_text(image=image, text=text.strip(), font_size=text_size, x=text_x, y=text_y)
-                    image = await self.__render_text(image=image, text=f"{int(index / 2)}/5", font_size=text_size, x=300, y=450)
+                    image = await self.render_text(image=image, text=text.strip(), font_size=text_size, x=text_x, y=text_y)
+                    image = await self.render_text(image=image, text=f"{int(index / 2)}/5", font_size=text_size, x=300, y=450)
                     await self.save_image(image=image, path=InfoRenderer.ABOUT_PATH % int(index / 2))
             
             self.logger.info(msg=f"Successfully rendered new 'about' images. FILES: '{InfoRenderer.ABOUT_PATH}'")
         except Exception as exception:
             self.logger.error(msg=f"Failed to render new 'about' images. EXCEPTION: {str(exception)}")       
 
-    async def __render_title(self, image: Image.Image, title: str, x: int = None, y: int = None) -> Image.Image:
+    async def render_title(self, image: Image.Image, title: str, x: int = None, y: int = None) -> Image.Image:
         draw = ImageDraw.Draw(im=image)
         font = ImageFont.truetype(font=InfoRenderer.FONT_PATH, size=64)
 
@@ -77,7 +77,7 @@ class InfoRenderer(Renderer):
 
         return image
     
-    async def __render_text(self, image: Image.Image, text: str, font_size: int, x: int = 0, y: int = 0) -> Image.Image:
+    async def render_text(self, image: Image.Image, text: str, font_size: int, x: int = 0, y: int = 0) -> Image.Image:
         draw = ImageDraw.Draw(im=image)
         font = ImageFont.truetype(font=InfoRenderer.FONT_PATH, size=font_size)
 

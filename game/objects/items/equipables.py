@@ -42,7 +42,7 @@ class HeadArmor(Equipable):
         self.set_name()
 
     def set_name(self):
-        super().set_name(type="HEAD ARMOR")
+        super().set_name(type="HEAD")
 
 class BodyArmor(Equipable):
     def __init__ (self, id: int = None, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
@@ -50,7 +50,7 @@ class BodyArmor(Equipable):
         self.set_name()
 
     def set_name(self):
-        super().set_name(type="BODY ARMOR")
+        super().set_name(type="BODY")
 
 class Amulet(Equipable): # TBD: SPECIAL EFFECT AMULETS/DECORATOR
     def __init__ (self, id: int = None, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):

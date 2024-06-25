@@ -7,7 +7,7 @@ from game.objects.characters.players import Player
 from loggers.loggers import Loggers
 
 class Fight():
-    def __init__ (self, fighter_a: Player, fighter_b: Character) -> None:
+    def __init__(self, fighter_a: Player, fighter_b: Character) -> None:
         self.fighter_a: Fighter = Fighter(fighter_a)
         self.fighter_b: Fighter = Fighter(fighter_b)
         self.turn: bool = None # Decide turn, True = fighter A turn, False = fighter B turn
@@ -41,7 +41,7 @@ class Fight():
 
             self.turn = True
      
-        return await att_fighter.attack_fighter(fighter=def_fighter) 
+        return await att_fighter.attack_fighter(fighter=def_fighter)
 
 class Fighter():
     def __init__(self, character: Character) -> None:

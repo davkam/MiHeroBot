@@ -71,9 +71,18 @@ class Commands():
     async def bug(self):
         await self.msg.channel.send(content = f"**```arm\r\nMiHero !Bug\r\n```**`This function is not yet implemented!`", silent=True)
 
-        from game.objects.items.equipables import Sword, Shield, HeadArmor, BodyArmor, Amulet, EquipmentTier
-        self.user.player.equipment.sword = Sword(tier=EquipmentTier.DRAGON)
-        self.user.player.equipment.shield = Shield(tier=EquipmentTier.DRAGON)
-        self.user.player.equipment.head = HeadArmor(tier=EquipmentTier.DRAGON)
-        self.user.player.equipment.body = BodyArmor(tier=EquipmentTier.DRAGON)
-        self.user.player.equipment.amulet = Amulet(tier=EquipmentTier.DRAGON)
+        from game.objects.items.equipables import Sword, Shield, HeadArmor, BodyArmor, Amulet, Ring, EquipmentTier
+        self.user.player.equipment.sword = Sword(tier=EquipmentTier.ADAMANT)
+        self.user.player.equipment.shield = Shield(tier=EquipmentTier.ADAMANT)
+        self.user.player.equipment.head = HeadArmor(tier=EquipmentTier.ADAMANT)
+        self.user.player.equipment.body = BodyArmor(tier=EquipmentTier.ADAMANT)
+        self.user.player.equipment.amulet = Amulet(tier=EquipmentTier.ADAMANT)
+        self.user.player.equipment.ring = Ring(tier=EquipmentTier.ADAMANT)
+
+        self.user.player.equipment.sword.level.set_lvl(lvl=100)
+        self.user.player.equipment.shield.level.set_lvl(lvl=100)
+        self.user.player.equipment.head.level.set_lvl(lvl=100)
+        self.user.player.equipment.body.level.set_lvl(lvl=100)
+        self.user.player.equipment.amulet.level.set_lvl(lvl=100)
+        self.user.player.equipment.ring.level.set_lvl(lvl=100)
+
