@@ -1,7 +1,7 @@
 from handlers.temp_img_handler import TempImageHandler
 from interface.renderers.renderer import Renderer
 from PIL import Image, ImageDraw, ImageFont
-from tools.bar import Bar
+from tools.tools import Bar
 from users.users import User
 
 class StatsRenderer(Renderer):

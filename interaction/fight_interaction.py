@@ -21,31 +21,34 @@ class FightInteraction():
 
     async def run_interaction(self):
         if not self.cmd.existing_user:
-            await self.cmd.msg.channel.send(content="**```arm\r\nMiHero !Fight\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
+            await self.cmd.msg.channel.send(content=f"**```arm\r\nMiHero !Fight @{self.cmd.user.name}\r\n```**`You haven't created a hero yet.`\n`To create a new hero use command !New.`", silent=True)
             return
         
         self.cmd.user.permit = False # Set sender user interaction permission to false during fight
 
         fight_view = FightView(user=self.cmd.user, db=self.cmd.db)
 
-        await self.cmd.msg.channel.send(content="**```arm\r\nMiHero !Fight\r\n```**\n", silent=True)
+        await self.cmd.msg.channel.send(content=f"**```arm\r\nMiHero !Fight @{self.cmd.user.name}\r\n```**\n", silent=True)
         self.top_msg = await self.cmd.msg.channel.send(view=fight_view, silent=True)
             
         # Wait for view interaction, return true if time-out or false if normal finish
         interaction_timeout = await fight_view.wait()
 
-        self.bot_msg = await self.cmd.msg.channel.send(content = "\u200b", silent=True)
-
         if not interaction_timeout:
             if fight_view.select_type == "Player":
+                self.bot_msg = await self.cmd.msg.channel.send(content = "\u200b", silent=True)
+
                 fight_view.receiver_user.permit = False # Set receiver user interaction permission to false during fight
 
                 await self.run_fight(fighter_a=self.cmd.user.player, fighter_b=fight_view.receiver_user.player)
+                await self.cmd.db.update_user(user=self.cmd.user)
                 await self.cmd.db.update_user(user=fight_view.receiver_user)
 
                 fight_view.receiver_user.permit = True
 
             elif fight_view.select_type.startswith("Monster"):
+                self.bot_msg = await self.cmd.msg.channel.send(content = "\u200b", silent=True)
+
                 if fight_view.select_type == "MonsterLight":
                     monster = Monster()
                     await monster.generate_monster(rank=EnemyRank.LIGHT, level=fight_view.sender_user.player.level)
@@ -59,11 +62,16 @@ class FightInteraction():
                     await monster.generate_monster(rank=EnemyRank.HEAVY, level=fight_view.sender_user.player.level)
 
                 await self.run_fight(fighter_a=fight_view.sender_user.player, fighter_b=monster)
+                await self.cmd.db.update_user(user=self.cmd.user)
 
-            else: # TBD: Boss option!
-                pass
+            elif fight_view.select_type == "Boss":
+                raise NotImplementedError("This function is not yet implemented!")
 
-            await self.cmd.db.update_user(user=self.cmd.user) 
+            elif fight_view.select_type == "Exit":
+                await self.top_msg.edit(content="`Fight interaction cancelled!`", view=None)
+
+            else: 
+                pass    
         else:
             await self.top_msg.edit(content="`Fight interaction timed out!`", view=None)
 

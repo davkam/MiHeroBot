@@ -1,3 +1,5 @@
+import re
+
 class Bar():
     async def get_shortbar(act_val: int, max_val: int) -> str:
         """
@@ -56,3 +58,14 @@ class Bar():
         else: ret_bars = bar_GUI[20]
 
         return ret_bars
+    
+class StringManager():
+    async def remove_special_characters(input_string: str) -> str:
+        # Define a regular expression pattern for special characters
+        # Keep only alphabetic characters and spaces
+        pattern = r'[^a-zA-Z\s]'  
+
+        # Substitute special characters with an empty string
+        cleaned_string = re.sub(pattern, '', input_string)
+
+        return cleaned_string

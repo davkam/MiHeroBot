@@ -3,7 +3,7 @@ import asyncio
 from game.objects.characters.characters import Character
 from interface.renderers.renderer import Renderer
 from PIL import Image, ImageDraw, ImageFont
-from tools.bar import Bar
+from tools.tools import Bar
 
 class RewardRenderer(Renderer):
     def __init__(self, winner: Character, loser: Character) -> None:

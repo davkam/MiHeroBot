@@ -3,7 +3,7 @@ from game.objects.characters.enemies import Monster, EnemyRank
 from game.objects.characters.players import Player
 from interface.renderers.renderer import Renderer
 from PIL import Image, ImageDraw, ImageFont, ImageOps
-from tools.bar import Bar
+from tools.tools import Bar
 
 class FightRenderer(Renderer):
     def __init__(self, fighter_one: Player, fighter_two: Character) -> None:

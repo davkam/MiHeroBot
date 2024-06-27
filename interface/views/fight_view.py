@@ -9,7 +9,7 @@ class FightView(View):
         self.sender_user: User = user
         self.receiver_user: User = None
         self.db: UserData = db
-        self.select_type: str = None
+        self.select_type: str = str()
 
         from interface.selects.fight_selects import FightSelect
         self.add_item(item=FightSelect(self))

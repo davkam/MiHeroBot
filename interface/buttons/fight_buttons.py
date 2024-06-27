@@ -12,12 +12,11 @@ class GreenFightButton(Button):
     async def callback(self, interaction: Interaction):
         if interaction.user.id == self.user.id:
             self.fight_view.clear_items()
-            message = f"**{self.user.player.get_name()}** `accepts the challenge and prepares for battle...`"
-
-            await interaction.response.edit_message(content=message, view=self.fight_view)
-
-            self.fight_view.select_type = "Player"
             self.fight_view.stop()
+            self.fight_view.select_type = "Player"
+
+            message = f"**{self.user.player.get_name()}** `accepts the challenge and prepares for battle...`"
+            await interaction.response.edit_message(content=message, view=self.fight_view)
         else:
             await interaction.response.defer()
 
@@ -30,10 +29,9 @@ class RedFightButton(Button):
     async def callback(self, interaction: Interaction):
         if interaction.user.id == self.user.id:
             self.fight_view.clear_items()
-            message = f"**{self.user.player.get_name()}** `declines the challenge and runs away!`"
-
-            await interaction.response.edit_message(content=message, view=self.fight_view)
-            
             self.fight_view.stop()
+
+            message = f"**{self.user.player.get_name()}** `declines the challenge and runs away!`"
+            await interaction.response.edit_message(content=message, view=self.fight_view)      
         else:
             await interaction.response.defer()
