@@ -86,5 +86,6 @@ class Level(Stat):
         self.update_lvl()
         return int(self._lvl)
     
-    def update_lvl(self) -> None:        
-        self._lvl = round((self._attack.get_lvl() + self._defense.get_lvl() + self._health.get_lvl()) / 3, 2) 
+    def update_lvl(self) -> None:
+        self._lvl = round((self._attack._lvl + self._defense._lvl + self._health._lvl) / 3, 2) 
+        self.update_xp()

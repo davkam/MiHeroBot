@@ -97,8 +97,6 @@ class Fighter():
         else:
             self.hit_chance = round(self.att_roll / (2 * opponent_fighter.def_roll + 1), 2)
 
-        print(f"{self.character.get_name()}: HIT_CHANCE: {self.hit_chance}")
-
     async def attack_fighter(self, fighter) -> tuple[bool, int]:
         fighter: Fighter = fighter
         is_hit: bool = None # Hit or miss

@@ -79,10 +79,10 @@ class Commands():
         self.user.player.equipment.amulet = Amulet(tier=EquipmentTier.ADAMANT)
         self.user.player.equipment.ring = Ring(tier=EquipmentTier.ADAMANT)
 
-        self.user.player.equipment.sword.level.set_lvl(lvl=100)
-        self.user.player.equipment.shield.level.set_lvl(lvl=100)
-        self.user.player.equipment.head.level.set_lvl(lvl=100)
-        self.user.player.equipment.body.level.set_lvl(lvl=100)
-        self.user.player.equipment.amulet.level.set_lvl(lvl=100)
-        self.user.player.equipment.ring.level.set_lvl(lvl=100)
+        # self.user.player.equipment.sword.level.set_lvl(lvl=100)
+        # self.user.player.equipment.shield.level.set_lvl(lvl=100)
+        # self.user.player.equipment.head.level.set_lvl(lvl=100)
+        # self.user.player.equipment.body.level.set_lvl(lvl=100)
+        # self.user.player.equipment.amulet.level.set_lvl(lvl=100)
+        # self.user.player.equipment.ring.level.set_lvl(lvl=100)
 

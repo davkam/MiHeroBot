@@ -49,7 +49,7 @@ class CharacterInteraction():
             await self.cmd.msg.channel.send(file=new_player_file, silent=True)
             await self.cmd.msg.channel.send(content=f"`Created new hero` **{self.cmd.user.player.get_name()}**.\n`To start fighting use command !Fight.`", silent=True)
 
-            await renderer.del_images()
+            await renderer.del_image_folder()
         elif new_player_view.canceled:
             await edit_msg.delete()
             await self.cmd.msg.channel.send(content="`Create new hero cancelled!`\n`To create a new hero use command !New.`", silent=True)
@@ -77,7 +77,7 @@ class CharacterInteraction():
         edit_msg = await self.cmd.msg.channel.send(file=del_player_file, view=del_player_view)
 
         await del_player_view.wait()
-        await renderer.del_images()
+        await renderer.del_image_folder()
 
         if del_player_view.confirm:
             await self.cmd.user.del_player()

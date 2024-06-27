@@ -7,6 +7,7 @@ from game.logic.rewards import Rewards
 from game.objects.characters.characters import Character
 from game.objects.characters.enemies import Monster, EnemyRank
 from game.objects.characters.players import Player
+from game.objects.items.items import Item
 from interface.renderers.fight_renderer import FightRenderer
 from interface.renderers.reward_renderer import RewardRenderer
 from interface.views.fight_view import FightView
@@ -15,6 +16,8 @@ class FightInteraction():
     def __init__(self, cmd):
         from bot.commands.commands import Commands
         self.cmd: Commands = cmd
+        self.top_msg: Message = None
+        self.bot_msg: Message = None
 
     async def run_interaction(self):
         if not self.cmd.existing_user:
@@ -24,19 +27,21 @@ class FightInteraction():
         self.cmd.user.permit = False # Set sender user interaction permission to false during fight
 
         fight_view = FightView(user=self.cmd.user, db=self.cmd.db)
+
         await self.cmd.msg.channel.send(content="**```arm\r\nMiHero !Fight\r\n```**\n", silent=True)
-        edit_msg = await self.cmd.msg.channel.send(view=fight_view, silent=True)
+        self.top_msg = await self.cmd.msg.channel.send(view=fight_view, silent=True)
             
         # Wait for view interaction, return true if time-out or false if normal finish
         interaction_timeout = await fight_view.wait()
+
+        self.bot_msg = await self.cmd.msg.channel.send(content = "\u200b", silent=True)
 
         if not interaction_timeout:
             if fight_view.select_type == "Player":
                 fight_view.receiver_user.permit = False # Set receiver user interaction permission to false during fight
 
-                await asyncio.sleep(delay=2)
-                await edit_msg.delete()
                 await self.run_fight(fighter_a=self.cmd.user.player, fighter_b=fight_view.receiver_user.player)
+                await self.cmd.db.update_user(user=fight_view.receiver_user)
 
                 fight_view.receiver_user.permit = True
 
@@ -45,48 +50,39 @@ class FightInteraction():
                     monster = Monster()
                     await monster.generate_monster(rank=EnemyRank.LIGHT, level=fight_view.sender_user.player.level)
 
-                    await asyncio.sleep(delay=2)
-                    await edit_msg.delete()
-                    await self.run_fight(fighter_a=fight_view.sender_user.player, fighter_b=monster)
                 elif fight_view.select_type == "MonsterMedium":
                     monster = Monster()
                     await monster.generate_monster(rank=EnemyRank.MEDIUM, level=fight_view.sender_user.player.level)
-
-                    await asyncio.sleep(delay=2)
-                    await edit_msg.delete()
-                    await self.run_fight(fighter_a=fight_view.sender_user.player, fighter_b=monster)
 
                 elif fight_view.select_type == "MonsterHeavy":
                     monster = Monster()
                     await monster.generate_monster(rank=EnemyRank.HEAVY, level=fight_view.sender_user.player.level)
 
-                    await asyncio.sleep(delay=2)
-                    await edit_msg.delete()
-                    await self.run_fight(fighter_a=fight_view.sender_user.player, fighter_b=monster)
+                await self.run_fight(fighter_a=fight_view.sender_user.player, fighter_b=monster)
 
             else: # TBD: Boss option!
-                pass 
+                pass
+
+            await self.cmd.db.update_user(user=self.cmd.user) 
         else:
-            await edit_msg.edit(content="`Fight interaction timed out!`", view=None)
+            await self.top_msg.edit(content="`Fight interaction timed out!`", view=None)
 
         self.cmd.user.permit = True
-
-        # NYI: Save users!
 
     async def run_fight(self, fighter_a: Player, fighter_b: Character) -> None:
         fight = Fight(fighter_a=fighter_a, fighter_b=fighter_b)
         fight_renderer = FightRenderer(fighter_one=fighter_a, fighter_two=fighter_b)
 
-        top_msg, bot_msg = await self.pre_fight(fight=fight, fight_renderer=fight_renderer)
-        await self.main_fight(fight=fight, fight_renderer=fight_renderer, top_msg=top_msg, bot_msg=bot_msg)
+        await self.pre_fight(fight=fight, fight_renderer=fight_renderer)
+        await self.main_fight(fight=fight, fight_renderer=fight_renderer)
         await self.post_fight(fight=fight)
 
-        await fight_renderer.del_images()
+        await fight_renderer.del_image_folder()
 
         fight = None
         fight_renderer = None
 
-    async def pre_fight(self, fight: Fight, fight_renderer: FightRenderer) -> tuple[Message, Message]:
+    async def pre_fight(self, fight: Fight, fight_renderer: FightRenderer) -> None:
         await fight.set_stats()
         await fight.set_turn()
 
@@ -99,22 +95,19 @@ class FightInteraction():
         idle_file = discord.File(fp=idle_image)
         stats_file = discord.File(fp=stats_image)
 
-        top_msg = await self.cmd.msg.channel.send(file=idle_file, silent=True)
-        bot_msg = await self.cmd.msg.channel.send(file=stats_file, silent=True)
+        await asyncio.sleep(delay=2)
 
-        stats_file = discord.File(fp=stats_image)
-        await bot_msg.edit(attachments=[stats_file])  
+        await self.top_msg.edit(content=None, attachments=[idle_file])
+        await self.bot_msg.edit(attachments=[stats_file])
 
         for i in range(4):
             countdown_image = await fight_renderer.get_fight_image(image_index=0, image_type="countdown", image_info=str(3 - i))
             countdown_file = discord.File(fp=countdown_image)
-            await top_msg.edit(attachments=[countdown_file])
+            await self.top_msg.edit(attachments=[countdown_file])
 
             await asyncio.sleep(delay=1)
-
-        return top_msg, bot_msg
     
-    async def main_fight(self, fight: Fight, fight_renderer: FightRenderer, top_msg: Message, bot_msg: Message) -> None:
+    async def main_fight(self, fight: Fight, fight_renderer: FightRenderer) -> None:
         while True:
             if fight.turn == True: # Fighter A
                 is_hit, hit_dmg = await fight.roll_fight()
@@ -136,8 +129,8 @@ class FightInteraction():
             fight_file = discord.File(fp=fight_image)
             stats_file = discord.File(fp=stats_image)
 
-            await top_msg.edit(attachments=[fight_file])
-            await bot_msg.edit(attachments=[stats_file])
+            await self.top_msg.edit(attachments=[fight_file])
+            await self.bot_msg.edit(attachments=[stats_file])
 
             await asyncio.sleep(delay=1)
 
@@ -147,7 +140,7 @@ class FightInteraction():
             idle_image = await fight_renderer.get_fight_image(image_index=0, image_type="idle")
             idle_file = discord.File(fp=idle_image)
 
-            await top_msg.edit(attachments=[idle_file])
+            await self.top_msg.edit(attachments=[idle_file])
 
             await asyncio.sleep(delay=1)
 
@@ -158,8 +151,7 @@ class FightInteraction():
 
         fight_file = discord.File(fp=fight_image)
 
-        await top_msg.edit(attachments=[fight_file])
-        await bot_msg.delete()
+        await self.top_msg.edit(attachments=[fight_file])
 
     async def post_fight(self, fight: Fight):
         winner: Character = None
@@ -175,7 +167,39 @@ class FightInteraction():
         rewards = Rewards(winner=winner, loser=loser)
         reward_renderer = RewardRenderer(winner=winner, loser=loser)
 
+        xp_gain: list[int] = list()
+        loot_gain: list[Item] = list()
+        gold_lost = int()
+
         if isinstance(fight.fighter_b.character, Monster):
-            await rewards.pvm_rewards()
+            xp_gain, loot_gain, gold_lost = await rewards.pvm_rewards()
         else:
             await rewards.pvp_rewards()
+
+        await asyncio.sleep(delay=1)
+
+        if xp_gain:
+            await reward_renderer.render_reward()
+            xp_gain_image = await reward_renderer.get_xp_reward_image()
+            xp_gain_file = discord.File(fp=xp_gain_image)
+
+            await self.bot_msg.edit(attachments=[xp_gain_file])
+
+            await asyncio.sleep(delay=0.5)
+
+            for i in range(4):
+                if i != 3:
+                    xp_gain_image = await reward_renderer.get_xp_reward_image(image_type=i, image_info=xp_gain[i])
+                else:
+                    xp_gain_image = await reward_renderer.get_xp_reward_image(image_type=i)
+                
+                xp_gain_file = discord.File(fp=xp_gain_image)
+
+                await self.bot_msg.edit(attachments=[xp_gain_file])
+                await asyncio.sleep(delay=0.5)
+
+        if loot_gain:
+            pass
+
+        if gold_lost > 0:
+            pass
