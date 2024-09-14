@@ -3,6 +3,8 @@ import uuid
 from game.objects.items.items import *
 
 class Inventory():
+    __slots__ = ['items', 'slots', 'max_slots']
+
     def __init__(self):
         self.items: list[Item] = list()
         self.slots: int = 10

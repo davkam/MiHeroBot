@@ -6,6 +6,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from tools.tools import Bar
 
 class FightRenderer(Renderer):
+    __slots__ = ['fighter_one', 'fighter_two', 'fight_images', 'stats_image']
+    
     def __init__(self, fighter_one: Player, fighter_two: Character) -> None:
         super().__init__()
         self.fighter_one: Player = fighter_one
@@ -55,7 +57,7 @@ class FightRenderer(Renderer):
         else:
             fight_image = self.fight_images[image_index].copy()
             font_size = 64
-            text_color = (0, 255, 0)
+            text_color = (255, 255, 255)
 
             if image_variant:
                 font_size = 80

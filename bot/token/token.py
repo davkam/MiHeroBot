@@ -7,6 +7,8 @@ from loggers.loggers import Loggers
 TOKEN_FILE = "bot/token/.env"
 
 class Token():
+    __slots__ = ['key', 'file_path', 'logger']
+    
     def __init__(self) -> None:
         self.key: str = None
         self.file_path: str = TOKEN_FILE

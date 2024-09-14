@@ -12,6 +12,8 @@ class InfoRenderer(Renderer):
     HELP_TXT = "txt/help.txt"
     ABOUT_TXT = "txt/about.txt"
 
+    __slots__ = []
+    
     def __init__(self):
         super().__init__()
 

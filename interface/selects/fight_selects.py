@@ -6,6 +6,8 @@ from interface.views.fight_view import FightView, FightButtonView
 from users.users import User
 
 class FightSelect(Select):
+    __slots__ = ['fight_view']
+
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder="SELECT FIGHT")
         self.fight_view: FightView = fight_view
@@ -40,6 +42,8 @@ class FightSelect(Select):
             await interaction.response.defer()
 
 class PlayerSelect(Select):
+    __slots__ = ['fight_view']
+
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder="SELECT PLAYER")
         self.fight_view: FightView = fight_view
@@ -76,9 +80,12 @@ class PlayerSelect(Select):
             await interaction.response.defer()
 
 class MonsterSelect(Select):
+    __slots__ = ['fight_view']
+
     def __init__(self, fight_view: FightView):
         super().__init__(placeholder="SELECT MONSTER")
         self.fight_view: FightView = fight_view
+        
         self.set_options()
 
     def set_options(self):

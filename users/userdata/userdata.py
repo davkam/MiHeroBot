@@ -9,6 +9,8 @@ from users.users import User
 class UserData():
     instances: dict = dict() # Dictionary of guild unique instances, uses guild id as key 
 
+    __slots__ = ['id', 'file', 'sql', 'users', 'logger']
+
     def __init__(self, id: int):
         self.id: int = id
         self.file: str = f"users/userdata/data/db_{id}.db"

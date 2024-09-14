@@ -13,6 +13,8 @@ from interface.renderers.reward_renderer import RewardRenderer
 from interface.views.fight_view import FightView
 
 class FightInteraction():
+    __slots__ = ['cmd', 'top_msg', 'bot_msg']
+
     def __init__(self, cmd):
         from bot.commands.commands import Commands
         self.cmd: Commands = cmd

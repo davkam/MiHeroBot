@@ -6,6 +6,8 @@ from PIL import Image, ImageDraw, ImageFont
 from tools.tools import Bar
 
 class RewardRenderer(Renderer):
+    __slots__ = ['winner', 'loser', 'image']
+    
     def __init__(self, winner: Character, loser: Character) -> None:
         super().__init__()
         self.winner: Character = winner

@@ -1,5 +1,3 @@
-# -*- coding: ISO-8859-15 -*-
-
 from discord.message import Message
 from interaction.character_interaction import CharacterInteraction
 from interaction.fight_interaction import FightInteraction
@@ -8,6 +6,8 @@ from users.userdata.userdata import UserData
 from users.users import User
 
 class Commands():
+    __slots__ = ['db', 'msg', 'user', 'existing_user']
+    
     def __init__(self, msg: Message, db_id: int):
         self.db: UserData = UserData.instances[db_id]
         self.msg: Message = msg                       
@@ -15,7 +15,6 @@ class Commands():
         self.existing_user: bool = False
 
     async def set_user(self) -> User:
-        # Get user from database, returns None if no user is found
         user = await self.db.get_user(id=self.msg.author.id)
         if user:
             self.user = user

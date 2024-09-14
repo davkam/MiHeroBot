@@ -3,6 +3,8 @@ import discord
 from users.users import User
 
 class NewPlayerView(discord.ui.View):
+    __slots__ = ['user', 'character', 'selected', 'canceled']
+
     def __init__(self, user: User, character: int = None):
         super().__init__(timeout=60)
         self.user: User = user

@@ -17,18 +17,28 @@ class KitType(Enum):
     HEAD_ARMOR = 3
     BODY_ARMOR = 4
     AMULET = 5
+    RING = 6
 
 class Consumable(Item):
+    __slots__ = ['tier']
+
     def __init__(self, name: str = None, value: int = None, tier: ConsumableTier = None):
         super().__init__(name=name, value=value)
         self.tier: ConsumableTier = tier or ConsumableTier.REGULAR
 
+    async def get_random_consumable(self, consumable_index: int):
+        pass
+
 class Potion(Consumable):
+    __slots__ = ['type']
+
     def __init__(self, name: str = None, value: int = None, consumable_class: ConsumableTier = None, type: PotionType = None):
         super().__init__(name=name, value=value, tier=consumable_class)
         self.type: PotionType = type
 
 class Kit(Item):
+    __slots__ = ['type']
+    
     def __init__(self, name: str = None, value: int = None, consumable_class: ConsumableTier = None, type: PotionType = None):
         super().__init__(name=name, value=value, consumable_class=consumable_class)
         self.type: KitType = type

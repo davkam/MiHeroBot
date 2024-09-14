@@ -5,6 +5,8 @@ import tempfile
 from PIL import Image
 
 class TempImageHandler():
+    __slots__ = []
+
     async def save_temp_image(image: Image.Image, temp_dir: str = None) -> tuple[str, str]:
         if temp_dir == None:
             temp_dirpath = tempfile.mkdtemp(prefix="mhb_")

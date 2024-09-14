@@ -9,6 +9,8 @@ from interface.views.new_player_view import NewPlayerView
 class CharacterInteraction():
     NEW_PLAYER_PATH = "game/assets/menus/new_%s.gif"
 
+    __slots__ = ['cmd']
+
     def __init__(self, cmd):
         from bot.commands.commands import Commands
         self.cmd: Commands = cmd

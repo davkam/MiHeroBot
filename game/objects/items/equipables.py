@@ -12,6 +12,8 @@ class EquipmentTier(Enum):
     DRAGON = 16
 
 class Equipable(Item):
+    __slots__ = ['tier', 'level']
+
     def __init__(self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value)
         self.tier: EquipmentTier = tier or EquipmentTier.BRONZE
@@ -24,6 +26,8 @@ class Equipable(Item):
         pass
 
 class Sword(Equipable):
+    __slots__ = []
+    
     def __init__ (self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value, tier=tier, level=level)
         self.set_name()
@@ -32,6 +36,8 @@ class Sword(Equipable):
         super().set_name(type="SWORD")
 
 class Shield(Equipable):
+    __slots__ = []
+
     def __init__ (self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value, tier=tier, level=level)
         self.set_name()
@@ -40,6 +46,8 @@ class Shield(Equipable):
         super().set_name(type="SHIELD")
 
 class HeadArmor(Equipable):
+    __slots__ = []
+
     def __init__ (self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value, tier=tier, level=level)
         self.set_name()
@@ -48,6 +56,8 @@ class HeadArmor(Equipable):
         super().set_name(type="HEAD")
 
 class BodyArmor(Equipable):
+    __slots__ = []
+
     def __init__ (self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value, tier=tier, level=level)
         self.set_name()
@@ -56,6 +66,8 @@ class BodyArmor(Equipable):
         super().set_name(type="BODY")
 
 class Amulet(Equipable): # TBD: SPECIAL EFFECT AMULETS/DECORATOR
+    __slots__ = []
+
     def __init__ (self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value, tier=tier, level=level)
         self.set_name()
@@ -64,6 +76,8 @@ class Amulet(Equipable): # TBD: SPECIAL EFFECT AMULETS/DECORATOR
         super().set_name(type="AMULET")
 
 class Ring(Equipable): # TBD: SPECIAL EFFECT RINGS/DECORATOR
+    __slots__ = []
+
     def __init__ (self, name: str = None, value: int = None, tier: EquipmentTier = None, level: Stat = None):
         super().__init__(name=name, value=value, tier=tier, level=level)
         self.set_name()

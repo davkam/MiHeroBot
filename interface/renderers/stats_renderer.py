@@ -8,6 +8,8 @@ class StatsRenderer(Renderer):
     STATS_TEMP = "game/assets/templates/stats_tmpl.png"
     ITEM_BG = "game/assets/templates/item_bg.png"
 
+    __slots__ = ['user', 'image']
+
     def __init__(self, user: User) -> None:
         super().__init__()
         self.user: User = user

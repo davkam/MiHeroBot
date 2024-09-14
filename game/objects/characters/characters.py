@@ -1,6 +1,8 @@
 from game.logic.stats import Attack, Defense, Health, Level
 
 class Character():
+    __slots__ = ['name', 'attack', 'defense', 'health', 'level']
+
     def __init__ (self, name: str = None, attack: Attack = None, defense: Defense = None, health: Health = None):
         self.name: str = name
         self.attack: Attack = attack or Attack()

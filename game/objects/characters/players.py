@@ -11,6 +11,8 @@ class PlayerColor(Enum):
     YELLOW = 4
 
 class Player(Character):
+    __slots__ = ['equipment', 'inventory', 'gold', 'color']
+
     def __init__ (self, name: str, attack: Attack = None, defense: Defense = None, health: Health = None, gold: int = 0, color: PlayerColor = None):
         super().__init__(name=name, attack=attack, defense=defense, health=health)
         self.equipment: Equipment = Equipment()

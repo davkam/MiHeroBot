@@ -4,6 +4,8 @@ from interface.views.about_view import AboutView
 from interface.renderers.info_renderer import InfoRenderer
 
 class InfoInteraction():
+    __slots__ = ['cmd']
+
     def __init__(self, cmd):
         from bot.commands.commands import Commands
         self.cmd: Commands = cmd

@@ -4,6 +4,8 @@ from users.userdata.userdata import UserData
 from users.users import User
 
 class FightView(View):
+    __slots__ = ['sender_user', 'receiver_user', 'db', 'select_type']
+
     def __init__(self, user: User, db: UserData):
         super().__init__(timeout=60)
         self.sender_user: User = user
@@ -20,6 +22,8 @@ class FightView(View):
         return False
     
 class FightButtonView(View):
+    __slots__ = []
+    
     def __init__(self, fight_view: FightView, user: User):
         super().__init__()
 

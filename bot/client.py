@@ -11,6 +11,8 @@ from users.userdata.userdata import UserData
 class Client(discord.Client):
     _instance = None
 
+    __slots__ = ['token', 'logger']
+
     # Instantiate through singleton pattern
     def __new__(cls) -> discord.Client:
         if cls._instance is None:
@@ -22,7 +24,7 @@ class Client(discord.Client):
         self.token = Token()
         self.logger: logging.Logger = Loggers.bot
 
-    def run(self):
+    def run(self) -> None:
         return super().run(self.token.key, root_logger=True)
 
     async def on_ready(self) -> None:
@@ -49,8 +51,11 @@ class Client(discord.Client):
 
     async def on_message(self, message: Message) -> None:
         """
-        On message event listener, run when client receive a message.
-        Redirect message and user to commands class for further execution.
+        On message event listener. Runs when client receives a message and
+        redirects message and user to commands class for further execution.
+
+        Args:
+            discord.message.Message: The message invoking the event.
         """
 
         # Check if client is message author, return if true

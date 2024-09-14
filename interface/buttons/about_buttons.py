@@ -3,6 +3,8 @@ import discord
 from interface.views.about_view import AboutView
 
 class FirstButton(discord.ui.Button):
+    __slots__ = ['about_view']
+
     def __init__(self, about_view: AboutView):
         super().__init__(style=discord.ButtonStyle.gray, label="\U000023EE FIRST")
         self.about_view: AboutView = about_view
@@ -17,6 +19,8 @@ class FirstButton(discord.ui.Button):
             await interaction.response.defer()
 
 class PreviousButton(discord.ui.Button):
+    __slots__ = ['about_view']
+
     def __init__(self, about_view: AboutView):
         super().__init__(style=discord.ButtonStyle.gray, label="\U000023EA PREVIOUS")
         self.about_view: AboutView = about_view
@@ -31,6 +35,8 @@ class PreviousButton(discord.ui.Button):
             await interaction.response.defer()
 
 class NextButton(discord.ui.Button):
+    __slots__ = ['about_view']
+
     def __init__(self, about_view: AboutView):
         super().__init__(style=discord.ButtonStyle.gray, label="NEXT \U000023E9")
         self.about_view: AboutView = about_view
@@ -45,6 +51,8 @@ class NextButton(discord.ui.Button):
             await interaction.response.defer()
 
 class LastButton(discord.ui.Button):
+    __slots__ = ['about_view']
+    
     def __init__(self, about_view: AboutView):
         super().__init__(style=discord.ButtonStyle.gray, label="LAST \U000023ED")
         self.about_view: AboutView = about_view

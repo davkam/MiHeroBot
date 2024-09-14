@@ -6,6 +6,8 @@ from game.objects.characters.players import Player
 from game.objects.items.items import Item
 
 class Rewards():
+    __slots__ = ['winner', 'loser']
+
     def __init__(self, winner: Character, loser: Character) -> None:
         self.winner: Character = winner
         self.loser: Character = loser

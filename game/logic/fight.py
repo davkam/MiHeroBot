@@ -7,6 +7,8 @@ from game.objects.characters.players import Player
 from loggers.loggers import Loggers
 
 class Fight():
+    __slots__ = ['fighter_a', 'fighter_b', 'turn', 'logger']
+
     def __init__(self, fighter_a: Player, fighter_b: Character) -> None:
         self.fighter_a: Fighter = Fighter(fighter_a)
         self.fighter_b: Fighter = Fighter(fighter_b)

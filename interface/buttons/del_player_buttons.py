@@ -3,13 +3,17 @@ import discord
 from interface.views.del_player_view import DelPlayerView
 
 class InfoButton(discord.ui.Button):
+    __slots__ = []
+
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.gray, label="DELETE CHARACTER:")
+        super().__init__(style=discord.ButtonStyle.gray, label="DELETE CHARACTER", disabled=True)
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer()
 
 class ConfirmButton(discord.ui.Button):
+    __slots__ = ['del_player_view']
+
     def __init__(self, del_player_view: DelPlayerView):
         super().__init__(style=discord.ButtonStyle.green, label="CONFIRM \U00002714")
         self.del_player_view: DelPlayerView = del_player_view
@@ -24,6 +28,8 @@ class ConfirmButton(discord.ui.Button):
             await interaction.response.defer()
 
 class CancelButton(discord.ui.Button):
+    __slots__ = ['del_player_view']
+    
     def __init__(self, del_player_view: DelPlayerView):
         super().__init__(style=discord.ButtonStyle.red, label="CANCEL \U0000274C")
         self.del_player_view: DelPlayerView = del_player_view

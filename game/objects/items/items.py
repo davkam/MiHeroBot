@@ -2,6 +2,8 @@ import random
 import uuid
 
 class Item():
+    __slots__ = ['id', 'name', 'value']
+
     def __init__(self, name: str = None, value: int = None):
         self.id: uuid.UUID = uuid.uuid4()
         self.name: str = name
@@ -14,17 +16,17 @@ class Item():
     def set_name(self, name: str = None):
         self.name = name
 
-    async def get_random_item(self, item_index: int, equips_allowed: bool, avg_stats: float = None):
+    async def get_random_item(self, item_index: int, equips_allowed: bool, avg_stats: float = None) -> object:
         random_item = None
 
         if equips_allowed == True:
             from game.objects.items.equipables import Equipable
             random_item = Equipable()
-            random_item.get_random_equipable(equip_index=item_index, avg_stats=avg_stats)
+            await random_item.get_random_equipable(equip_index=item_index, avg_stats=avg_stats)
         else:
             from game.objects.items.consumables import Consumable
             random_item = Consumable()
-            random_item.get_random_item()
+            await random_item.get_random_consumable(consumable_index=item_index)
         
         # if item_index == 1:
         #     rng = random.randint(1, 2)

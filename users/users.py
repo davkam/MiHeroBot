@@ -3,6 +3,8 @@ from game.objects.characters.players import Player, PlayerColor
 from tools.tools import StringManager
 
 class User(User):
+    __slots__ = ['id', 'name', 'player', 'permit']
+
     def __init__(self, id: int = None, name: str = None):
         self.id: int = id
         self.name: str = name

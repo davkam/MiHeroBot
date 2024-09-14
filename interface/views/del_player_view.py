@@ -3,6 +3,8 @@ import discord
 from users.users import User
 
 class DelPlayerView(discord.ui.View):
+    __slots__ = ['user', 'confirm', 'cancel']
+    
     def __init__(self, user: User):
         super().__init__(timeout=60)
         self.user: User = user

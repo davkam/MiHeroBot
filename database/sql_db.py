@@ -3,6 +3,8 @@ import aiosqlite
 from aiosqlite import Connection
 
 class SQLDatabase():
+    __slots__ = ['path', '_pool', '_pool_size']
+    
     def __init__(self, path, pool_size=5):
         self.path = path
         self._pool = []

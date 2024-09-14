@@ -11,15 +11,21 @@ class EnemyRank(Enum):
     BOSS = 14
 
 class Enemy(Character):
+    __slots__ = ['rank']
+
     def __init__ (self, name: str = None, attack: Attack = None, defense: Defense = None, health: Health = None, rank: EnemyRank = None):
         super().__init__(name=name, attack=attack, defense=defense, health=health)
         self.rank: EnemyRank = rank or EnemyRank.LIGHT
 
 class Boss(Enemy):
+    __slots__ = []
+
     def __init__ (self, name: str = None, attack: Attack = None, defense: Defense = None, health: Health = None, rank: EnemyRank = None):
         super().__init__(name=name, attack=attack, defense=defense, health=health, rank=rank)
 
 class Monster(Enemy):
+    __slots__ = []
+
     def __init__ (self, name: str = None, attack: Attack = None, defense: Defense = None, health: Health = None, rank: EnemyRank = None):
         super().__init__(name=name, attack=attack, defense=defense, health=health, rank=rank)
 

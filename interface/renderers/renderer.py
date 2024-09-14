@@ -22,6 +22,8 @@ class Renderer():
 
     RED_COLOR = (230, 15, 15)
 
+    __slots__ = ['logger', 'image_folder']
+    
     def __init__(self):
         self.logger: logging.Logger = Loggers.renderer
         self.image_folder: str = None

@@ -4,6 +4,8 @@ from interface.views.fight_view import FightView
 from users.users import User
 
 class GreenFightButton(Button):
+    __slots__ = ['fight_view', 'user']
+
     def __init__(self, fight_view: FightView, user: User):
         super().__init__(label="ACCEPT", style=ButtonStyle.green)
         self.fight_view: FightView = fight_view
@@ -21,6 +23,8 @@ class GreenFightButton(Button):
             await interaction.response.defer()
 
 class RedFightButton(Button):
+    __slots__ = ['fight_view', 'user']
+    
     def __init__(self, fight_view: FightView, user: User):
         super().__init__(label="DECLINE", style=ButtonStyle.red)
         self.fight_view: FightView = fight_view

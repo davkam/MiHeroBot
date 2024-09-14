@@ -1,4 +1,6 @@
 class Stat():
+    __slots__ = ['xp', '_lvl']
+
     def __init__(self, xp: int = 100, lvl: float = 1) -> None:
         self._xp: int = xp
         self._lvl: float = lvl
@@ -48,14 +50,20 @@ class Stat():
             return 100
         
 class Attack(Stat):
+    __slots__ = []
+
     def __init__(self, xp: int = 100, lvl: float = 1):
         super().__init__(xp=xp, lvl=lvl)
 
 class Defense(Stat):
+    __slots__ = []
+
     def __init__(self, xp: int = 100, lvl: float = 1):
         super().__init__(xp=xp, lvl=lvl)
 
 class Health(Stat):
+    __slots__ = ['_health']
+
     def __init__(self, xp: int = 100, lvl: float = 1, health: int = 100):
         super().__init__(xp=xp, lvl=lvl)
         self._health = health
@@ -76,6 +84,8 @@ class Health(Stat):
         self._health = self.get_lvl() * 100
 
 class Level(Stat):
+    __slots__ = ['_attack', '_defense', '_health']
+
     def __init__(self, attack: Attack, defense: Defense, health: Health):
         super().__init__()
         self._attack: Attack = attack
