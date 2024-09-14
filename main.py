@@ -15,3 +15,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+### TO DO!
+### Add __slots__ to objects!
+### Check string concatenation!
+### Check escaping references!
+###     - Minimize the use of global variables.
+###     - Be cautious with closures and ensure they do not capture unnecessary variables.
+###     - Avoid using mutable default arguments.
+###     - Regularly review and profile your code to identify and address memory leaks.

@@ -19,16 +19,16 @@ class KitType(Enum):
     AMULET = 5
 
 class Consumable(Item):
-    def __init__(self, id: int = None, name: str = None, value: int = None, tier: ConsumableTier = None):
-        super().__init__(id=id, name=name, value=value)
+    def __init__(self, name: str = None, value: int = None, tier: ConsumableTier = None):
+        super().__init__(name=name, value=value)
         self.tier: ConsumableTier = tier or ConsumableTier.REGULAR
 
 class Potion(Consumable):
-    def __init__(self, id: int = None, name: str = None, value: int = None, consumable_class: ConsumableTier = None, type: PotionType = None):
-        super().__init__(id=id, name=name, value=value, tier=consumable_class)
+    def __init__(self, name: str = None, value: int = None, consumable_class: ConsumableTier = None, type: PotionType = None):
+        super().__init__(name=name, value=value, tier=consumable_class)
         self.type: PotionType = type
 
 class Kit(Item):
-    def __init__(self, id: int = None, name: str = None, value: int = None, consumable_class: ConsumableTier = None, type: PotionType = None):
-        super().__init__(id=id, name=name, value=value, consumable_class=consumable_class)
+    def __init__(self, name: str = None, value: int = None, consumable_class: ConsumableTier = None, type: PotionType = None):
+        super().__init__(name=name, value=value, consumable_class=consumable_class)
         self.type: KitType = type
