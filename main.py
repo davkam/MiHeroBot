@@ -4,6 +4,10 @@ from loggers.loggers import Loggers
 VERSION_NR = "v1.0.0"
 
 def main():
+    """
+    The main function of the MiHeroBot program.
+    It initializes the loggers, establishes a connection, and runs the bot client.
+    """
     print(f"\n- MIHEROBOT {VERSION_NR} -")
 
     print("\n[INITIATING LOGGERS...]")
@@ -17,7 +21,6 @@ if __name__ == "__main__":
     main()
 
 ### TO DO!
-### Add __slots__ to objects!
 ### Check string concatenation!
 ### Check escaping references!
 ###     - Minimize the use of global variables.

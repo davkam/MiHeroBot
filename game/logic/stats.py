@@ -1,5 +1,5 @@
 class Stat():
-    __slots__ = ['xp', '_lvl']
+    __slots__ = ['_xp', '_lvl']
 
     def __init__(self, xp: int = 100, lvl: float = 1) -> None:
         self._xp: int = xp
